@@ -1,8 +1,8 @@
 
 <div class="tabbable tabbable-custom tabbable-full-width">
     <ul class="nav nav-tabs">
-        <li class="<?php if($this->uri->segment(2)=='list-timetables') { echo 'active'; } ?>">
-            <a href="<?php echo base_url('academic/list-timetables'); ?>">Timetables</a>
+        <li class="<?php if($this->uri->segment(3)=='list') { echo 'active'; } ?>">
+            <a href="<?php echo base_url('academic/timetables/list'); ?>">Timetables</a>
         </li>
         <li class="<?php if($this->uri->segment(3)=='monitoring-score') { echo 'active'; } ?>">
             <a href="<?php echo base_url('academic/score/monitoring-score'); ?>">Course Offer</a>

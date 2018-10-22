@@ -5283,15 +5283,29 @@ class C_api extends CI_Controller {
         $data_arr = $this->getInputToken();
 
 //        print_r($data_arr);
+//        exit;
+
+
+        $whereProdi = ($data_arr['ProdiID']!='') ? ' AND sdc.ProdiID = "'.$data_arr['ProdiID'].'" ' : '';
+        $whereCombinedClasses = ($data_arr['CombinedClasses']) ? ' AND s.CombinedClasses = "'.$data_arr['CombinedClasses'].'" ' : '';
+        $whereDay = ($data_arr['DayID']) ? ' AND sd.DayID = "'.$data_arr['DayID'].'" ' : '';
 
         $dataSearch = '';
+        if( !empty($requestData['search']['value']) ) {
+            $search = $requestData['search']['value'];
+            $wl = 'LIKE "%'.$search.'%"';
+            $dataSearch = ' AND (s.ClassGroup '.$wl.' 
+                                    OR s.Coordinator '.$wl.'
+                                    OR em.Name '.$wl.'
+                                     OR mk.MKCode '.$wl.'
+                                      OR mk.Name '.$wl.'
+                                      OR mk.NameEng '.$wl.')';
+        }
 
-        $queryDefault = 'SELECT s.ID, s.CombinedClasses, s.ClassGroup, cl.Room, d.NameEng AS DayEng, s.Coordinator, em.Name AS CoordinatorName,
-                                      s.TeamTeaching, s.SubSesi, cd.TotalSKS AS Credit, mk.Name AS MKName, mk.NameEng AS MKNameEng,
-                                      sd.StartSessions, sd.EndSessions
+        $queryDefault = 'SELECT s.ID, s.CombinedClasses, s.ClassGroup, s.Coordinator, em.Name AS CoordinatorName,
+                                      s.TeamTeaching, s.SubSesi, cd.TotalSKS AS Credit, mk.MKCode, mk.Name AS MKName, mk.NameEng AS MKNameEng
                                       FROM db_academic.schedule s
                                       LEFT JOIN db_academic.schedule_details sd ON (sd.ScheduleID = s.ID)
-                                      LEFT JOIN db_academic.classroom cl ON (cl.ID = sd.ClassroomID)
                                       LEFT JOIN db_academic.days d ON (d.ID = sd.DayID)
                                       LEFT JOIN db_academic.schedule_details_course sdc ON (sdc.ScheduleID = s.ID)
                                       LEFT JOIN db_academic.curriculum_details cd ON (cd.ID = sdc.CDID)
@@ -5300,7 +5314,8 @@ class C_api extends CI_Controller {
                                       LEFT JOIN db_employees.employees em ON (em.NIP = s.Coordinator)
                                       
                                       WHERE ( s.ProgramsCampusID = "'.$data_arr['ProgramCampusID'].'" 
-                                      AND s.SemesterID = "'.$data_arr['SemesterID'].'" ) '.$dataSearch.' 
+                                      AND s.SemesterID = "'.$data_arr['SemesterID'].'" '.$whereProdi.' '.$whereDay.' '.$whereCombinedClasses.' )
+                                       '.$dataSearch.' 
                                       GROUP BY s.ID
                                       ORDER BY d.ID,sd.StartSessions, sd.EndSessions, s.ClassGroup ASC ';
 
@@ -5315,14 +5330,58 @@ class C_api extends CI_Controller {
             $nestedData=array();
             $row = $query[$i];
 
+            $SubSesi = ($row['SubSesi']=='1') ? '<span class="label label-warning">Sub-Sesi</span>' : '';
+
+            $dataSchedule = $this->db->query('SELECT cl.Room, d.NameEng AS DayEng, sd.StartSessions, sd.EndSessions 
+                                                                      FROM db_academic.schedule_details sd
+                                                                      LEFT JOIN db_academic.classroom cl ON (cl.ID = sd.ClassroomID)
+                                                                      LEFT JOIN db_academic.days d ON (d.ID = sd.DayID)
+                                                                        WHERE sd.ScheduleID = "'.$row['ID'].'"
+                                                                         ORDER BY sd.DayID ASC ')->result_array();
+            $ScheduleDetails = '';
+            if(count($dataSchedule)>0){
+                foreach ($dataSchedule as $item){
+                    $ScheduleDetails = $ScheduleDetails.''.$item['DayEng'].', <span style="color: #0b97c4;">'.substr($item['StartSessions'],0,5).' - '.substr($item['EndSessions'],0,5).'</span><br/>Room : '.$item['Room'].'<br/>';
+                }
+            }
+
+            $TeamTeaching = '';
+            if($row['TeamTeaching']=='1'){
+                $dataTeamTeaching = $this->db->query('SELECT stt.NIP, em.Name FROM db_academic.schedule_team_teaching stt 
+                                                                LEFT JOIN db_employees.employees em ON (em.NIP = stt.NIP)
+                                                                WHERE stt.ScheduleID = "'.$row['ID'].'" ')->result_array();
+
+                if(count($dataTeamTeaching)>0){
+                    for($t=0;$t<count($dataTeamTeaching);$t++){
+                        $TeamTeaching = $TeamTeaching.'<br/> - '.$dataTeamTeaching[$t]['Name'];
+                    }
+                }
+            }
+
+            // Daftar Prodi
+            $dataProdi = $this->db->query('SELECT ps.Code FROM db_academic.schedule_details_course sdc 
+                                                    LEFT JOIN db_academic.program_study ps ON (ps.ID = sdc.ProdiID)
+                                                    WHERE sdc.ScheduleID = "'.$row['ID'].'" 
+                                                    GROUP BY sdc.ProdiID ORDER BY ps.Code ASC ')->result_array();
+            $Prodi = '';
+            if(count($dataProdi)>0){
+                for($p=0;$p<count($dataProdi);$p++){
+                    $koma = ($p!=0)? ',' : '';
+                    $Prodi = $Prodi.''.$koma.' '.$dataProdi[$p]['Code'];
+                }
+            }
+
+            $Student = $this->m_api->__getStudentByScheduleID($row['ID']);
+
             $nestedData[] = '<div  style="text-align:center;">'.$no.'</div>';
-            $nestedData[] = '<div  style="text-align:center;">'.$row['ClassGroup'].'</div>';
-            $nestedData[] = '<div  style="text-align:left;"><b>'.$row['MKName'].'</b><br/><i>'.$row['MKNameEng'].'</i></div>';
+            $nestedData[] = '<div  style="text-align:center;">'.$row['ClassGroup'].'<br/>'.$SubSesi.'</div>';
+            $nestedData[] = '<div  style="text-align:left;"><b>'.$row['MKCode'].' - '.$row['MKName'].'</b><br/><i style="color: #9e9e9e;">'.$row['MKNameEng'].'</i>
+                                                    <br/><span>Prodi : '.$Prodi.'</span></div>';
             $nestedData[] = '<div  style="text-align:center;">'.$row['Credit'].'</div>';
-            $nestedData[] = '<div  style="text-align:center;">-</div>';
-            $nestedData[] = '<div  style="text-align:center;">-</div>';
-            $nestedData[] = '<div  style="text-align:center;">'.$row['DayEng'].', '.substr($row['StartSessions'],0,5).' - '.substr($row['EndSessions'],0,5).'</div>';
-            $nestedData[] = '<div  style="text-align:center;">'.$row['Room'].'</div>';
+            $nestedData[] = '<div  style="text-align:left;"><span style="color:#0968b3;">(Co) '.$row['CoordinatorName'].'</span>'.$TeamTeaching.'</div>';
+            $nestedData[] = '<div  style="text-align:center;">'.count($Student).'</div>';
+            $nestedData[] = '<div  style="text-align:right;">'.$ScheduleDetails.'</div>';
+//            $nestedData[] = '<div  style="text-align:center;">'.$row['Room'].'</div>';
 
             $no++;
 

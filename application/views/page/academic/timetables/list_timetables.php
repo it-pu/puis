@@ -5,26 +5,26 @@
 
             <div class="row">
                 <div class="col-xs-2">
-                    <select class="form-control" id="filterProgramCampus"></select>
+                    <select class="form-control option-filter" id="filterProgramCampus"></select>
                 </div>
                 <div class="col-xs-2">
-                    <select class="form-control" id="filterSemester"></select>
+                    <select class="form-control option-filter" id="filterSemester"></select>
                 </div>
                 <div class="col-xs-3">
-                    <select class="form-control" id="filterBaseProdi">
+                    <select class="form-control option-filter" id="filterBaseProdi">
                         <option value="">-- All Programme Study --</option>
                         <option disabled>------------------------------------------</option>
                     </select>
                 </div>
                 <div class="col-xs-2">
-                    <select class="form-control" id="filterCombine">
+                    <select class="form-control option-filter" id="filterCombine">
                         <option value="">-- Show All --</option>
                         <option value="1">Combine Class Yes</option>
                         <option value="0">Combine Class No</option>
                     </select>
                 </div>
                 <div class="col-xs-2">
-                    <select class="form-control" id="filterDay">
+                    <select class="form-control option-filter" id="filterDay">
                         <option value="">-- Show All Day --</option>
                         <option disabled>-------------------</option>
                     </select>
@@ -68,6 +68,10 @@
         },1000);
 
     });
+
+    $('.option-filter').change(function () {
+        loadTimetables();
+    });
     
     function loadTimetables() {
         var filterProgramCampus = $('#filterProgramCampus').val();
@@ -84,6 +88,10 @@
 
             var filterCombine = $('#filterCombine').val();
             var CombinedClasses = (filterCombine!='' && filterCombine!=null) ? filterCombine : '';
+
+            var filterDay = $('#filterDay').val();
+            var DayID = (filterDay!='' && filterDay!=null) ? filterDay : '';
+
 
             div.html('' +
                 '<div class="widget box widget-schedule">' +
@@ -109,7 +117,7 @@
                 '        <th style="width:20%;" class="th-center">Lecturers</th>' +
                 '        <th style="width:5%;" class="th-center">Students</th>' +
                 '        <th style="width:17%;" class="th-center">Day, Time</th>' +
-                '        <th style="width:7%;" class="th-center">Room</th>' +
+                // '        <th style="width:7%;" class="th-center">Room</th>' +
 
                 // '        <th class="th-center">Action</th>' +
                 '    </tr>' +
@@ -126,7 +134,8 @@
                 ProgramCampusID : filterProgramCampus,
                 SemesterID : filterSemester.split('.')[0],
                 ProdiID : ProdiID,
-                CombinedClasses : CombinedClasses
+                CombinedClasses : CombinedClasses,
+                DayID : DayID
 
             };
 
