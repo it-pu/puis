@@ -1316,7 +1316,7 @@ class M_finance extends CI_Model {
       $sql = 'select b.TotalSKS,a.* from '.$db.'.study_planning as a
               left join db_academic.curriculum_details as b
               on a.CDID = b.ID
-            where NPM = ? and SemesterID = ? and TransferCourse = "0"';
+            where NPM = ? and SemesterID = ? and a.TransferCourse = "0"';
       $query = $this->db->query($sql, array($NPM,$SemesterID))->result_array();
 
       $Credit = 0;
