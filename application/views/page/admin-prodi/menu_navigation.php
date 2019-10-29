@@ -4,7 +4,7 @@
     $ServerName = $_SERVER['SERVER_NAME'];
 ?>
 
-    <div id="sidebar-content" class="<?= ($ServerName=='localhost') ? '' : 'hide' ?>" >
+    <div id="sidebar-content" class="<?= ($ServerName=='localhost') ? '' : '' ?>" >
         <!--=== Navigation ===-->
         <ul id="nav">
             <!-- <li  class="dropdown <?php if($this->uri->segment(3,0)=='dashboard'){echo "current";} ?>">
@@ -89,7 +89,7 @@
                         
                     </ul>
             </li>
-           <!--  <li class="<?php if($this->uri->segment(3)=='choose'){echo "penelitian";} ?>">
+            <!-- <li class="<?php if($this->uri->segment(3)=='choose'){echo "penelitian";} ?>">
                 <a href="<?php echo base_url('penelitian'); ?>">
                     <i class="fa fa-flask"></i>
                     Research
@@ -123,14 +123,14 @@
                     Gallery
                     
                 </a>
-            </li>
-            <li class="<?php if($this->uri->segment(3)=='kontak'){echo "current";} ?>">
-                <a href="<?php echo base_url('kontak'); ?>">
+            </li> -->
+            <li class="<?php if($this->uri->segment(3)=='contact'){echo "current";} ?>">
+                <a href="<?php echo base_url('prodi/contact'); ?>">
                     <i class="fa fa-phone"></i>
                    Contact
                     
                 </a>
-            </li> -->
+            </li>
         </ul>
 
 

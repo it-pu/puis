@@ -23,7 +23,7 @@ class C_home extends Prodi_Controler {
     {
         
         $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/'.$data['department'].'/beranda/v_slider',$data,true);
+        $content = $this->load->view('page/'.$data['department'].'/beranda/V_slider',$data,true);
         parent::template($content);
     }
     
@@ -73,24 +73,24 @@ class C_home extends Prodi_Controler {
     {
         
         $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/'.$data['department'].'/about/v_sambutan',$data,true);
+        $content = $this->load->view('page/'.$data['department'].'/about/V_sambutan',$data,true);
         parent::template($content);
     }
     public function vision(){
         $data['department'] = parent::__getDepartement();
-        $pagevisimisi = $this->load->view('page/'.$data['department'].'/about/v_vision',$data,true);
+        $pagevisimisi = $this->load->view('page/'.$data['department'].'/about/V_vision',$data,true);
         $this->menu_visimisi($pagevisimisi);
     }
     public function mission(){
         $data['department'] = parent::__getDepartement();
-        $pagevisimisi = $this->load->view('page/'.$data['department'].'/about/v_mission',$data,true);
+        $pagevisimisi = $this->load->view('page/'.$data['department'].'/about/V_mission',$data,true);
         $this->menu_visimisi($pagevisimisi);
     }
 //    function whychoose()
 //    {
 //        
 //        $data['department'] = parent::__getDepartement();
-//        $content = $this->load->view('page/'.$data['department'].'/beranda/v_why',$data,true);
+//        $content = $this->load->view('page/'.$data['department'].'/beranda/V_why',$data,true);
 //        parent::template($content);
 //    }
 // ===== Call to Action ======
@@ -98,7 +98,7 @@ class C_home extends Prodi_Controler {
     {
         
         $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/'.$data['department'].'/beranda/v_call',$data,true);
+        $content = $this->load->view('page/'.$data['department'].'/beranda/V_call',$data,true);
         parent::template($content);
     }
 // ===== testimoni ======
@@ -106,7 +106,7 @@ class C_home extends Prodi_Controler {
     {
         
         $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/'.$data['department'].'/beranda/v_testimoni',$data,true);
+        $content = $this->load->view('page/'.$data['department'].'/beranda/V_testimoni',$data,true);
         parent::template($content);
     }
 // ===== Cliens ======
@@ -114,7 +114,7 @@ class C_home extends Prodi_Controler {
     {
         
         $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/'.$data['department'].'/beranda/v_partner',$data,true);
+        $content = $this->load->view('page/'.$data['department'].'/beranda/V_partner',$data,true);
         parent::template($content);
     }
 // ===== lecturer ======
@@ -122,7 +122,7 @@ class C_home extends Prodi_Controler {
     {
         
         $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/'.$data['department'].'/about/v_lecturer',$data,true);
+        $content = $this->load->view('page/'.$data['department'].'/about/V_lecturer',$data,true);
         parent::template($content);
     }   
 // ===== facilities ======
@@ -130,7 +130,14 @@ class C_home extends Prodi_Controler {
     {
         
         $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/'.$data['department'].'/about/v_facilities',$data,true);
+        $content = $this->load->view('page/'.$data['department'].'/about/V_facilities',$data,true);
+        parent::template($content);
+    }  
+    function contact()
+    {
+        
+        $data['department'] = parent::__getDepartement();
+        $content = $this->load->view('page/'.$data['department'].'/contact/V_contact',$data,true);
         parent::template($content);
     }    
 

@@ -681,6 +681,15 @@ class C_api_prodi extends CI_Controller {
 
             return print_r(1);
         }
+        else if($data_arr['action']=='readDataContact'){
+            $data = $this->db->get_where('db_prodi.contact')->result_array();
+            return print_r(json_encode($data));
+        }
+        else if($data_arr['action']=='readLogoProdi'){
+            $data = $this->db->get_where('db_academic.program_study_detail')->result_array();
+            return print_r(json_encode($data));
+
+        }
 
     }
 

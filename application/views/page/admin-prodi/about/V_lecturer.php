@@ -100,7 +100,7 @@ function loadDataLecture() {
 }
 function LoadNama() { // load data student
         var selector =$('#NIP');
-        var url = base_url_js+'api-prodi/__getProdiLecturer';
+        var url = base_url_js+'api/__getDosenSelectOption';
         var data = {
             auth : 's3Cr3T-G4N',
             mode : 'showDataDosen'
