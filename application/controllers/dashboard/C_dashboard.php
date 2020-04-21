@@ -250,7 +250,7 @@ class C_dashboard extends Globalclass {
     }
 
     public function myactivities(){
-        $content = $this->load->view('dashboard/myactivities','',true);
+        $content = $this->load->view('dashboard/activities/myactivities','',true);
         $this->temp($content);
     }
     public function ticket(){
@@ -1394,7 +1394,7 @@ class C_dashboard extends Globalclass {
         $data['position'] = $this->General_model->fetchData("db_employees.position",array())->result();
         $data['religion'] = $this->General_model->fetchData("db_employees.religion",array())->result();
         $data['level_education'] = $this->General_model->fetchData("db_employees.level_education",array())->result();
-        $this->load->view('dashboard/myactivitiesteam',$data);        
+        $this->load->view('dashboard/activities/myactivitiesteam',$data);
     }
 
 
@@ -1578,7 +1578,7 @@ class C_dashboard extends Globalclass {
                 $data['attendance'] = $this->General_model->fetchData("db_employees.log_employees","NIP = ".$data_arr['NIP']." and DATE(AccessedOn) = DATE('".$data_arr['DATE']."')","AccessedOn","asc")->result();
                 $data['employee'] = $isExist;
                 $data['TotalActivity'] = $this->General_model->fetchData("db_employees.log_employees","NIP = ".$data_arr['NIP']." and DATE(AccessedOn) = DATE('".$data_arr['DATE']."')","AccessedOn","asc",null,"AccessedOn")->result();
-                $this->load->view('dashboard/detailActivities',$data);                
+                $this->load->view('dashboard/activities/detailActivities',$data);
             }else{echo "<h1>Employee not founded</h1>";}
         }else{show_404();}
     }

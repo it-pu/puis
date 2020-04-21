@@ -12,7 +12,7 @@
         <div class="tabbable tabbable-custom tabbable-full-width" style="margin-bottom:0px">
             <ul class="nav nav-tabs">
                 <li class="nav-my-act active">
-                    <a href="<?=base_url('my-activities')?>">My Activities</a>
+                    <a href="<?= base_url('my-activities'); ?>">My Activities</a>
                 </li>
                 <li class="nav-my-team">
                     <a>Activities Team</a>
@@ -64,8 +64,43 @@
         /*END ADDED BY FEBRI @ MARCH 2020*/
     });
 
+    function reconfirmAttd() {
+        if(confirm('Are you sure?')) {
+            loading_modal_show();
+
+            var dataURL = window.location.href;
+
+            var url = base_url_js+'api3/__crudLogging';
+
+            var data = {
+                action : 'insertLog',
+                dataForm : {
+                    NIP : sessionNIP,
+                    UserID : sessionNIP,
+                    IPPublic : '',
+                    URL : dataURL
+                }
+            };
+
+            var token = jwt_encode(data,'UAP)(*');
+
+            $.post(url,{token:token},function (result) {
+                getDataLog();
+                toastr.success('Data saved', 'Success');
+
+
+                setTimeout(function () {
+                    loading_modal_hide();
+                }, 1000);
+            });
+
+
+
+        }
+    }
+
     function getDataLog() {
-        $('#loadTable').html('<table class="table table-striped" id="tableDataLog">' +
+        $('#loadTable').html('<div style="margin-bottom: 20px;text-align: right;"><button onclick="reconfirmAttd();" class="btn btn-success">Reconfirm attendance</button> </div><table class="table table-striped" id="tableDataLog">' +
             '            <thead>' +
             '            <tr>' +
             '                <th style="width: 1%;">No</th>' +
