@@ -117,7 +117,7 @@ setlocale(LC_ALL, "en_US.UTF-8");
 				// IP public not set
 				define("URLAD","http://x.x.x.x:8076/", true);
 				define("url_files","https://"."files.uap.ac.id/", true);
-				define("url_DocxToPDf","http://10.1.10.31/apidocxtopdf/", true); // my local adhi
+				define("url_DocxToPDf","http://x.x.x.x/apidocxtopdf/", true); // my local adhi
 			}
 			else
 			{
@@ -125,7 +125,7 @@ setlocale(LC_ALL, "en_US.UTF-8");
 				// IP public not set
 				define("URLAD","http://x.x.x.x:8076/", true);
 				define("url_files","https://"."files.uap.ac.id/", true);
-				define("url_DocxToPDf","http://10.1.10.31/apidocxtopdf/", true); // my local adhi
+				define("url_DocxToPDf","http://x.x.x.x/apidocxtopdf/", true); // my local adhi
 			}
 		}
 		else
