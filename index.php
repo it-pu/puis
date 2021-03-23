@@ -143,6 +143,7 @@ setlocale(LC_ALL, "en_US.UTF-8");
 
 		// Library
 		define('_DB_HOST_LIBRARY', isset($_SERVER['_DB_HOST_LIBRARY']) ? $_SERVER['_DB_HOST_LIBRARY'] : '10.1.30.63');
+		define('_DB_PORT_LIBRARY', isset($_SERVER['_DB_PORT_LIBRARY']) ? $_SERVER['_DB_PORT_LIBRARY'] : '3306');
 
 	$ServerName = $_SERVER['SERVER_NAME'];
 	switch ($ServerName) {

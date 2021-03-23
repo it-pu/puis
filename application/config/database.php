@@ -180,6 +180,7 @@ switch ($ServerName) {
                 'username' => 'root',
                 'password' => '4dm1n5!S',
                 'database' => 'library',
+                'port' => _DB_PORT_LIBRARY,
                 'dbdriver' => 'mysqli',
                 'dbprefix' => '',
                 'pconnect' => FALSE,
