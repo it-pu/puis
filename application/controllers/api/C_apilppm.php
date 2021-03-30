@@ -193,7 +193,7 @@ class C_apilppm extends CI_Controller {
         $query=$this->db->query($sql, array())->result_array();
         $idindex = $query[0]['ID'];
 
-        $data = $this->db->query('SELECT c.*, l.language, ct.Label , ci.SegmentMenu , e.Name, p.Position
+        $data = $this->db->query('SELECT c.*, l.language, ct.Label , ci.SegmentMenu , e.Name, p.Position, e.photo
             FROM db_lppm.content c 
             LEFT JOIN db_lppm.content_type ct ON (ct.ID = c.IDindex)
             LEFT JOIN db_lppm.content_index ci ON (ci.ID = c.IDindex)

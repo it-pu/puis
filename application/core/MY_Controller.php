@@ -975,6 +975,20 @@ abstract class Prodi_Controler extends Globalclass{
 
 }
 
+abstract class Webdivisi_Controler extends Globalclass{
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('webdivisi/m_webdivisi');
+        if (!$this->session->userdata('prodi_get')) {
+          $this->m_webdivisi->auth();  
+        }
+        $this->m_menu2->set_model('prodi_sess','auth_prodi_sess','menu_prodi_sess','menu_prodi_grouping','db_prodi');
+    }
+
+}
+
 abstract class Ga_Controler extends Globalclass{
 
     public function __construct()
