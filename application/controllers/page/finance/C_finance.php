@@ -2678,17 +2678,19 @@ class C_finance extends Finnance_Controler {
                             }
                             else
                             {
-                                $dataSave = [
-                                    'ID_payment_students' => $ID_payment_students,
-                                    'UniqueGroupBy' => $UniqueGroupBy,
-                                    'Pay' => $left_pay_details,
-                                    'Pay_Date' =>  $data_token['Pay_Date'],
-                                    'Created_By' => $this->session->userdata('NIP'),
-                                    'Created_At' => date('Y-m-d H:i:s'),
-                                ];
-
-                                $this->db->insert('db_finance.payment_student_details',$dataSave);
-
+                                // skip insert if zero
+                                if ($left_pay_details <= 0) {
+                                   $dataSave = [
+                                       'ID_payment_students' => $ID_payment_students,
+                                       'UniqueGroupBy' => $UniqueGroupBy,
+                                       'Pay' => $left_pay_details,
+                                       'Pay_Date' =>  $data_token['Pay_Date'],
+                                       'Created_By' => $this->session->userdata('NIP'),
+                                       'Created_At' => date('Y-m-d H:i:s'),
+                                   ];
+                                   $this->db->insert('db_finance.payment_student_details',$dataSave);
+                                }
+                                
                                 $this->db->where('ID',$ID_payment_students);
                                 $this->db->update('db_finance.payment_students',['Status' => 1]);
 
