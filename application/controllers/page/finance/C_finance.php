@@ -2679,7 +2679,7 @@ class C_finance extends Finnance_Controler {
                             else
                             {
                                 // skip insert if zero
-                                if ($left_pay_details <= 0) {
+                                if ($left_pay_details > 0) {
                                    $dataSave = [
                                        'ID_payment_students' => $ID_payment_students,
                                        'UniqueGroupBy' => $UniqueGroupBy,
