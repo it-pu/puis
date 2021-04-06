@@ -2886,7 +2886,7 @@ a.`delete`,c.`read` as readMenu,c.`update` as updateMenu,c.`write` as writeMenu,
         $myNIP = $this->session->userdata('NIP');
         $result = array();
         $condition = array("IDDivision"=>$IDDivision);
-        $this->db->select("a.ID, a.Type, a.IDDivision, b.ID as KBID, b.Desc, b.File");
+        $this->db->select("a.ID, a.Type, a.IDDivision, b.ID as KBID, b.Desc, b.File,b.Status");
         $this->db->from("db_employees.kb_type a");
         $this->db->join("db_employees.knowledge_base b","b.IDType = a.ID","left");
         $this->db->where($condition);
@@ -4657,6 +4657,10 @@ a.`delete`,c.`read` as readMenu,c.`update` as updateMenu,c.`write` as writeMenu,
             $random .= chr(rand(ord('a'), ord('z')));
         }
         return $random;
+    }
+
+    public function kb_action_log($dataSave){
+        $this->db->insert('db_employees.knowledge_base_log',$dataSave);
     }
 
 

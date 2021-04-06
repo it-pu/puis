@@ -5450,6 +5450,8 @@ class C_api3 extends CI_Controller {
 
     }
 
+    
+
     public function crudkb(){
 
         $data_arr = $this->getInputToken2();
@@ -5460,38 +5462,22 @@ class C_api3 extends CI_Controller {
 
             $ID = ($data_arr['ID']!='') ? $data_arr['ID'] : '';
 
-            if($ID!=''){
-                $dataForm['UpdatedBy'] = $this->session->userdata('NIP');
-                $dataForm['UpdatedAt'] = $this->m_rest->getDateTimeNow();
-                // add bukti upload,buktiname dan tingkat
-                $BuktiUpload = json_encode('');
-                if (array_key_exists('upload_kb', $_FILES)) {
-                    $Upload = $this->m_master->uploadDokumenMultiple(uniqid(),'upload_kb',$path = './uploads/kb/');
-                    $Upload = json_encode($Upload);
-                    $BuktiUpload = $Upload;
-                }
+           $dataForm['EntredBy'] = $this->session->userdata('NIP');
+           // add bukti upload,buktiname dan tingkat
+           $BuktiUpload = json_encode('');
+           if (array_key_exists('upload_kb', $_FILES)) {
+               $Upload = $this->m_master->uploadDokumenMultiple(uniqid(),'upload_kb',$path = './uploads/kb/');
+               $Upload = json_encode($Upload);
+               $BuktiUpload = $Upload;
+           }
 
-                $dataForm['File'] = $BuktiUpload;
-                $this->db->where('ID',$ID);
-                $this->db->update('db_employees.knowledge_base',$dataForm);
-            } else {
-                $dataForm['EntredBy'] = $this->session->userdata('NIP');
-                // add bukti upload,buktiname dan tingkat
-                $BuktiUpload = json_encode('');
-                if (array_key_exists('upload_kb', $_FILES)) {
-                    $Upload = $this->m_master->uploadDokumenMultiple(uniqid(),'upload_kb',$path = './uploads/kb/');
-                    $Upload = json_encode($Upload);
-                    $BuktiUpload = $Upload;
-                }
+           $dataForm['File'] = $BuktiUpload;
+           $this->db->insert('db_employees.knowledge_base',$dataForm);
+           $ID = $this->db->insert_Id();
 
-                $dataForm['File'] = $BuktiUpload;
-                $this->db->insert('db_employees.knowledge_base',$dataForm);
-                $ID = $this->db->insert_Id();
-            }
+           return print_r(json_encode(array('ID' => $ID )));
 
-            return print_r(json_encode(array('ID' => $ID )));
-
-            print_r(updatenewKB);
+           // print_r(updatenewKB);
         }
         else if($data_arr['action']=='viewListKB_2'){
             // $IDDivision = $this->session->userdata('PositionMain')['IDDivision'];
@@ -5536,7 +5522,6 @@ class C_api3 extends CI_Controller {
         else if($data_arr['action']=='removeDataKB') {
             $ID = $data_arr['ID'];
 
-
             // remove file is exist
             $G_data = $this->m_master->caribasedprimary('db_employees.knowledge_base','ID',$ID);
             // print_r($G_data);die();
@@ -5561,6 +5546,22 @@ class C_api3 extends CI_Controller {
                     
                 }
             }
+
+            $get_data =  $this->db->where('ID',$ID)->get('db_employees.knowledge_base')->row();
+
+            // save log
+            $dataSaveLog = [
+             'ID_knowledge_base' => $ID,
+             'Action' => 'Delete', // just insert not update
+             'IDType' => $get_data->IDType,
+             'Desc' => $get_data->Desc,
+             'File' => $get_data->File,
+             'Status' => $get_data->Status,
+             'ActionBy' => $this->session->userdata('NIP'),
+             'ActionAt' => date('Y-m-d H:i:s'),
+            ];
+
+            $this->m_master->kb_action_log($dataSaveLog);
 
             $this->db->where('ID', $ID);
             $this->db->delete('db_employees.knowledge_base');
