@@ -1179,6 +1179,22 @@ class C_dashboard extends Globalclass {
                                 );
                 $success['success']['formGrade'] = 0;
 
+                $get_data =  $this->db->where('ID',$ID)->get('db_employees.knowledge_base')->row();
+
+                // save log
+                $dataSaveLog = [
+                 'ID_knowledge_base' => $ID,
+                 'Action' => 'Insert', // just insert not update
+                 'IDType' => $get_data->IDType,
+                 'Desc' => $get_data->Desc,
+                 'File' => $fileName,
+                 'Status' => $get_data->Status,
+                 'ActionBy' => $this->session->userdata('NIP'),
+                 'ActionAt' => date('Y-m-d H:i:s'),
+                ];
+
+                $this->m_master->kb_action_log($dataSaveLog);
+
                 return print_r(json_encode($success));
 
             }
