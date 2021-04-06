@@ -12,10 +12,10 @@
           <?php foreach ($value as $v) {?>
           <li class="list-group-item" data-contentid="<?=$v->KBID?>" data-type="knowledge_base">
             <a href="javascript:void(0)" data-toggle="collapse" data-target="#KBC-<?=$v->KBID?>">
-                <b><?=$v->Desc?></b>
+                <b><?=$v->Desc?> (<span style="color: orange;"><?php echo $v->Status ?></span>) </b>
                 <span class="pull-right viewers">
                 <?php if(!empty($v->CountRead->Total)){ ?>
-                <span class="text-success"><i class="fa fa-check-square"></i> has bean read <span class="total-read"><?=$v->CountRead->Total?></span> times</span>
+                <span class="text-success"><i class="fa fa-check-square"></i> has been read <span class="total-read"><?=$v->CountRead->Total?></span> times</span>
                 <?php } ?>
                 </span>
             </a>
