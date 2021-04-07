@@ -18,12 +18,12 @@ class C_dashboard extends Globalclass {
             'columns' => [
                 '0' => ['name' => 'ActionBy', 'width' => '200px', 'title' => "Action By", 'filter' => ['type' => 'dropdown', 'options' => $this->m_master->dropdownEMP() ]   ],
                 '1' => ['name' => 'ActionAt', 'title' => 'Action At', 'width' => '200px', 'class' => 'default-sort', 'sort' => 'desc', 'filter' => false ],
-                '2' => ['name' => 'Action', 'title' => 'Action', 'filter' => ['type' => 'text'] ],
+                '2' => ['name' => 'Action', 'width' => '100px','title' => 'Action', 'filter' => ['type' => 'dropdown', 'options' => $this->kb_action() ] ],
                 '3' => ['name' => 'Type', 'title' => 'Type', 'filter' => ['type' => 'text'] ],
-                '4' => ['name' => 'IDDepartment','width' => '150px', 'title' => 'Division', 'filter' => ['type' => 'dropdown', 'options' => $this->m_master->dropdownDiv() ] ],
+                '4' => ['name' => 'IDDepartment', 'title' => 'Division', 'filter' => ['type' => 'dropdown', 'options' => $this->m_master->dropdownDiv() ] ],
                 '5' => ['name' => '`Desc`', 'title' => 'Desc', 'filter' => ['type' => 'text'] ],
-                '6' => ['name' => 'File', 'title' => 'File', 'filter' => false ],
-                '7' => ['name' => 'Status','width' => '150px', 'title' => 'Status', 'filter' => ['type' => 'dropdown', 'options' => $this->kb_dropdownStatus() ] ],
+                '6' => ['name' => 'File','width' => '200px','title' => 'File', 'filter' => ['type' => 'text'] ],
+                '7' => ['name' => 'Status','width' => '100px', 'title' => 'Status', 'filter' => ['type' => 'dropdown', 'options' => $this->kb_dropdownStatus() ] ],
             ],
         ];
     }
@@ -1135,7 +1135,7 @@ class C_dashboard extends Globalclass {
                     $data->Type,
                     $data->DepartmentCode,
                      $data->Desc,
-                    '<a href = "'.base_url().'fileGetAny/kb-'.$data->File.'" target="_blank" >'.base_url().'fileGetAny/kb-'.$data->File.'</a>' ,
+                    '<a href = "'.base_url().'fileGetAny/kb-'.$data->File.'" target="_blank" ><textarea class = "form-control" disabled>'.base_url().'fileGetAny/kb-'.$data->File.'</textarea></a>' ,
                     $data->Status,
                 );
             }
@@ -1152,6 +1152,15 @@ class C_dashboard extends Globalclass {
                     '%' => 'All',
                     'Private' => 'Private',
                     'Public' => 'Public',
+                   ];
+        return $options;
+    }
+
+    private function kb_action(){
+        $options = [
+                    '%' => 'All',
+                    'Insert' => 'Insert',
+                    'Delete' => 'Delete',
                    ];
         return $options;
     }
