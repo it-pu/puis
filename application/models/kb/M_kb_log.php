@@ -28,6 +28,25 @@ class M_kb_log extends CI_Model {
 	    return $this->db->get('( '.$this->sqlFrom .' ) as summary');
 	}
 
+	private function get_value_search_file($urlSearch){
+		$search = '';
+		$pathReplace =  '/puis/fileGetAny/kb-'; // localhost
+		$pathReplace2 =  '/fileGetAny/kb-'; // domain
+	    $url_components = parse_url($urlSearch); 
+	    if (!array_key_exists('host', $url_components)) {
+	    	return $search;
+	    }
+	    else
+	    {
+	    	$path = $url_components['path'];
+	    	$search =  str_replace($pathReplace, '', $path);
+	    	$search =  str_replace($pathReplace2, '', $search);
+	    	return $search;
+	    }
+
+	    return '';
+	}
+
 	private function filtered($filter = array()){
 	    if ($filter) {
 	        $this->db->group_start();
@@ -37,6 +56,11 @@ class M_kb_log extends CI_Model {
 	        		if ($value  == '%') {
 	        			$value = '';
 	        		}
+
+	        		if ($column == 6) {
+	        			$value =  $this->get_value_search_file($value);	
+	        		}
+
 	        		$this->db->like('IFNULL(' . $this->columns[$column]['name'] . ',"")', $value);
 	        	}
 	            
