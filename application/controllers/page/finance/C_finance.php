@@ -2664,16 +2664,19 @@ class C_finance extends Finnance_Controler {
                             $left_pay_details = $Invoice_cicilan - $have_pay_details;
 
                             if ($left_pay_details > $pay_loop) {
-                                $dataSave = [
-                                    'ID_payment_students' => $ID_payment_students,
-                                    'UniqueGroupBy' => $UniqueGroupBy,
-                                    'Pay' => $pay_loop,
-                                    'Pay_Date' =>  $data_token['Pay_Date'],
-                                    'Created_By' => $this->session->userdata('NIP'),
-                                    'Created_At' => date('Y-m-d H:i:s'),
-                                ];
+                                if ($pay_loop > 0) {
+                                    $dataSave = [
+                                        'ID_payment_students' => $ID_payment_students,
+                                        'UniqueGroupBy' => $UniqueGroupBy,
+                                        'Pay' => $pay_loop,
+                                        'Pay_Date' =>  $data_token['Pay_Date'],
+                                        'Created_By' => $this->session->userdata('NIP'),
+                                        'Created_At' => date('Y-m-d H:i:s'),
+                                    ];
 
-                                $this->db->insert('db_finance.payment_student_details',$dataSave);
+                                    $this->db->insert('db_finance.payment_student_details',$dataSave);
+                                }
+                                
                                 break;
                             }
                             else
