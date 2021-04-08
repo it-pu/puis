@@ -2631,7 +2631,7 @@ class C_finance extends Finnance_Controler {
         $this->form_validation->set_data($data_token);
 
         $this->form_validation->set_rules('paymentid', 'Pilihan payment', 'trim|required');
-        $this->form_validation->set_rules('Pay', 'Nominal', 'trim|required|greater_than_equal_to[10000]');
+        $this->form_validation->set_rules('Pay', 'Nominal', 'trim|required|greater_than_equal_to[1]');
         $this->form_validation->set_rules('Pay_Date', 'Tanggal Bayar', 'trim|required');
 
         if ($this->form_validation->run() === true) {
