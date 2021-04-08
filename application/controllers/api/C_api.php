@@ -4443,7 +4443,7 @@ class C_api extends CI_Controller
                     $nestedData = array();
                     $row = $query[$i];
 
-                    $btnAction = '<button class="btn btn-sm btn-circle btn-danger btndelotherfile" data-toggle="tooltip" data-placement="top" title="Delete File" Idotherfile="' . $row['ID'] . '" typedata="university"><i class="fa fa-trash"></i></button> ';
+                    $btnAction = '<button class="btn btn-sm btn-circle btn-danger btndelotherfile" data-toggle="tooltip" data-placement="top" title="Delete File" Idotherfile="' . $row['ID'] . '" typedata="university" disabled ><i class="fa fa-trash"></i></button> ';
 
                     $nestedData[] = '<div style="text-align:center; color: #000000;">' . $no . '</div>';
                     $nestedData[] = '<div style="text-align:left; color: #000000;">' . $row['Name_University'] . '</div>';
@@ -4485,7 +4485,7 @@ class C_api extends CI_Controller
                     $nestedData = array();
                     $row = $query[$i];
 
-                    $btnAction = '<button class="btn btn-sm btn-circle btn-danger btndelotherfile" data-toggle="tooltip" data-placement="top" title="Delete File" Idotherfile="' . $row['ID'] . '" typedata="major"><i class="fa fa-trash"></i></button>';
+                    $btnAction = '<button class="btn btn-sm btn-circle btn-danger btndelotherfile" data-toggle="tooltip" data-placement="top" title="Delete File" Idotherfile="' . $row['ID'] . '" typedata="major" disabled><i class="fa fa-trash"></i></button>';
 
                     $nestedData[] = '<div style="text-align:center; color: #000000;">' . $no . '</div>';
                     $nestedData[] = '<div style="text-align:left; color: #000000;">' . $row['Name_MajorProgramstudy'] . '</div>';
@@ -4527,7 +4527,7 @@ class C_api extends CI_Controller
                     if ($row['ID'] == "13") {
                         $btnAction = '<button class="btn btn-sm btn-circle btn-danger" data-toggle="tooltip" data-placement="top" title="Delete File" disabled><i class="fa fa-trash"></i></button> ';
                     } else {
-                        $btnAction = '<button class="btn btn-sm btn-circle btn-danger btndelotherfile" data-toggle="tooltip" data-placement="top" title="Delete File" Idotherfile="' . $row['ID'] . '" TypeFiles="' . $row['ID'] . '" typedata="otherfile"><i class="fa fa-trash"></i></button> ';
+                        $btnAction = '<button class="btn btn-sm btn-circle btn-danger btndelotherfile" data-toggle="tooltip" data-placement="top" title="Delete File" Idotherfile="' . $row['ID'] . '" TypeFiles="' . $row['ID'] . '" typedata="otherfile" disabled><i class="fa fa-trash"></i></button> ';
                     }
 
                     $nestedData[] = '<div style="text-align:center; color: #000000;">' . $no . '</div>';
