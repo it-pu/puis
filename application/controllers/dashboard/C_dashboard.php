@@ -1263,6 +1263,24 @@ class C_dashboard extends Globalclass {
 
     }
 
+    public function kb_change_public_private(){
+        $arr = ['status' => 0,'callback'=> ''];
+        $datatoken =  $this->getInputToken();
+        $data =  $this->db->where('ID',$datatoken['KBID'])->get('db_employees.knowledge_base')->row();
+
+        if ($data) {
+           $dataSave = [
+                'Status' => ($data->Status == 'Private') ? 'Public' : 'Private',
+           ];
+
+           $this->db->where('ID',$datatoken['KBID']);
+           $this->db->update('db_employees.knowledge_base',$dataSave); 
+
+           $arr = ['status' => 1,'callback'=> ($data->Status == 'Private') ? 'Public' : 'Private'];  
+        }
+
+        echo json_encode($arr);  
+    }
     
 
     public function ShowLoggingNotification()

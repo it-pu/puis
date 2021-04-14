@@ -10,9 +10,12 @@
       <div id="kb-<?=$num?>" class="collapse detailKB">
         <ul class="list-group">
           <?php foreach ($value as $v) {?>
+
+            <?php $btnChangeStatus = ($v->Status == 'Private') ? '<button class = "btn btn-sm btn-warning btnChangeStatus" data-id = "'.$v->KBID.'">Change to Public</button>' : '<button class = "btn btn-sm btn-warning btnChangeStatus" data-id = "'.$v->KBID.'">Change to Private</button>'; ?>
+
           <li class="list-group-item" data-contentid="<?=$v->KBID?>" data-type="knowledge_base">
             <a href="javascript:void(0)" data-toggle="collapse" data-target="#KBC-<?=$v->KBID?>">
-                <b><?=$v->Desc?> (<span style="color: orange;"><?php echo $v->Status ?></span>) </b>
+                <b><?=$v->Desc?> (<span class = "lblStatus" style="color: orange;"><?php echo $v->Status ?></span>) </b>
                 <span class="pull-right viewers">
                 <?php if(!empty($v->CountRead->Total)){ ?>
                 <span class="text-success"><i class="fa fa-check-square"></i> has been read <span class="total-read"><?=$v->CountRead->Total?></span> times</span>
@@ -29,7 +32,14 @@
                       if ($this->session->userdata('IDdepartementNavigation')== 12) // IT
                       { ?>
                         <br/>
-                        <br><a href="javascript:void(0);" class="btnActRemove" data-id="<?=$v->KBID?>" data-no="'+i+'">Remove</a>
+                        <br/>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="btn-group">
+                              <a href="javascript:void(0);" class=" btn btn-sm btn-danger btnActRemove" data-id="<?=$v->KBID?>" data-no="'+i+'">Remove</a> &nbsp <?php echo $btnChangeStatus ?>
+                            </div>
+                          </div>
+                        </div>
                 <?php }
                       else
                       {
@@ -39,7 +49,14 @@
                           if ('NA.'.$this->session->userdata('IDdepartementNavigation') == $this->session->userdata('kb_div'))
                           { ?>
                             <br/>
-                            <br><a href="javascript:void(0);" class="btnActRemove" data-id="<?=$v->KBID?>" data-no="'+i+'">Remove</a>
+                            <br/>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="btn-group">
+                                  <a href="javascript:void(0);" class=" btn btn-sm btn-danger btnActRemove" data-id="<?=$v->KBID?>" data-no="'+i+'">Remove</a> &nbsp <?php echo $btnChangeStatus ?>
+                                </div>
+                              </div>
+                            </div>
 
                    <?php  }
 
@@ -52,7 +69,14 @@
                             if ('AC.'.$this->session->userdata('prodi_active_id') == $this->session->userdata('kb_div') )
                             { ?>
                                 <br/>
-                                <br><a href="javascript:void(0);" class="btnActRemove" data-id="<?=$v->KBID?>" data-no="'+i+'">Remove</a>
+                                <br/>
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="btn-group">
+                                      <a href="javascript:void(0);" class=" btn btn-sm btn-danger btnActRemove" data-id="<?=$v->KBID?>" data-no="'+i+'">Remove</a> &nbsp <?php echo $btnChangeStatus ?>
+                                    </div>
+                                  </div>
+                                </div>
 
                       <?php }
                           }
@@ -62,7 +86,14 @@
                             if ('FT.'.$this->session->userdata('faculty_active_id') == $this->session->userdata('kb_div') )
                             { ?>
                                 <br/>
-                                <br><a href="javascript:void(0);" class="btnActRemove" data-id="<?=$v->KBID?>" data-no="'+i+'">Remove</a><br>
+                                <br/>
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="btn-group">
+                                      <a href="javascript:void(0);" class=" btn btn-sm btn-danger btnActRemove" data-id="<?=$v->KBID?>" data-no="'+i+'">Remove</a> &nbsp <?php echo $btnChangeStatus ?>
+                                    </div>
+                                  </div>
+                                </div>
 
                       <?php }
 
