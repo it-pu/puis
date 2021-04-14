@@ -123,6 +123,19 @@ class C_global extends CI_Controller {
                     // }
                     // exit;
                 $this->showFile2($file);
+                // $url="https://files.podomorouniversity.ac.id/fileGetAny/kb-1592538702_1016029.pdf";
+                // $fileNAME = $this->session->userdata('NPM').'.'.$ext;
+                // $this->m_master->downloadByURL($url,$fileNAME);
+                // $temp = FCPATH."uploads\\temp\\".$fileNAME;
+                // header("Content-type:application/pdf");
+
+                // // It will be called downloaded.pdf
+                // header("Content-Disposition:inline;filename=".$file);
+                // header('Expires: 0');
+                // header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+
+                // // The PDF source is in original.pdf
+                // readfile($temp);
             }
             else
             {

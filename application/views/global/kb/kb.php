@@ -516,4 +516,45 @@ $('#saveFormKB').click(function () {
 
     }
   });
+
+  const change_public_private = async(selector,KBID) => {
+    if(confirm('Are you sure ?')){
+        const url = base_url_js + 'dashboard/c_dashboard/kb_change_public_private';
+        const dataPost= {
+          KBID :KBID
+        }
+
+        const data_token = jwt_encode(dataPost,'UAP)(*');
+        const btn_html = selector.html();
+        loading_button2(selector);
+
+        try{
+            const pr = await AjaxSubmitFormPromises(url,data_token);
+
+            if (pr['status'] == 1 || pr['status'] == '1') {
+              toastr.success('Success');
+
+              selector.closest('.list-group-item').find('.lblStatus').html(pr['callback']);
+              let c = (pr['callback'] == 'Private') ? 'Public' : 'Private';
+              end_loading_button2(selector,'Change to '+c);
+            }
+            else
+            {
+              toastr.info('Failed');
+              end_loading_button2(selector,btn_html);
+            }
+        }
+        catch(err){
+          toastr.error('Something wrong','error');
+          end_loading_button2(selector,btn_html);
+          console.log(err);
+        }
+    } 
+  }
+
+  $(document).on('click','.btnChangeStatus',function(e){
+    const itsme =  $(this);
+    const KBID = itsme.attr('data-id');
+    change_public_private(itsme,KBID);
+  })
 </script>
