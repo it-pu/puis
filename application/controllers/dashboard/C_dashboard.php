@@ -1276,6 +1276,21 @@ class C_dashboard extends Globalclass {
            $this->db->where('ID',$datatoken['KBID']);
            $this->db->update('db_employees.knowledge_base',$dataSave); 
 
+           $dataNew =  $this->db->where('ID',$datatoken['KBID'])->get('db_employees.knowledge_base')->row();
+           // save log
+           $dataSaveLog = [
+            'ID_knowledge_base' => $datatoken['KBID'],
+            'Action' => 'Edit', // just insert not update
+            'IDType' => $dataNew->IDType,
+            'Desc' => $dataNew->Desc,
+            'File' => $dataNew->File,
+            'Status' => $dataNew->Status,
+            'ActionBy' => $this->session->userdata('NIP'),
+            'ActionAt' => date('Y-m-d H:i:s'),
+           ];
+
+           $this->m_master->kb_action_log($dataSaveLog);
+
            $arr = ['status' => 1,'callback'=> ($data->Status == 'Private') ? 'Public' : 'Private'];  
         }
 
