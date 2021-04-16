@@ -838,44 +838,44 @@ class C_save_to_pdf extends CI_Controller {
 
             }
         }
-
-        $pdf->Ln(9);
-        $h = 4.5;
-        $w_ttd = 50;
-        $pdf->SetFillColor(224, 224, 224);
-        $pdf->SetFont('Times','',7);
-//        $pdf->Cell(287,$h,'Semester '.$data_arr['Semester'],1,1,'C');
-        $pdf->Cell($w_ttd,$h,'Reported by',1,0,'C',true);
-        $pdf->Cell($w_ttd,$h,'Acknowledge by',1,0,'C',true);
-        $pdf->Cell($w_ttd,$h,'Acknowledge by',1,1,'C',true);
-
-        $pdf->Cell($w_ttd,$h,'Date : ',1,0,'L');
-        $pdf->Cell($w_ttd,$h,'Date : ',1,0,'L');
-        $pdf->Cell($w_ttd,$h,'Date : ',1,1,'L');
-        $h = 19;
-        $pdf->Cell($w_ttd,$h,'',1,0,'L');
-        $pdf->Cell($w_ttd,$h,'',1,0,'L');
-        $pdf->Cell($w_ttd,$h,'',1,1,'L');
-
-        $h = 4.5;
-        $pdf->SetFont('Times','B',7);
-        $pdf->Cell($w_ttd,$h,'',1,0,'C');
-        // Get Kabag Akademik id 6.11
-        $dataKabagAkademik = $this->m_save_to_pdf->getEmployeesByPositionMain('6.11');
-        $kabag = (count($dataKabagAkademik)>0) ? $dataKabagAkademik[0]['Name'] : '' ;
-        $pdf->Cell($w_ttd,$h,$kabag,1,0,'C');
-
-        // $dataRektorat1 = $this->m_save_to_pdf->getEmployeesByPositionMain('2.2');
-        // $Rektorat1 = (count($dataRektorat1)>0) ? $dataRektorat1[0]['Name'] : '' ;
-        $warek1 = $datawarek1[0]['TitleAhead'].' '.$datawarek1[0]['Name'].' '.$datawarek1[0]['TitleBehind'];
-        //$pdf->Cell($fillFull,$h,$warek1,$border,1,'L');
-        $pdf->Cell($w_ttd,$h,$warek1,1,1,'C');
-
-        $pdf->SetFont('Times','',7);
-        $pdf->Cell($w_ttd,$h,'Staff SAS',1,0,'C');
-        $pdf->Cell($w_ttd,$h,'Kabag. Administrasi Perkuliahan',1,0,'C');
-        $pdf->Cell($w_ttd,$h,'Wakil Rektor I Bidang Akademik',1,1,'C');
-
+// req victor_HRD, minta dihapus 16-04-2021 - m
+//         $pdf->Ln(9);
+//         $h = 4.5;
+//         $w_ttd = 50;
+//         $pdf->SetFillColor(224, 224, 224);
+//         $pdf->SetFont('Times','',7);
+// //        $pdf->Cell(287,$h,'Semester '.$data_arr['Semester'],1,1,'C');
+//         $pdf->Cell($w_ttd,$h,'Reported by',1,0,'C',true);
+//         $pdf->Cell($w_ttd,$h,'Acknowledge by',1,0,'C',true);
+//         $pdf->Cell($w_ttd,$h,'Acknowledge by',1,1,'C',true);
+//
+//         $pdf->Cell($w_ttd,$h,'Date : ',1,0,'L');
+//         $pdf->Cell($w_ttd,$h,'Date : ',1,0,'L');
+//         $pdf->Cell($w_ttd,$h,'Date : ',1,1,'L');
+//         $h = 19;
+//         $pdf->Cell($w_ttd,$h,'',1,0,'L');
+//         $pdf->Cell($w_ttd,$h,'',1,0,'L');
+//         $pdf->Cell($w_ttd,$h,'',1,1,'L');
+//
+//         $h = 4.5;
+//         $pdf->SetFont('Times','B',7);
+//         $pdf->Cell($w_ttd,$h,'',1,0,'C');
+//         // Get Kabag Akademik id 6.11
+//         $dataKabagAkademik = $this->m_save_to_pdf->getEmployeesByPositionMain('6.11');
+//         $kabag = (count($dataKabagAkademik)>0) ? $dataKabagAkademik[0]['Name'] : '' ;
+//         $pdf->Cell($w_ttd,$h,$kabag,1,0,'C');
+//
+//         // $dataRektorat1 = $this->m_save_to_pdf->getEmployeesByPositionMain('2.2');
+//         // $Rektorat1 = (count($dataRektorat1)>0) ? $dataRektorat1[0]['Name'] : '' ;
+//         $warek1 = $datawarek1[0]['TitleAhead'].' '.$datawarek1[0]['Name'].' '.$datawarek1[0]['TitleBehind'];
+//         //$pdf->Cell($fillFull,$h,$warek1,$border,1,'L');
+//         $pdf->Cell($w_ttd,$h,$warek1,1,1,'C');
+//
+//         $pdf->SetFont('Times','',7);
+//         $pdf->Cell($w_ttd,$h,'Staff SAS',1,0,'C');
+//         $pdf->Cell($w_ttd,$h,'Kabag. Administrasi Perkuliahan',1,0,'C');
+//         $pdf->Cell($w_ttd,$h,'Wakil Rektor I Bidang Akademik',1,1,'C');
+//
 
         $pdf->Ln(5);
         $pdf->SetFont('Times','B',10);
@@ -6652,7 +6652,7 @@ Phone: (021) 29200456';
 
         $pdf->Image('./images/cap.png',130,$y+1,40);
         if($Signature!=''){
-            $pdf->Image('./uploads/signature/'.$Signature,130,$y+4,40);    
+            $pdf->Image('./uploads/signature/'.$Signature,130,$y+4,40);
         }
 
 
