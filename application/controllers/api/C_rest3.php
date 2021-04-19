@@ -2119,40 +2119,34 @@ class C_rest3 extends CI_Controller {
                         break;
                     }
                     else {
-                        //$server = "ldap://10.1.30.2";
-                        $server = "ldap://202.158.17.147";
-                        $ds=ldap_connect($server);
-                        $dn = 'OU=Ldap,DC=pu,DC=local';
-                        $userBind = 'alhadi.rahman'.'@pu.local';
-                        $filter="(|(sAMAccountName=$NPM))";
-                        $pwdBind = 'IT@podomoro6737ht';
-                         if ($bind = ldap_bind($ds, $userBind , $pwdBind)) {
-                             $sr = ldap_search($ds, $dn, $filter);
-                             $ent= ldap_get_entries($ds,$sr);
-                            //  $cn = $ent[0]['cn'][0];
-                             $cn = 'test ad1';
-                             if ($ent["count"] == 1) {
-                               // api delete
-                               // dsrm -noprompt CN="test ad",OU=Ldap,DC=pu,DC=local
-                                $script = 'dsrm -noprompt CN="'.$cn.'",OU=Ldap,DC=pu,DC=local';
-                                $data = array(
-                                    'auth' => 's3Cr3T-G4N',
-                                    'Type' => 'Student',
-                                    'script' => $script,
-                                );
-                                
-                                if($_SERVER['SERVER_NAME']=='pcam.podomorouniversity.ac.id') { // AD jalannya hanya di live
-                                    $url = URLAD.'__api/Delete';
-                                    $token = $this->jwt->encode($data,"UAP)(*");
-                                    $this->m_master->apiservertoserver_NotWaitResponse($url,$token);
-                                    $MSG .= '<br/>AD Proses Delete : Finish';
-                                }
 
-                             }
-                             else {
-                                $MSG .= '<br/>AD Data : Tidak Ada';
-                             }
-                         }
+                      $urlADCheckExist = URLAD.'__api/check-student/'.$NPM;
+                      $get_ad = $this->m_master->apiservertoserver_NotWaitResponse($urlADCheckExist);
+                      if ($get_ad['status'] == 1 || $get_ad['status'] == '1') {
+                          // api delete
+                          // dsrm -noprompt CN="test ad",OU=Ldap,DC=pu,DC=local
+                          $cn = $get_ad['callback'];
+                           $script = 'dsrm -noprompt CN="'.$cn.'",OU=Ldap,DC=pu,DC=local';
+                           $data = array(
+                               'auth' => 's3Cr3T-G4N',
+                               'Type' => 'Student',
+                               'script' => $script,
+                           );
+                           
+                           if($_SERVER['SERVER_NAME']=='pcam.podomorouniversity.ac.id') { // AD jalannya hanya di live
+                               $url = URLAD.'__api/Delete';
+                               $token = $this->jwt->encode($data,"UAP)(*");
+                               $this->m_master->apiservertoserver_NotWaitResponse($url,$token);
+                               $MSG .= '<br/>AD Proses Delete : Finish';
+                           }
+
+                          // $MSG .= '<br/>AD Proses Delete : Skip - Manually (Temporary)';
+
+                      }
+                      else
+                      {
+                        $MSG .= '<br/>AD Data : Tidak Ada';
+                      }
 
                          // Remove file di folder upload/document/{NPM}
                          $path = FCPATH.'uploads/document/'.$NPM;
