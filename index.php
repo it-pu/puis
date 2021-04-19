@@ -115,7 +115,7 @@ setlocale(LC_ALL, "en_US.UTF-8");
 			if (_HOST_ID == 'DEMO') {
 				define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.59');
 				// IP public not set
-				define("URLAD","http://x.x.x.x:8076/", true);
+				define("URLAD","http://202.158.17.147:8076/", true);
 				define("url_files","https://"."files.uap.ac.id/", true);
 				define("url_DocxToPDf","http://x.x.x.x/apidocxtopdf/", true); // my local adhi
 			}
@@ -123,7 +123,7 @@ setlocale(LC_ALL, "en_US.UTF-8");
 			{
 				define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.18');
 				// IP public not set
-				define("URLAD","http://x.x.x.x:8076/", true);
+				define("URLAD","http://202.158.17.147:8076/", true);
 				define("url_files","https://"."files.uap.ac.id/", true);
 				define("url_DocxToPDf","http://x.x.x.x/apidocxtopdf/", true); // my local adhi
 			}
