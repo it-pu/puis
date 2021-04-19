@@ -105,13 +105,6 @@ setlocale(LC_ALL, "en_US.UTF-8");
 	]);
 	/* End Function https */
 
-	// define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
-	$ServerName = $_SERVER['SERVER_NAME'];
-	define("URLAD","http://10.1.30.2:8076/", true);
-	define("url_files","https://"."files.podomorouniversity.ac.id/", true);
-	define("url_DocxToPDf","http://10.1.10.31/apidocxtopdf/", true); // my local adhi
-	// define("url_DocxToPDf","http://10.1.30.33/docxtopdf/", true);
-
 	/*
 		Set Environtment if not exist, ref by docker instalation
 		Alhadi Rahman 2021 - 01 - 25
@@ -121,23 +114,38 @@ setlocale(LC_ALL, "en_US.UTF-8");
 		if (isset($_SERVER['_HOST_ID'])) {
 			if (_HOST_ID == 'DEMO') {
 				define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.59');
+				// IP public not set
+				define("URLAD","http://x.x.x.x:8076/", true);
+				define("url_files","https://"."files.uap.ac.id/", true);
+				define("url_DocxToPDf","http://x.x.x.x/apidocxtopdf/", true); // my local adhi
 			}
 			else
 			{
 				define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.18');
+				// IP public not set
+				define("URLAD","http://x.x.x.x:8076/", true);
+				define("url_files","https://"."files.uap.ac.id/", true);
+				define("url_DocxToPDf","http://x.x.x.x/apidocxtopdf/", true); // my local adhi
 			}
 		}
 		else
 		{
 			define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.18');
+			define("URLAD","http://10.1.30.2:8076/", true);
+			define("url_files","https://"."files.podomorouniversity.ac.id/", true);
+			define("url_DocxToPDf","http://10.1.10.31/apidocxtopdf/", true); // my local adhi
 		}
-		
 
 		define('_DB_USER', isset($_SERVER['_DB_USER']) ? $_SERVER['_DB_USER'] : 'db_itpu');
 		define('_DB_PASSWORD', isset($_SERVER['_DB_PASSWORD']) ? $_SERVER['_DB_PASSWORD'] : 'Uap)(*&^%');
 		define('_DB_NAME', isset($_SERVER['_DB_NAME']) ? $_SERVER['_DB_NAME'] : 'db_academic');
 		define('_DB_PORT', isset($_SERVER['_DB_PORT']) ? $_SERVER['_DB_PORT'] : '3306');
-	
+
+		// Library
+		define('_DB_HOST_LIBRARY', isset($_SERVER['_DB_HOST_LIBRARY']) ? $_SERVER['_DB_HOST_LIBRARY'] : '10.1.30.63');
+		define('_DB_PORT_LIBRARY', isset($_SERVER['_DB_PORT_LIBRARY']) ? $_SERVER['_DB_PORT_LIBRARY'] : '3306');
+
+	$ServerName = $_SERVER['SERVER_NAME'];
 	switch ($ServerName) {
 		case 'pcam.podomorouniversity.ac.id':
 		    define("url_registration",$HostPath."admission.podomorouniversity.ac.id/", true);
@@ -153,6 +161,33 @@ setlocale(LC_ALL, "en_US.UTF-8");
     //
             define("url_sign_in_lecturers",$HostPath."lecturerpu.podomorouniversity.ac.id/", true);
             define("url_sign_in_students",$HostPath."studentpu.podomorouniversity.ac.id/", true);
+            define("url_library","http://library.podomorouniversity.ac.id/", true);
+            define("url_blogadmin",$HostPath."adminblogs.podomorouniversity.ac.id/", true);
+            
+            if (isset($_SERVER['_DB_HOST'])) {
+            	define("path_register_online","/home/docker1/admission/", true);
+            }
+            else
+            {
+            	define("path_register_online","/var/www/html/registeronline/", true);
+            }
+            
+            define('ENVIRONMENT', 'production',true);
+			break;
+		case 'pcam.uap.ac.id':
+		    define("url_registration",$HostPath."admission.uap.ac.id/", true);
+            define("serverRoot",$HostPath."pcam.uap.ac.id", true);
+            define("url_pas",$HostPath."pcam.uap.ac.id/", true);
+            define("url_img_employees",url_pas."uploads/employees/", true);
+            define("url_img_students",url_pas."uploads/students/", true);
+
+            define("url_pcam",$HostPath."pcam.uap.ac.id/dashboard", true);
+            define("url_students",$HostPath."studentpu.uap.ac.id/home", true);
+            define("url_lecturers",$HostPath."lecturerpu.uap.ac.id/home", true);
+            define("url_sign_out",$HostPath."portal.uap.ac.id/", true);
+    //
+            define("url_sign_in_lecturers",$HostPath."lecturerpu.uap.ac.id/", true);
+            define("url_sign_in_students",$HostPath."studentpu.uap.ac.id/", true);
             define("url_library","http://library.podomorouniversity.ac.id/", true);
             define("url_blogadmin",$HostPath."adminblogs.podomorouniversity.ac.id/", true);
             
@@ -227,6 +262,12 @@ setlocale(LC_ALL, "en_US.UTF-8");
 
             define('ENVIRONMENT', 'development',true);
 			break;
+	}
+
+	/* replace $_SERVER['SERVER_NAME'] */
+
+	if ($_SERVER['SERVER_NAME'] == 'pcam.uap.ac.id') {
+		$_SERVER['SERVER_NAME'] = 'pcam.podomorouniversity.ac.id';
 	}
 
 
