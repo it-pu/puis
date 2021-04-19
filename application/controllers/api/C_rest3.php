@@ -2121,7 +2121,7 @@ class C_rest3 extends CI_Controller {
                     else {
 
                       $urlADCheckExist = URLAD.'__api/check-student/'.$NPM;
-                      $get_ad = $this->m_master->apiservertoserver_NotWaitResponse($urlADCheckExist);
+                      $get_ad = $this->m_master->apiservertoserver($urlADCheckExist);
                       if ($get_ad['status'] == 1 || $get_ad['status'] == '1') {
                           // api delete
                           // dsrm -noprompt CN="test ad",OU=Ldap,DC=pu,DC=local
