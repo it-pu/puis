@@ -2119,7 +2119,8 @@ class C_rest3 extends CI_Controller {
                         break;
                     }
                     else {
-                        $server = "ldap://10.1.30.2";
+                        //$server = "ldap://10.1.30.2";
+                        $server = "ldap://202.158.17.147";
                         $ds=ldap_connect($server);
                         $dn = 'OU=Ldap,DC=pu,DC=local';
                         $userBind = 'alhadi.rahman'.'@pu.local';
