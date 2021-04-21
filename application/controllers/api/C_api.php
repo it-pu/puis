@@ -9662,7 +9662,7 @@ class C_api extends CI_Controller
     {
         $data_arr = $this->getInputToken();
 
-        if (count($data_arr > 0)) {
+        if (count($data_arr) > 0) {
             if ($data_arr['action'] == 'readData') {
                 $ID = $data_arr['ID'];
                 $data = $this->db->get_where(
