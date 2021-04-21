@@ -1661,7 +1661,7 @@ class M_rest extends CI_Model
                                     'Score' => $Score,
                                     'Grade' => $Grade,
                                     'GradeValue' => $GradeValue,
-                                    'Point' => ($d['Credit'] * $GradeValue)
+                                    'Point' => round($d['Credit'] * $GradeValue)
                                 );
                                 array_push($arrTranscriptID, $d['MKID']);
                                 array_push($transcript, $arrTr);
