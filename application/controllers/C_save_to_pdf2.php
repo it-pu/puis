@@ -610,7 +610,8 @@ class C_save_to_pdf2 extends CI_Controller {
         $this->mypdf->SetTextColor(0,0,0);
         $this->mypdf->SetFont('Arial','',$setFont);
         $this->mypdf->MultiCell(0, 5, 'Surat ini dicetak otomatis oleh komputer dan tidak memerlukan tanda tangan pejabat yang berwenang.', 0,'L');
-        $this->mypdf->Output($filename,'I');
+        // $this->mypdf->Output($filename,'I');
+        $this->mypdf->Output($filename,'D');
     }
 
 }
