@@ -3182,7 +3182,7 @@ class C_api3 extends CI_Controller {
         else if($data_arr['action']=='readKesesuaianBidangKerjaLulusan'){
             $Year = $data_arr['Year'];
             $dataEd = $this->db->query('SELECT el.ID, el.Name, el.Description FROM db_academic.education_level el')->result_array();
-    
+
             if(count($dataEd)>0) {
                 for ($j = 0; $j < count($dataEd); $j++) {
 
@@ -3315,7 +3315,7 @@ class C_api3 extends CI_Controller {
         $data = $this->db->select('ID,Code,Name')->get_where('db_academic.program_study', array('Status' => 1))->result_array();
 
         if (count($data) > 0) {
-            
+
             $dataLAP = $this->db->order_by('ID', 'DESC')->get_where('db_employees.level_education', array(
                 'ID >' => 8
             ))->result_array();
@@ -3332,10 +3332,10 @@ class C_api3 extends CI_Controller {
                     $data[$i]['dataLecturers'][$j] = $r;
 
                     // dengan sub prodi
-                    $dataSubs = $this->db->query('SELECT em.NIP,  em.NUP, em.NIDN, em.NIDK, em.Name FROM 
+                    $dataSubs = $this->db->query('SELECT em.NIP,  em.NUP, em.NIDN, em.NIDK, em.Name FROM
                     db_employees.employees_sub_prodi esp
                     LEFT JOIN db_employees.employees em ON (em.NIP = esp.NIP)
-                    WHERE esp.ProdiID = "' . $data[$i]['ID'] . '" 
+                    WHERE esp.ProdiID = "' . $data[$i]['ID'] . '"
                     AND em.LevelEducationID = "' . $dataLAP[$j]['ID'] . '"
                     AND ( em.StatusForlap = "1" OR em.StatusForlap = "2" ) ')->result_array();
 
@@ -3352,10 +3352,10 @@ class C_api3 extends CI_Controller {
                 $data[$i]['dataLecturers'][2] = $r;
 
                 // dengan sub prodi
-                $dataSubs2 = $this->db->query('SELECT em.NIP,  em.NUP, em.NIDN, em.NIDK, em.Name FROM 
+                $dataSubs2 = $this->db->query('SELECT em.NIP,  em.NUP, em.NIDN, em.NIDK, em.Name FROM
                 db_employees.employees_sub_prodi esp
                 LEFT JOIN db_employees.employees em ON (em.NIP = esp.NIP)
-                WHERE esp.ProdiID = "' . $data[$i]['ID'] . '" 
+                WHERE esp.ProdiID = "' . $data[$i]['ID'] . '"
                 AND em.Profession <> ""
                 AND ( em.StatusForlap = "1" OR em.StatusForlap = "2" )')->result_array();
 
@@ -3491,13 +3491,13 @@ class C_api3 extends CI_Controller {
 
                 $data[$i]['TotalLecturerCertifies'] = $dataEmpCerti;
 
-                for ($y=0; $y < count($arrCertificateType) ; $y++) { 
+                for ($y=0; $y < count($arrCertificateType) ; $y++) {
                    $data[$i]['Certificate_'.$arrCertificateType[$y]] = [];
                 }
-                
-                for ($x=0; $x < count($dataEmpCerti2); $x++) { 
-                   for ($z=0; $z < count($arrCertificateType); $z++) { 
-                        $sql = 'select a.*,"'.$dataEmpCerti2[$x]['Name'].'" as NameDosen, "'.$dataEmpCerti2[$x]['NIDN'].'" as NIDN from db_employees.employees_certificate as a where a.NIP = "'.$dataEmpCerti2[$x]['NIP'].'" 
+
+                for ($x=0; $x < count($dataEmpCerti2); $x++) {
+                   for ($z=0; $z < count($arrCertificateType); $z++) {
+                        $sql = 'select a.*,"'.$dataEmpCerti2[$x]['Name'].'" as NameDosen, "'.$dataEmpCerti2[$x]['NIDN'].'" as NIDN from db_employees.employees_certificate as a where a.NIP = "'.$dataEmpCerti2[$x]['NIP'].'"
                             and a.StatusEdit = 1 and a.Certificate = "'.$arrCertificateType[$z].'"
 
                            ';
@@ -3512,7 +3512,7 @@ class C_api3 extends CI_Controller {
                             $data[$i]['Certificate_'.$arrCertificateType[$z]] = array_merge($data[$i]['Certificate_'.$arrCertificateType[$z]],$dt);
                        }
 
-                       
+
                    }
                 }
 
@@ -3565,7 +3565,7 @@ class C_api3 extends CI_Controller {
                 //
                 if($SemesterID>=13){
 
-                    $StatusFolap = ''; // value status all(0) 
+                    $StatusFolap = ''; // value status all(0)
                     if($Status=='1' || $Status==1 || $Status=='99' || $Status==99){
                         $StatusFolap = ' AND (em.StatusForlap = "1" OR em.StatusForlap = "2")';
                     }
@@ -3585,19 +3585,19 @@ class C_api3 extends CI_Controller {
                                                                '.$StatusFolap.'
                                                         UNION
                                                             Select em.NIP,em.NUP, em.NIDN, em.NIDK, em.Name,em.StatusForlap from
-                                                            db_employees.employees as em 
+                                                            db_employees.employees as em
                                                                 where em.NIP not in (
                                                                     select sc.Coordinator from db_academic.schedule_details_course as sdc
                                                                     join db_academic.schedule as sc ON (sc.ID = sdc.ScheduleID)
                                                                     join db_employees.employees as em on sc.Coordinator = em.NIP
-                                                                    where 
+                                                                    where
                                                                     sc.SemesterID = "'.$SemesterID.'" AND
                                                                     em.ProdiID = "'.$data[$i]['ID'].'"
                                                                     '.$StatusFolap.'
                                                                 )
                                                                 AND em.ProdiID = "'.$data[$i]['ID'].'"
                                                                    '.$StatusFolap.'
-                                                                
+
                                                         )xx
                                                                 GROUP BY NIP ')->result_array();
                     }
@@ -3613,7 +3613,7 @@ class C_api3 extends CI_Controller {
                                                                 GROUP BY sc.Coordinator ')->result_array();
                     }
 
-                    
+
 
                     $data[$i]['Lecturer_Sch_Co'] = $dataSchedule;
 
@@ -4761,7 +4761,7 @@ class C_api3 extends CI_Controller {
 
                 // Finance
                 $dateTm = ($row['Cl_Finance_At']!='' && $row['Cl_Finance_At']!=null) ? ' <div style="color: #9e9e9e;">'.date('d M Y H:i',strtotime($row['Cl_Finance_At'])).'</div>' : '';
-                
+
                 if($AS!='Prodi' && ($DeptID=='9' || $DeptID==9)){
 
                     $NoteUploadFile =  (!empty($row['NoteUploadFile'])) ? $row['NoteUploadFile'] : ''; // for field UploadFile in final_project_note
@@ -4772,7 +4772,7 @@ class C_api3 extends CI_Controller {
 
                     $c_Finance = ($row['Cl_Finance']!=null && $row['Cl_Finance']!='' && $row['Cl_Finance']!='0') ? '<i class="fa fa-check-circle" style="color: darkgreen;"></i>
                         <hr style="margin-top: 7px;margin-bottom: 3px;"/>'.$row['Cl_Finance_Name'].''.$dateTm.$v_note_finance.$btnShowFileFinance
-                        
+
                         : '<button class="btn btn-sm btn-default btnClearnt" data-npm="'.$row['NPM'].'" data-c="Cl_Finance">Clearance</button><hr style="margin-top: 10px;margin-bottom: 7px;" /><div style="text-align: left;" id="finance_viewNote_'.$row['NPM'].'">'.$v_note_finance.'</div><a href="javascript:void(0);" class="btnNote" data-dept="finance" data-npm="'.$row['NPM'].'" thefile = "'.$NoteUploadFile.'"><i class="fa fa-edit"></i> Note</a>';
 
                 } else {
@@ -5187,7 +5187,7 @@ class C_api3 extends CI_Controller {
                 $filename = $data_arr['Dept'].'_viewnote'.$data_arr['NPM'].'.'.$ext;
                 if ($_SERVER['SERVER_NAME'] == 'pcam.podomorouniversity.ac.id') {
                     $headerOrigin = ($_SERVER['SERVER_NAME'] == 'localhost') ? "http://localhost" : serverRoot;
-                    
+
                     $path = 'document/'.$data_arr['NPM'];
                     $TheFile = 'userfile';
                     $upload = $this->m_master->UploadManyFilesToNas($headerOrigin,$filename,$TheFile,$path,'array');
@@ -5450,7 +5450,7 @@ class C_api3 extends CI_Controller {
 
     }
 
-    
+
 
     public function crudkb(){
 
@@ -5543,7 +5543,7 @@ class C_api3 extends CI_Controller {
                             unlink('./uploads/kb/'.$old);
                         }
                     }
-                    
+
                 }
             }
 
@@ -5641,7 +5641,7 @@ class C_api3 extends CI_Controller {
 
             $table = $data_arr['table'];
 
-            $this->db->query('DELETE FROM '.$table.' WHERE AccessedOn 
+            $this->db->query('DELETE FROM '.$table.' WHERE AccessedOn
             BETWEEN "'.$data_arr['Start'].' 00:00:00" AND "'.$data_arr['End'].' 23:59:00"');
 
             return print_r(1);
@@ -5750,11 +5750,11 @@ class C_api3 extends CI_Controller {
             $array_topic = ['pu_civitas_akademika','pu_lec_emp','pu_lec','pu_user_'.$Username];
 
             // get jadwal di semester aktif
-            $dataSch = $this->db->query('SELECT s.ID AS ScheduleID FROM db_academic.schedule s 
+            $dataSch = $this->db->query('SELECT s.ID AS ScheduleID FROM db_academic.schedule s
                                                 LEFT JOIN db_academic.semester smt ON (smt.ID = s.SemesterID)
-                                                WHERE smt.Status = 1 AND s.Coordinator = "'.$Username.'" 
+                                                WHERE smt.Status = 1 AND s.Coordinator = "'.$Username.'"
                                                 UNION ALL
-                                                SELECT sst.ScheduleID FROM db_academic.schedule_team_teaching sst 
+                                                SELECT sst.ScheduleID FROM db_academic.schedule_team_teaching sst
                                                 LEFT JOIN db_academic.schedule s2 ON (s2.ID = sst.ScheduleID)
                                                 LEFT JOIN db_academic.semester smt2 ON (smt2.ID = s2.SemesterID)
                                                 WHERE smt2.Status = 1 AND sst.NIP = "'.$Username.'" ')->result_array();
@@ -5778,7 +5778,7 @@ class C_api3 extends CI_Controller {
 
             $dbstd = 'ta_'.$dataMhs['Year'];
             // get jadwal aktif
-            $dataSch = $this->db->query('SELECT sp.ScheduleID  FROM '.$dbstd.'.study_planning sp 
+            $dataSch = $this->db->query('SELECT sp.ScheduleID  FROM '.$dbstd.'.study_planning sp
                                                     LEFT JOIN db_academic.semester s ON (s.ID = sp.SemesterID)
                                                      WHERE s.Status = 1
                                                      AND sp.NPM = "'.$Username.'" ')->result_array();
@@ -6800,7 +6800,7 @@ class C_api3 extends CI_Controller {
 
         $data_arr = $this->getInputToken2();
 
-        if(count($data_arr>0)) {
+        if(count($data_arr)>0) {
 
             if ($data_arr['action'] == 'setDataMedicalRecord') {
 
