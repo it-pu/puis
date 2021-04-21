@@ -5601,6 +5601,19 @@ class C_api3 extends CI_Controller {
         }
     }
 
+    private function check_field_ip_server_to(){
+        $sql =  $this->db->query('SHOW COLUMNS FROM db_employees.log_employees LIKE "ip_server_conn" ')->result_array();
+        if (count($sql) == 0) {
+            // alter field table
+            $this->db->query(
+                    '
+                        ALTER TABLE db_employees.log_employees
+                        ADD `ip_server_conn`  varchar(255) NOT NULL DEFAULT "" ;
+                    '
+            );
+        }
+    }
+
     public function crudLogging(){
         $data_arr = $this->getInputToken2();
 
@@ -5611,6 +5624,11 @@ class C_api3 extends CI_Controller {
             $dataForm['IPLocal2'] = $this->input->ip_address();
             $dataForm['IPLocal'] = $hostname;
             $dataForm['AccessedOn'] = $this->m_rest->getDateTimeNow();
+
+            $myIP = $_SERVER['SERVER_ADDR'];
+            $this->check_field_ip_server_to();
+            $dataForm['ip_server_conn'] = $myIP;
+
             $this->db->insert('db_employees.log_employees',$dataForm);
             return print_r(1);
 
