@@ -558,44 +558,43 @@
     <!-- END ADDED BY FEBRI @ MARCH 2020 -->
 
 <script>
-    
-        var data = '<?php if(count($dataMenuShare)>0) { ?>'+
-        '<div class="sidebar-title">'+
-                      '<span>Shared Menu</span>'+
-                    '</div>'+
-                    '<ul id="nav">'+
-                    '<?php foreach ($dataMenuShare AS $item){ ?>'+
-                    '<li class="<?php if($this->uri->segment(2)== strtolower(str_replace(" ", "-",$item['Name']))){echo"current";}?>">'+
-                       ' <?php if(count($item['DataLevel_1'])>0){ ?>'+
-                            '<a href="javascript:void(0);">'+
-                            '    <i class="<?= $item['Icon']; ?>"></i>'+
-                            '    <?= $item['Name']; ?>'+
-                            '    <i class="arrow <?= ($this->uri->segment(2)==strtolower(str_replace(" ", "-",$item['Name']))) ? 'icon-angle-down' : 'icon-angle-left'?>"></i>'+
-                            '</a>'+
-                            '<ul class="sub-menu">'+
-                            '    <?php foreach ($item['DataLevel_1'] AS $item1) { ?>'+
-                            '        <li class="<?= ($this->uri->segment(3)==strtolower(str_replace(" ", "-",$item1['Name']))) ? "current open" : ""?>">'+
-                            '            <a href="<?= base_url( $item1['Route']) ?>">'+
-                            '                <i class="icon-angle-right"></i>'+
-                            '                <?= $item1['Name']; ?>'+
-                            '            </a>'+
-                            '        </li>'+
-                            '    <?php } ?>'+
-                            '</ul>'+
-                        '<?php } else { ?>'+
-                            '<a href="<?php echo base_url($item['Route']);?>">'+
-                               ' <i class="<?= $item['Icon']; ?>"></i>'+
-                                '<?= $item['Name']; ?>'+
-                           ' </a>'+
-                       '<?php  } ?>'+
-                    '</li>'+
-                '<?php } ?>'+
-            '</ul>'+
-             '<?php } ?>';
-             $('#nav').after('<div>'+data+'</div>');
-            // document.getElementById("shareMenu").innerHTML=data;
-
-    
+        <?php if (isset($dataMenuShare)): ?>
+            var data = '<?php if(count($dataMenuShare)>0) { ?>'+
+            '<div class="sidebar-title">'+
+                          '<span>Shared Menu</span>'+
+                        '</div>'+
+                        '<ul id="nav">'+
+                        '<?php foreach ($dataMenuShare AS $item){ ?>'+
+                        '<li class="<?php if($this->uri->segment(2)== strtolower(str_replace(" ", "-",$item['Name']))){echo"current";}?>">'+
+                           ' <?php if(count($item['DataLevel_1'])>0){ ?>'+
+                                '<a href="javascript:void(0);">'+
+                                '    <i class="<?= $item['Icon']; ?>"></i>'+
+                                '    <?= $item['Name']; ?>'+
+                                '    <i class="arrow <?= ($this->uri->segment(2)==strtolower(str_replace(" ", "-",$item['Name']))) ? 'icon-angle-down' : 'icon-angle-left'?>"></i>'+
+                                '</a>'+
+                                '<ul class="sub-menu">'+
+                                '    <?php foreach ($item['DataLevel_1'] AS $item1) { ?>'+
+                                '        <li class="<?= ($this->uri->segment(3)==strtolower(str_replace(" ", "-",$item1['Name']))) ? "current open" : ""?>">'+
+                                '            <a href="<?= base_url( $item1['Route']) ?>">'+
+                                '                <i class="icon-angle-right"></i>'+
+                                '                <?= $item1['Name']; ?>'+
+                                '            </a>'+
+                                '        </li>'+
+                                '    <?php } ?>'+
+                                '</ul>'+
+                            '<?php } else { ?>'+
+                                '<a href="<?php echo base_url($item['Route']);?>">'+
+                                   ' <i class="<?= $item['Icon']; ?>"></i>'+
+                                    '<?= $item['Name']; ?>'+
+                               ' </a>'+
+                           '<?php  } ?>'+
+                        '</li>'+
+                    '<?php } ?>'+
+                '</ul>'+
+                 '<?php } ?>';
+                 $('#nav').after('<div>'+data+'</div>');
+                // document.getElementById("shareMenu").innerHTML=data;
+        <?php endif ?>
 </script>
 
 </body>
