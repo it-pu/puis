@@ -63,7 +63,7 @@ class C_global extends Vreservation_Controler {
         $data_pass = $data1;
         // SORTING ASC
             usort($data_pass, function($a, $b) {
-                return $a['room'] - $b['room'];
+                return  (int)$a['room'] - (int)$b['room'];
             });
         // print_r($data_pass);
         // die();
