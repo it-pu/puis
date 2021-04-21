@@ -3197,7 +3197,8 @@ class C_save_to_pdf extends CI_Controller {
 
 
         $nameF = str_replace(' ','_',($Student['Name']));
-        $pdf->Output('TEMP_TRNSCPT_'.$Student['NPM'].'_'.$nameF.'.pdf','I');
+        // $pdf->Output('TEMP_TRNSCPT_'.$Student['NPM'].'_'.$nameF.'.pdf','I');
+        $pdf->Output('TEMP_TRNSCPT_'.$Student['NPM'].'_'.$nameF.'.pdf','D');
     }
 
     private function headerTable($lang,$pdf){
@@ -3751,7 +3752,8 @@ class C_save_to_pdf extends CI_Controller {
 
 
         $nameF = str_replace(' ','_',($Student['Name']));
-        $pdf->Output('TRNSCPT_'.$Student['NPM'].'_'.$nameF.'.pdf','I');
+        // $pdf->Output('TRNSCPT_'.$Student['NPM'].'_'.$nameF.'.pdf','I');
+        $pdf->Output('TRNSCPT_'.$Student['NPM'].'_'.$nameF.'.pdf','D');
     }
 
     private function header_transcript_table($pdf){
@@ -4097,7 +4099,8 @@ class C_save_to_pdf extends CI_Controller {
 
 
         $nameF = str_replace(' ','_',($Student['Name']));
-        $pdf->Output('IJAZAH_'.$Student['NPM'].'_'.$nameF.'.pdf','I');
+        // $pdf->Output('IJAZAH_'.$Student['NPM'].'_'.$nameF.'.pdf','I');
+        $pdf->Output('IJAZAH_'.$Student['NPM'].'_'.$nameF.'.pdf','D');
     }
 
 
@@ -4497,7 +4500,7 @@ class C_save_to_pdf extends CI_Controller {
 
 
         $nameF = str_replace(' ','_',($Student['Name']));
-        $pdf->Output('SKLS_'.$Student['NPM'].'_'.$nameF.'.pdf','I');
+        $pdf->Output('SKLS_'.$Student['NPM'].'_'.$nameF.'.pdf','D');
     }
 //===================================================================
 //===================================================================
