@@ -5601,13 +5601,13 @@ class C_api3 extends CI_Controller {
         }
     }
 
-    private function check_field_ip_server_to(){
-        $sql =  $this->db->query('SHOW COLUMNS FROM db_employees.log_employees LIKE "ip_server_conn" ')->result_array();
+    private function check_field_ip_server_to($table="db_employees.log_employees"){
+        $sql =  $this->db->query('SHOW COLUMNS FROM '.$table.' LIKE "ip_server_conn" ')->result_array();
         if (count($sql) == 0) {
             // alter field table
             $this->db->query(
                     '
-                        ALTER TABLE db_employees.log_employees
+                        ALTER TABLE '.$table.'
                         ADD `ip_server_conn`  varchar(255) NOT NULL DEFAULT "" ;
                     '
             );
@@ -5640,6 +5640,11 @@ class C_api3 extends CI_Controller {
             $dataForm['IPLocal2'] = $this->input->ip_address();
             $dataForm['IPLocal'] = $hostname;
             $dataForm['AccessedOn'] = $this->m_rest->getDateTimeNow();
+
+            $myIP = $_SERVER['SERVER_ADDR'];
+            $this->check_field_ip_server_to('db_academic.log_student');
+            $dataForm['ip_server_conn'] = $myIP;
+
             $this->db->insert('db_academic.log_student',$dataForm);
             return print_r(1);
 
@@ -5651,6 +5656,11 @@ class C_api3 extends CI_Controller {
             $dataForm['IPLocal2'] = $this->input->ip_address();
             $dataForm['IPLocal'] = $hostname;
             $dataForm['AccessedOn'] = $this->m_rest->getDateTimeNow();
+
+            $myIP = $_SERVER['SERVER_ADDR'];
+            $this->check_field_ip_server_to('db_employees.log_lecturers');
+            $dataForm['ip_server_conn'] = $myIP;
+            
             $this->db->insert('db_employees.log_lecturers',$dataForm);
             return print_r(1);
 
