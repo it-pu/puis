@@ -172,7 +172,8 @@ setlocale(LC_ALL, "en_US.UTF-8");
             	define("path_register_online","/var/www/html/registeronline/", true);
             }
             
-            define('ENVIRONMENT', 'production',true);
+            // define('ENVIRONMENT', 'production',true);
+            define('ENVIRONMENT', 'development',true);
 			break;
 		case 'pcam.uap.ac.id':
 		    define("url_registration",$HostPath."admission.uap.ac.id/", true);
