@@ -1150,7 +1150,10 @@ class C_save_to_excel extends CI_Controller
                         $excel->setActiveSheetIndex(0)->setCellValue($keyM[$StH].$St, $JsonStatus[$i]['NameTypeDesc']);
                         $N = $this->m_master->caribasedprimary('db_employees.employees','NIP',$JsonStatus[$i]['NIP']);
                         $excel->setActiveSheetIndex(0)->setCellValue($keyM[$StH].$StTot, $N[0]['Name']);
-                        $excel->getActiveSheet()->getStyle($keyM[$StH].$St.':'.$keyM[$StH2].$StTot)->applyFromArray($style_row);
+
+                        $colSTH2 = $this->m_master->HurufColExcelNumber($StH2);
+                            
+                        $excel->getActiveSheet()->getStyle($keyM[$StH].$St.':'.$colSTH2.$StTot)->applyFromArray($style_row);
                         $StH = $StH2 + 2;
                         $StH2 = $StH + 2;
                     }
@@ -1589,7 +1592,10 @@ class C_save_to_excel extends CI_Controller
                                 $excel->setCellValue($keyM[$StH].$St, $JsonStatus[$i]['NameTypeDesc']);
                                 $N = $this->m_master->caribasedprimary('db_employees.employees','NIP',$JsonStatus[$i]['NIP']);
                                 $excel->setCellValue($keyM[$StH].$StTot, $N[0]['Name']);
-                                $excel->getStyle($keyM[$StH].$St.':'.$keyM[$StH2].$StTot)->applyFromArray($style_row);
+
+                                $colSTH2 = $this->m_master->HurufColExcelNumber($StH2);
+
+                                $excel->getStyle($keyM[$StH].$St.':'.$colSTH2.$StTot)->applyFromArray($style_row);
                                 $StH = $StH2 + 2;
                                 $StH2 = $StH + 2;
                             }
