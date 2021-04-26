@@ -5,10 +5,10 @@ $active_record = TRUE;
 
 $db['server_live'] = array(
     'dsn'   => '',
-    'hostname' => '10.1.30.18',
-    'username' => 'db_itpu',
-    'password' => 'Uap)(*&^%',
-    'database' => 'db_academic',
+    'hostname' => _DB_HOST,
+    'username' => _DB_USER,
+    'password' => _DB_PASSWORD,
+    'database' => _DB_NAME,
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
