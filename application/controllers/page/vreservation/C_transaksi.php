@@ -817,7 +817,7 @@ class C_transaksi extends Vreservation_Controler {
         $KetAdditional = json_decode($get[0]['KetAdditional']);    
         $EmailKetAdditional = '<br>';
         if ($KetAdditional != '') {
-            if (count($KetAdditional) > 0) {
+            if ( is_array($KetAdditional) && count($KetAdditional) > 0) {
                 foreach ($KetAdditional as $key => $value) {
                     if ($value != "" || $value != null) {
                         // $EmailKetAdditional .= '<br>*   '.$key.' : '.$value;
