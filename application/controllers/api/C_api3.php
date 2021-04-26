@@ -6034,6 +6034,8 @@ class C_api3 extends CI_Controller {
 
     public function getDataLogEmployees(){
 
+        $this->check_field_ip_server_to('db_employees.log_lecturers');
+
         $requestData= $_REQUEST;
 
         $u = $this->input->get('u');
@@ -6072,7 +6074,7 @@ class C_api3 extends CI_Controller {
                             (CASE WHEN lem.NIP = lem.UserID THEN 0 ELSE lem.UserID END ) AS LoginAs,
                             (CASE WHEN em2.Name = em.Name THEN NULL ELSE em2.Name END) AS LoginAsLec,
                             ats.Name AS LoginAsStd,lem.URL,
-                            lem.IPPublic, lem.IPLocal, lem.IPLocal2
+                            lem.IPPublic, lem.IPLocal, lem.IPLocal2, lem.ip_server_conn
                             FROM db_employees.log_employees lem
                             LEFT JOIN db_employees.employees em ON (em.NIP = lem.NIP)
                             LEFT JOIN db_employees.employees em2 ON (em2.NIP = lem.UserID)
@@ -6130,8 +6132,9 @@ class C_api3 extends CI_Controller {
                 $IPLocal = ($row['IPLocal'] != '' && $row['IPLocal'] != null) ? 'Local 1 : ' . $row['IPLocal'] . '<br/>' : '';
                 $IPLocal2 = ($row['IPLocal2'] != '' && $row['IPLocal2'] != null) ? 'Local 2 : ' . $row['IPLocal2'] : '';
                 $dataIP = '<div>' . $IPPublic . '' . $IPLocal . '' . $IPLocal2 . '</div>';
+                $dataServerConn = 'Server-connection : '.$row['ip_server_conn'];
 
-                $nestedData[] = '<div style="text-align: left;"><b>' . $row['Name'] . '</b>' . $dataIP . '</div>';
+                $nestedData[] = '<div style="text-align: left;"><b>' . $row['Name'] . '</b>' . $dataIP .$dataServerConn. '</div>';
 
             }
 
@@ -6163,6 +6166,8 @@ class C_api3 extends CI_Controller {
 
     public function getDataLogLecturer(){
 
+        $this->check_field_ip_server_to('db_employees.log_lecturers');
+
         $requestData= $_REQUEST;
 
         $u = $this->input->get('u');
@@ -6183,7 +6188,7 @@ class C_api3 extends CI_Controller {
         }
 
         $queryDefault = 'SELECT lem.ID, em.Name, lem.AccessedOn,
-                            lem.IPPublic, lem.IPLocal, lem.IPLocal2, lem.URL
+                            lem.IPPublic, lem.IPLocal, lem.IPLocal2, lem.URL,lem.ip_server_conn
                             FROM db_employees.log_lecturers lem
                             LEFT JOIN db_employees.employees em ON (em.NIP = lem.NIP)
                             '.$dataWhere.' '.$dataSearch.' ORDER BY lem.ID DESC';
@@ -6240,7 +6245,9 @@ class C_api3 extends CI_Controller {
                 $IPLocal2 = ($row['IPLocal2']!='' && $row['IPLocal2']!=null) ? 'Local 2 : '.$row['IPLocal2'] : '';
                 $dataIP = '<div>'.$IPPublic.''.$IPLocal.''.$IPLocal2.'</div>';
 
-                $nestedData[] = '<div style="text-align: left;"><b>'.$row['Name'].'</b>'.$dataIP.'</div>';
+                $dataServerConn = 'Server-connection : '.$row['ip_server_conn'];
+
+                $nestedData[] = '<div style="text-align: left;"><b>'.$row['Name'].'</b>'.$dataIP.$dataServerConn.'</div>';
             }
 
             $nestedData[] = '<div style="text-align: left;">'.'<div style="color: #FF5722;">'.date('d M Y H:i:s',strtotime($row['AccessedOn'])).'</div></div>';
@@ -6264,6 +6271,8 @@ class C_api3 extends CI_Controller {
 
     public function getDataLogStudent(){
 
+        $this->check_field_ip_server_to('db_academic.log_student');
+
         $requestData= $_REQUEST;
 
         $u = $this->input->get('u');
@@ -6284,7 +6293,7 @@ class C_api3 extends CI_Controller {
         }
 
         $queryDefault = 'SELECT lem.ID, em.Name, lem.AccessedOn,
-                            lem.IPPublic, lem.IPLocal, lem.IPLocal2, lem.URL
+                            lem.IPPublic, lem.IPLocal, lem.IPLocal2, lem.URL,lem.ip_server_conn
                             FROM db_academic.log_student lem
                             LEFT JOIN db_academic.auth_students em ON (em.NPM = lem.NPM)
                             '.$dataWhere.' '.$dataSearch.' ORDER BY lem.ID DESC';
@@ -6341,7 +6350,9 @@ class C_api3 extends CI_Controller {
                 $IPLocal2 = ($row['IPLocal2']!='' && $row['IPLocal2']!=null) ? 'Local 2 : '.$row['IPLocal2'] : '';
                 $dataIP = '<div>'.$IPPublic.''.$IPLocal.''.$IPLocal2.'</div>';
 
-                $nestedData[] = '<div style="text-align: left;"><b>'.$row['Name'].'</b>'.$dataIP.'</div>';
+                $dataServerConn = 'Server-connection : '.$row['ip_server_conn'];
+
+                $nestedData[] = '<div style="text-align: left;"><b>'.$row['Name'].'</b>'.$dataIP.$dataServerConn.'</div>';
             }
 
             $nestedData[] = '<div style="text-align: left;">'.'<div style="color: #FF5722;">'.date('d M Y H:i:s',strtotime($row['AccessedOn'])).'</div></div>';
