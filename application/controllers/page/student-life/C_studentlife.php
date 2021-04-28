@@ -589,8 +589,12 @@ class C_studentlife extends Student_Life {
     }
 
     public function crudSetGroup(){
-        // $id = $this->input->post('id',TRUE);
-        $data = $this->m_podivers->getSetGroup();
+        $id = $this->input->post('id',TRUE);
+        if($id){
+            $data = $this->m_podivers->getSetGroupSelect($id);
+        }else{
+            $data = $this->m_podivers->getSetGroup();
+        }
         echo json_encode($data);
     }
 
