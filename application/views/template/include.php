@@ -1708,6 +1708,24 @@
         });
 
     }
+    function loadSelectOptionLanguageWebdivisi(element,selected) {
+
+        var token = jwt_encode({action:'readLanguageProdi'},'UAP)(*');
+        var url = base_url_js+'api-webdivisi/__crudDataDivisi';
+
+        $.post(url,{token:token},function (jsonResult) {
+
+            if(jsonResult.length>0){
+                $.each(jsonResult,function (i,v) {
+
+                    $(element).append('<option value="'+v.ID+'">'+v.Language+'</option>');
+
+                });
+            }
+
+        });
+
+    }
 
     // function loadSelectOptionStudentRegisterSeminarhasil(element,selected) {
     //     var url = base_url_js+'api/__crudFinalProject';

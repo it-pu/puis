@@ -134,10 +134,10 @@ class C_home extends Prodi_Controler {
     }  
     
     private function menu_contact($pagecontact){
-            $data['department'] = parent::__getDepartement();
-            $data['pagecontact'] = $pagecontact;
-            $content = $this->load->view('page/'.$data['department'].'/contact/V_contact',$data,true);
-            parent::template($content);
+        $data['department'] = parent::__getDepartement();
+        $data['pagecontact'] = $pagecontact;
+        $content = $this->load->view('page/'.$data['department'].'/contact/V_contact',$data,true);
+        parent::template($content);
     }
     
     public function sosmed(){
@@ -151,6 +151,6 @@ class C_home extends Prodi_Controler {
         $this->menu_contact($pagecontact);
     }
 
-   
+    
 }
 

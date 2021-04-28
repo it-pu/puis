@@ -52,12 +52,10 @@ class C_api_webdivisi extends CI_Controller {
     }
 
 // ==== CRUD DATA PRODI ====== // 
-    function crudDataProdi(){
+    function crudDataDivisi(){
 
         $data_arr = $this->getInputToken2();
-
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
-
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
         if($data_arr['action']=='viewDataProdi')
         {
             $data=$this->m_home->getTableProdi();
@@ -91,7 +89,7 @@ class C_api_webdivisi extends CI_Controller {
             $dataform = $data_arr['dataform']; // data di jadikan array
             $dataform = json_decode(json_encode($dataform),true); // convert to array
             $dataform['Images'] = $upload;
-            $dataform['ProdiID'] = $this->session->userdata('prodi_active_id');
+            $dataform['DivisiID'] = $this->session->userdata('IDdepartementNavigation');
             $dataform['UploadBy'] = $this->session->userdata('NIP');
             $dataform['UploadAt'] = $this->m_rest->getDateTimeNow();
             
@@ -100,9 +98,9 @@ class C_api_webdivisi extends CI_Controller {
 
             // Search Sorting
             $Sorting = 1;
-            $ProdiID = $this->session->userdata('prodi_active_id');
-            $sql = 'select * from db_webdivisi.slider where ProdiID = ? order by Sorting desc limit 1';
-            $G_sorting = $this->db->query($sql, array($ProdiID))->result_array();
+            $DivisiID = $this->session->userdata('IDdepartementNavigation');
+            $sql = 'select * from db_webdivisi.slider where DivisiID = ? order by Sorting desc limit 1';
+            $G_sorting = $this->db->query($sql, array($DivisiID))->result_array();
             if (count($G_sorting) > 0) { // jika data ada
                 $Sorting = $G_sorting[0]['Sorting'] + 1;
             }
@@ -128,11 +126,11 @@ class C_api_webdivisi extends CI_Controller {
                 $dataform = $data_arr['dataform']; // data di jadikan array
                 $dataform = json_decode(json_encode($dataform),true); // convert to array
                 $dataform['Images'] = $upload;
-                $dataform['ProdiID'] = $this->session->userdata('prodi_active_id');
+                $dataform['DivisiID'] = $this->session->userdata('IDdepartementNavigation');
                 $dataform['UploadBy'] = $this->session->userdata('NIP');
                 $dataform['UploadAt'] = $this->m_rest->getDateTimeNow();
                 
-                $dataSave2 = $dataform;
+                $dataSave2 = $dataform;                
                 $sql = $this->db->get_where('db_webdivisi.slider',array(
                 'ID' => $dataSave2['ID']))->result_array();
 
@@ -150,9 +148,9 @@ class C_api_webdivisi extends CI_Controller {
         }
         else if ($data_arr['action']=='deleteDataslider') 
         {
-            $sql = 'select * from db_webdivisi.slider  where ProdiID= ?';
-            $ProdiID = $prodi_active_id;
-            $query = $this->db->query($sql, array($ProdiID))->result_array();
+            $sql = 'select * from db_webdivisi.slider  where DivisiID= ?';
+            $DivisiID = $divisi_active_id;
+            $query = $this->db->query($sql, array($DivisiID))->result_array();
 
             $ID = $data_arr['ID'];
             $this->db->where('ID', $ID);
@@ -168,9 +166,9 @@ class C_api_webdivisi extends CI_Controller {
             $Sorting = $data_arr['Sorting'];
             $sortex = $data_arr['sortex'];
 
-            $ProdiID = $this->session->userdata('prodi_active_id');
-            $sql = 'select * from db_webdivisi.slider where ProdiID = ? and Sorting = ? ';
-            $G_sorting = $this->db->query($sql, array($ProdiID,$Sorting))->result_array();
+            $DivisiID = $this->session->userdata('IDdepartementNavigation');
+            $sql = 'select * from db_webdivisi.slider where DivisiID = ? and Sorting = ? ';
+            $G_sorting = $this->db->query($sql, array($DivisiID,$Sorting))->result_array();
 
             // $G_sorting = $this->m_master->caribasedprimary('db_webdivisi.slider','Sorting',$Sorting);
 
@@ -197,12 +195,12 @@ class C_api_webdivisi extends CI_Controller {
 
             $dataForm = (array) $data_arr['dataForm'];
 
-            $dataForm['ProdiID'] = $prodi_active_id;
+            $dataForm['DivisiID'] = $divisi_active_id;
             $dataForm['UpdatedAt'] = $this->m_rest->getDateTimeNow();
 
             // Cek apakah udah di input atau blm
             $dataCk = $this->db->get_where('db_webdivisi.prodi_texting',array(
-                'ProdiID' => $prodi_active_id,
+                'DivisiID' => $divisi_active_id,
                 'Type' => $dataForm['Type'],
                 'LangID' => $dataForm['LangID'],
             ))->result_array();
@@ -228,7 +226,7 @@ class C_api_webdivisi extends CI_Controller {
                                                 LEFT JOIN db_academic.auth_students ast ON (ast.NPM = st.NPM)
                                                 LEFT JOIN db_webdivisi.calldetail c ON (c.IDProdiTexting = pt.ID)
 
-                                                WHERE pt.ProdiID = "'.$prodi_active_id.'" AND pt.Type="'.$Type.'" ')->result_array();
+                                                WHERE pt.DivisiID = "'.$divisi_active_id.'" AND pt.Type="'.$Type.'" ')->result_array();
 
             return print_r(json_encode($data));
 
@@ -244,11 +242,11 @@ class C_api_webdivisi extends CI_Controller {
                                                 LEFT JOIN db_webdivisi.student_testimonials st ON (st.ID = std.IDStudentTexting)
                                                 LEFT JOIN db_academic.auth_students ast ON (ast.NPM = st.NPM)
                                                 LEFT JOIN db_webdivisi.calldetail c ON (c.IDProdiTexting = pt.ID)
-                                                WHERE pt.ProdiID = "'.$prodi_active_id.'" AND pt.Type="'.$Type.'" and pt.LangID="'.$LangID.'" ')->result_array();
+                                                WHERE pt.DivisiID = "'.$divisi_active_id.'" AND pt.Type="'.$Type.'" and pt.LangID="'.$LangID.'" ')->result_array();
 
 
             // $data = $this->db->get_where('db_webdivisi.prodi_texting',array(
-            //     'ProdiID' => $prodi_active_id,
+            //     'DivisiID' => $divisi_active_id,
             //     'Type' => $Type,
             //     'LangID' => $LangID
             // ))->result_array();
@@ -290,7 +288,7 @@ class C_api_webdivisi extends CI_Controller {
                 if (count($query) == 0) { // insert
 
                     // insert prodi_texting
-                    $prodi_texting['ProdiID'] = $prodi_active_id;
+                    $prodi_texting['DivisiID'] = $divisi_active_id;
                     $prodi_texting['UpdatedAt'] = $this->m_rest->getDateTimeNow();
 
                     $this->db->insert('db_webdivisi.prodi_texting',$prodi_texting);
@@ -298,7 +296,7 @@ class C_api_webdivisi extends CI_Controller {
 
                     // insert student_testimonials
                     $student_testimonials['Photo'] = $upload;
-                    $student_testimonials['ProdiID'] = $prodi_active_id;
+                    $student_testimonials['DivisiID'] = $divisi_active_id;
 
                     $this->db->insert('db_webdivisi.student_testimonials',$student_testimonials);
                     $IDStudentTexting = $this->db->insert_id();
@@ -331,7 +329,7 @@ class C_api_webdivisi extends CI_Controller {
                     
                     // update prodi_textting
                     $IDProdiTexting = $query[0]['IDProdiTexting'];
-                    $prodi_texting['ProdiID'] = $prodi_active_id;
+                    $prodi_texting['DivisiID'] = $divisi_active_id;
                     $prodi_texting['UpdatedAt'] = $this->m_rest->getDateTimeNow();
 
                     $this->db->where('ID',$IDProdiTexting);
@@ -354,15 +352,15 @@ class C_api_webdivisi extends CI_Controller {
 
                 // check action insert or update
                 $sql = 'select ps.*from db_webdivisi.prodi_sambutan as ps 
-                    where ps.ProdiID = ?
+                    where ps.DivisiID = ?
                 ';
 
-                $ProdiID = $prodi_active_id;               
-                $query = $this->db->query($sql, array($ProdiID))->result_array();
+                $DivisiID = $divisi_active_id;               
+                $query = $this->db->query($sql, array($DivisiID))->result_array();
                 if (count($query) == 0) { // insert
                     
                     $datasave['Photo'] = $upload;
-                    $datasave['ProdiID'] = $prodi_active_id;
+                    $datasave['DivisiID'] = $divisi_active_id;
                     $this->db->insert('db_webdivisi.prodi_sambutan',$datasave);
                    
                 }
@@ -397,7 +395,7 @@ class C_api_webdivisi extends CI_Controller {
         else if($data_arr['action']=='readProdiPhoto'){
 
             $data = $this->db->query('SELECT ps.* FROM db_webdivisi.prodi_sambutan ps 
-                                                  WHERE ps.ProdiID = '.$prodi_active_id.'
+                                                  WHERE ps.DivisiID = '.$divisi_active_id.'
                                                 ')->result_array();
 
             return print_r(json_encode($data));
@@ -436,7 +434,7 @@ class C_api_webdivisi extends CI_Controller {
             } else {
                 // insert prodi_texting
                 $prodi_texting['UpdatedAt'] = $this->m_rest->getDateTimeNow();
-                $prodi_texting['ProdiID'] = $prodi_active_id;;
+                $prodi_texting['DivisiID'] = $divisi_active_id;;
 
                 $this->db->insert('db_webdivisi.prodi_texting',$prodi_texting);
                 $IDProdiTexting = $this->db->insert_id();
@@ -444,7 +442,7 @@ class C_api_webdivisi extends CI_Controller {
                 $calldetail = [
                     'IDProdiTexting' => $IDProdiTexting,
                     'Tlp' => $calldetail['Tlp'],
-                    'ProdiID' => $prodi_active_id,
+                    'DivisiID' => $divisi_active_id,
                 ];
 
                 $this->db->insert('db_webdivisi.calldetail',$calldetail);
@@ -454,9 +452,9 @@ class C_api_webdivisi extends CI_Controller {
         }
         else if($data_arr['action']=='readProdiPartner'){
             $data_arr = $this->getInputToken2();
-            $ProdiID = $prodi_active_id;
-            
-            $data = $this->db->query('SELECT * FROM db_webdivisi.partner WHERE ProdiID = '.$ProdiID.'')->result_array();   
+            $DivisiID = $divisi_active_id;
+            // print_r($DivisiID);
+            $data = $this->db->query('SELECT * FROM db_webdivisi.partner WHERE DivisiID = '.$DivisiID.'')->result_array();   
             return print_r(json_encode($data));
 
         }
@@ -471,7 +469,7 @@ class C_api_webdivisi extends CI_Controller {
 
                 $dataForm = (array) $data_arr['dataForm'];
                 
-                $dataForm['ProdiID'] = $prodi_active_id;
+                $dataForm['DivisiID'] = $divisi_active_id;
                 $dataForm['CreateAt'] = $this->m_rest->getDateTimeNow();
                 $dataform['CreateBy'] = $this->session->userdata('NIP');
                 $dataForm['Images']= $upload;
@@ -484,7 +482,7 @@ class C_api_webdivisi extends CI_Controller {
             $ID = $data_arr['ID'];
             
             $data = $this->db->get_where('db_webdivisi.partner',array(
-                'ProdiID' => $prodi_active_id,
+                'DivisiID' => $divisi_active_id,
                 'ID' => $ID,
                 
             ))->result_array();
@@ -495,9 +493,9 @@ class C_api_webdivisi extends CI_Controller {
         
         else if ($data_arr['action']=='deleteDataPartner') 
         {
-            $sql = 'select * from db_webdivisi.partner  where ProdiID= ?';
-            $ProdiID = $prodi_active_id;
-            $query = $this->db->query($sql, array($ProdiID))->result_array();
+            $sql = 'select * from db_webdivisi.partner  where DivisiID= ?';
+            $DivisiID = $divisi_active_id;
+            $query = $this->db->query($sql, array($DivisiID))->result_array();
 
             $ID = $data_arr['ID'];
             $this->db->where('ID', $ID);
@@ -514,9 +512,9 @@ class C_api_webdivisi extends CI_Controller {
 
             $data = $this->db->query('SELECT l.* , l.photo,em.Name FROM db_webdivisi.lecturer l
                                       INNER JOIN db_employees.employees as em ON em.NIP=l.NIP
-                                      WHERE l.ProdiID = "'.$prodi_active_id.'" ')->result_array();
+                                      WHERE l.DivisiID = "'.$divisi_active_id.'" ')->result_array();
             // $data = $this->db->get_where('db_webdivisi.lecturer',array(
-            //     'ProdiID' => $prodi_active_id,
+            //     'DivisiID' => $divisi_active_id,
                 
             // ))->result_array();
 
@@ -536,14 +534,14 @@ class C_api_webdivisi extends CI_Controller {
                 $dataForm = (array) $data_arr['dataForm'];
                 // check action insert or update
                 $sql = 'select l.* from db_webdivisi.lecturer as l  join db_employees.employees as em on l.NIP = em.NIP
-                    where l.NIP = ? and l.ProdiID= ?
+                    where l.NIP = ? and l.DivisiID= ?
                 ';
 
                 $NIP = $dataForm['NIP'];
-                $ProdiID = $prodi_active_id;
-                $query = $this->db->query($sql, array($NIP,$ProdiID))->result_array();
+                $DivisiID = $divisi_active_id;
+                $query = $this->db->query($sql, array($NIP,$DivisiID))->result_array();
                    if (count($query) == 0) { 
-                        $dataForm['ProdiID'] = $prodi_active_id;
+                        $dataForm['DivisiID'] = $divisi_active_id;
                         $dataForm['Photo'] = $upload;
                         $dataForm['CreateAt'] = $this->m_rest->getDateTimeNow();
                         $dataform['CreateBy'] = $this->session->userdata('NIP');
@@ -577,7 +575,7 @@ class C_api_webdivisi extends CI_Controller {
         else if ($data_arr['action']=='deleteDataLecturer') 
         {
             $sql = 'select * from db_webdivisi.lecturer  where ID= ?';
-            $ProdiID = $prodi_active_id;
+            $DivisiID = $divisi_active_id;
             $ID = $data_arr['ID'];
             $query = $this->db->query($sql, array($ID))->result_array();
 
@@ -605,7 +603,7 @@ class C_api_webdivisi extends CI_Controller {
 
                 $dataForm = (array) $data_arr['dataForm'];
                 
-                $dataForm['ProdiID'] = $prodi_active_id;
+                $dataForm['DivisiID'] = $divisi_active_id;
                 $dataForm['Photo'] = $upload;
                 $dataForm['CreateAt'] = $this->m_rest->getDateTimeNow();
                 $dataform['CreateBy'] = $this->session->userdata('NIP');
@@ -619,7 +617,7 @@ class C_api_webdivisi extends CI_Controller {
         else if($data_arr['action']=='readProdiFacilities'){
             
             $data = $this->db->get_where('db_webdivisi.facilities',array(
-                'ProdiID' => $prodi_active_id,
+                'DivisiID' => $divisi_active_id,
                 
             ))->result_array();
 
@@ -629,11 +627,11 @@ class C_api_webdivisi extends CI_Controller {
         else if ($data_arr['action']=='deleteDataFacilities') 
         {
             // check action insert or update
-            $sql = 'select fc.*, fc.Photo,fc.ProdiID from db_webdivisi.facilities as fc  join db_academic.program_study as ps on fc.ProdiID = ps.ID
-                where fc.ProdiID = ?
+            $sql = 'select fc.*, fc.Photo,fc.DivisiID from db_webdivisi.facilities as fc  join db_academic.program_study as ps on fc.DivisiID = ps.ID
+                where fc.DivisiID = ?
             ';
-            $ProdiID = $prodi_active_id;
-            $query = $this->db->query($sql, array($ProdiID))->result_array();
+            $DivisiID = $divisi_active_id;
+            $query = $this->db->query($sql, array($DivisiID))->result_array();
 
             $ID = $data_arr['ID'];
 
@@ -694,8 +692,11 @@ class C_api_webdivisi extends CI_Controller {
 
         }
         else if($data_arr['action']=='readContactAddress'){
-
-            $data = $this->db->get_where('db_webdivisi.contact_detail')->result_array();
+            // $data_arr = $this->getInputToken2();
+            // $divisi_active_id = $data_arr['DivisiID'];
+            $data = $this->db->query('SELECT cd.* FROM db_webdivisi.contact_detail cd 
+                                                  WHERE cd.DivisiID = '.$divisi_active_id.'
+                                                ')->result_array();
             return print_r(json_encode($data));
 
         }
@@ -703,12 +704,12 @@ class C_api_webdivisi extends CI_Controller {
         else if($data_arr['action']=='saveContactDetail'){
                 $dataForm = (array) $data_arr['data'];
 
-                $dataForm['ProdiID'] = $prodi_active_id;
+                $dataForm['DivisiID'] = $divisi_active_id;
                 $dataForm['CreateAT'] = $this->m_rest->getDateTimeNow();
                 $dataform['CreateBY'] = $this->session->userdata('NIP');
                 // Cek apakah udah di input atau blm
                 $dataCk = $this->db->get_where('db_webdivisi.contact_detail',array(
-                    'ProdiID' => $prodi_active_id,
+                    'DivisiID' => $divisi_active_id,
                 ))->result_array();
 
                 if(count($dataCk)>0){
@@ -723,7 +724,7 @@ class C_api_webdivisi extends CI_Controller {
         else if($data_arr['action']=='readContactSosmed'){
             
             $data = $this->db->get_where('db_webdivisi.sosmed',array(
-                'ProdiID' => $prodi_active_id,
+                'DivisiID' => $divisi_active_id,
                 
             ))->result_array();
 
@@ -740,12 +741,12 @@ class C_api_webdivisi extends CI_Controller {
 
                     $dataform = (array) $data_arr['data'];
                     $Icon = $dataform['Icon'];
-                    $dataform['ProdiID'] = $prodi_active_id;
+                    $dataform['DivisiID'] = $divisi_active_id;
                     $dataform['CreateAT'] = $this->m_rest->getDateTimeNow();
                     $dataform['CreateBY'] = $this->session->userdata('NIP');
                     // $dataform['Icon']= $upload;
                      $dataCk = $this->db->get_where('db_webdivisi.sosmed',array(
-                    'ProdiID' => $prodi_active_id,'Icon' => $Icon,))->result_array();
+                    'DivisiID' => $divisi_active_id,'Icon' => $Icon,))->result_array();
                     if(count($dataCk)>0){
                         $this->db->where('Icon', $dataCk[0]['Icon']);
                         $this->db->update('db_webdivisi.sosmed',$dataform);
@@ -763,7 +764,7 @@ class C_api_webdivisi extends CI_Controller {
             // check action insert or update
             $sql = 'select * from db_webdivisi.sosmed as s where s.ID = ?';
             $ID = $data_arr['ID'];
-            $ProdiID = $prodi_active_id;
+            $DivisiID = $divisi_active_id;
             $query = $this->db->query($sql, array($ID))->result_array();
             $this->db->where('ID', $ID);
             $this->db->delete('db_webdivisi.sosmed'); 
@@ -778,16 +779,16 @@ class C_api_webdivisi extends CI_Controller {
     }//and crud
 
 
-    function getProdiLecturer(){
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
+    function getDivisiLecturer(){
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
         $key = $this->input->post('key');
-        $data = 'SELECT em.NIP, em.Name, em.Gender, em.PositionMain, em.ProdiID, ps.NameEng AS         ProdiNameEng
+        $data = 'SELECT em.NIP, em.Name, em.Gender, em.PositionMain, em.DivisiID, ps.NameEng AS  ProdiNameEng
                 FROM db_employees.employees em
-                INNER JOIN db_academic.program_study ps ON (ps.ID = em.ProdiID)
+                INNER JOIN db_academic.program_study ps ON (ps.ID = em.DivisiID)
                 WHERE (em.PositionMain = "14.6" OR em.PositionMain = "14.7" )  AND ( ';//dosen kaprodi
         $data.= ' em.NIP LIKE "'.$key.'%" ';
         $data.= ' OR em.Name LIKE "'.$key.'%" ';
-        $data.= ' OR ps.ID LIKE "'. $prodi_active_id .'%" ';
+        $data.= ' OR ps.ID LIKE "'. $divisi_active_id .'%" ';
         $data.= ') ORDER BY Name ASC';
 
         $query = $this->db->query($data)->result_array();
@@ -795,19 +796,19 @@ class C_api_webdivisi extends CI_Controller {
     }
 
     
-    function getDataProdiTexting(){
+    function getDataDivisiTexting(){
 
 
         $data_arr = $this->getInputToken2();
 
         $LangCode = $data_arr['LangCode'];
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
         $Type = $data_arr['Type'];
 
         $data = $this->db->query('SELECT pt.*, l.language FROM db_webdivisi.prodi_texting pt 
                                             LEFT JOIN db_webdivisi.language l ON (l.ID = pt.LangID)
                                             WHERE l.Code LIKE "'.$LangCode.'"
-                                             AND pt.ProdiID = "'.$ProdiID.'"
+                                             AND pt.DivisiID = "'.$DivisiID.'"
                                              AND pt.Type = "'.$Type.'" ')->result_array();
 
         return print_r(json_encode($data));
@@ -816,7 +817,7 @@ class C_api_webdivisi extends CI_Controller {
     public function GetDataContentKnowledge(){
         $data_arr = $this->getInputToken2();       
         $LangCode = $data_arr['LangCode'];        
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
         $Type = $data_arr['Type'];
         $IDCat = $data_arr['IDCat'];
         // print_r($LangCode);
@@ -837,17 +838,17 @@ class C_api_webdivisi extends CI_Controller {
 
         if($IDCat==''){
 
-            $data = $this->db->query('SELECT cat.ID as IDCat,cat.Name,pt.ProdiID,COUNT(pt.ID_CatBase) jml, pt.* FROM db_webdivisi.category_knowledge cat 
+            $data = $this->db->query('SELECT cat.ID as IDCat,cat.Name,pt.DivisiID,COUNT(pt.ID_CatBase) jml, pt.* FROM db_webdivisi.category_knowledge cat 
                                         LEFT JOIN ( select pt2.* from db_webdivisi.prodi_texting as pt2 
                                         LEFT JOIN db_webdivisi.language l ON (l.ID = pt2.LangID) 
-                                        WHERE l.Code LIKE "'.$LangCode.'" AND pt2.ProdiID="'.$ProdiID.'" AND pt2.Type = "'.$Type.'") pt on cat.ID=pt.ID_CatBase
+                                        WHERE l.Code LIKE "'.$LangCode.'" AND pt2.DivisiID="'.$DivisiID.'" AND pt2.Type = "'.$Type.'") pt on cat.ID=pt.ID_CatBase
                                         GROUP BY cat.ID,cat.Name')->result_array();
         }else{
             
-            $data = $this->db->query('SELECT cat.ID as IDCat,cat.Name,pt.ProdiID,COUNT(pt.ID_CatBase) jml, pt.* FROM db_webdivisi.category_knowledge cat 
+            $data = $this->db->query('SELECT cat.ID as IDCat,cat.Name,pt.DivisiID,COUNT(pt.ID_CatBase) jml, pt.* FROM db_webdivisi.category_knowledge cat 
                                         LEFT JOIN ( select pt2.* from db_webdivisi.prodi_texting as pt2 
                                         LEFT JOIN db_webdivisi.language l ON (l.ID = pt2.LangID) 
-                                        WHERE l.Code LIKE "'.$LangCode.'" AND pt2.ProdiID="'.$ProdiID.'" AND pt2.Type = "'.$Type.'" 
+                                        WHERE l.Code LIKE "'.$LangCode.'" AND pt2.DivisiID="'.$DivisiID.'" AND pt2.Type = "'.$Type.'" 
                                         AND pt2.ID_CatBase="'.$IDCat.'") pt on cat.ID=pt.ID_CatBase
                                         GROUP BY cat.ID,cat.Name')->result_array();
         }
@@ -855,16 +856,15 @@ class C_api_webdivisi extends CI_Controller {
         return print_r(json_encode($data));
     }
 
-    function getDetailProdi(){
+    function getDetailDivisi(){
         $data_arr = $this->getInputToken2();
         $LangCode = $data_arr['LangCode'];
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
 
-        $data = $this->db->query('SELECT ps.Name, ps.NameEng, em.Name AS Kaprodi, em.TitleAhead, em.TitleBehind , psm.Photo  
-                                            FROM db_academic.program_study ps 
-                                            LEFT JOIN db_employees.employees em ON (em.NIP = ps.KaprodiID)
-                                            LEFT JOIN db_webdivisi.prodi_sambutan psm ON psm.ProdiID = ps.ID
-                                            WHERE ps.ID = "'.$ProdiID.'" ')->result_array();
+        $data = $this->db->query('SELECT ps.Name, ps.NameEng, em.Name AS Kaprodi, em.TitleAhead, em.TitleBehind , ps.Photo  
+                                            FROM  db_employees.employees em 
+                                            LEFT JOIN db_webdivisi.prodi_sambutan ps ON em.DivisiID = ps.ID
+                                            WHERE ps.ID = "'.$DivisiID.'" ')->result_array();
 
         if(count($data)>0){
             $data[0]['ProdiName'] = ($LangCode=='Ind') ? $data[0]['Name'] : $data[0]['NameEng'];
@@ -875,26 +875,25 @@ class C_api_webdivisi extends CI_Controller {
         return print_r(json_encode($data));
     }
 
-    function getDosenProdi(){
+    function getDosenDivisi(){
         $data_arr = $this->getInputToken2();
         $LangCode = $data_arr['LangCode'];
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
 
-        $data = $this->db->query('SELECT l.*,em.Name , em.TitleAhead, em.TitleBehind, ps.Name as ProdiName, ps.NameEng  FROM db_academic.program_study ps
-                                  INNER JOIN db_webdivisi.lecturer l ON (l.ProdiID = ps.ID)
-                                  LEFT JOIN db_employees.employees em ON (em.NIP = l.NIP)
-                                  WHERE l.ProdiID = "'.$ProdiID.'"')->result_array();
+        $data = $this->db->query('SELECT * FROM db_employees.employees em
+                                  WHERE em.PositionMain like "%'.$DivisiID.'.%" AND em.Status="1" ORDER BY em.PositionMain ASC')->result_array();
         
         return print_r(json_encode($data));
     }
-    function getStudentsProdi(){
+
+    function getStudentsDivisi(){
 
         $key = $this->input->post('key');
         $data_arr = $this->getInputToken2();
-        $ProdiID =  $this->session->userdata('prodi_active_id');
+        $DivisiID =  $this->session->userdata('IDdepartementNavigation');
 
-        $data = $this->db->query('SELECT NPM, Name,ProdiID FROM db_academic.auth_students ats 
-                                                    WHERE  (ats.ProdiID = "'.$ProdiID.'")
+        $data = $this->db->query('SELECT NPM, Name,DivisiID FROM db_academic.auth_students ats 
+                                                    WHERE  (ats.DivisiID = "'.$DivisiID.'")
                                                     AND (ats.NPM LIKE "%'.$key.'%" 
                                                     OR ats.Name LIKE "%'.$key.'%")')->result_array();
 
@@ -902,7 +901,7 @@ class C_api_webdivisi extends CI_Controller {
 
     }
 
-    function getTestiProdi(){
+    function getTestiDivisi(){
 
         $data_arr = $this->getInputToken2();
         $LangCode = $data_arr['LangCode'];
@@ -911,7 +910,7 @@ class C_api_webdivisi extends CI_Controller {
         }else{
             $LangCode1=1;
         }
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
         $Type = $data_arr['Type'];
 
         $data = $this->db->query('SELECT pt.*, l.Language ,st.Photo,ast.Name,ast.NPM,ps.Name AS Name1, ps.NameEng
@@ -921,18 +920,18 @@ class C_api_webdivisi extends CI_Controller {
                                         LEFT JOIN db_webdivisi.student_testimonials st ON (st.ID = std.IDStudentTexting)
                                         LEFT JOIN db_academic.auth_students ast ON (ast.NPM = st.NPM)
                                         LEFT JOIN db_webdivisi.calldetail c ON (c.IDProdiTexting = pt.ID)
-                                        LEFT JOIN db_academic.program_study ps ON (ps.ID = pt.ProdiID)
-                                        WHERE pt.LangID = "'.$LangCode1.'" AND pt.ProdiID = "'.$ProdiID.'" AND pt.Type="'.$Type.'" ')->result_array();
+                                        LEFT JOIN db_academic.program_study ps ON (ps.ID = pt.DivisiID)
+                                        WHERE pt.LangID = "'.$LangCode1.'" AND pt.DivisiID = "'.$DivisiID.'" AND pt.Type="'.$Type.'" ')->result_array();
        
         return print_r(json_encode($data));
         
 
     }
-    function getPartnerProdi(){
+    function getPartnerDivisi(){
         $data_arr = $this->getInputToken2();
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
 
-        $data = $this->db->query('SELECT * FROM db_webdivisi.partner WHERE ProdiID = '.$ProdiID.'')->result_array();
+        $data = $this->db->query('SELECT * FROM db_webdivisi.partner WHERE DivisiID = '.$DivisiID.'')->result_array();
         if(count($data)>0){
             // $DefaultPhoto = base_url('images/Slider/default.jpg');
             $data[0]['Images'] = ($data[0]['Images']!='' && $data[0]['Images']!=null) ? $data[0]['Images'] :  'default.png';
@@ -941,11 +940,11 @@ class C_api_webdivisi extends CI_Controller {
         return print_r(json_encode($data));
     }
 
-    function getSliderProdi(){
+    function getSliderDivisi(){
         $data_arr = $this->getInputToken2();
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
 
-        $data = $this->db->query('SELECT s.* FROM db_webdivisi.slider s WHERE s.ProdiID = '.$ProdiID.' ORDER BY s.Sorting ASC ')->result_array();
+        $data = $this->db->query('SELECT s.* FROM db_webdivisi.slider s WHERE s.DivisiID = '.$DivisiID.' ORDER BY s.Sorting ASC ')->result_array();
         
         
         return print_r(json_encode($data));
@@ -953,17 +952,17 @@ class C_api_webdivisi extends CI_Controller {
 
     function getAllCategory(){
         $data_arr = $this->getInputToken2();
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
 
-        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities  WHERE ProdiID = '.$ProdiID.'  order by RAND() LIMIT 50')->result_array();
+        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities  WHERE DivisiID = '.$DivisiID.'  order by RAND() LIMIT 50')->result_array();
         return print_r(json_encode($data));
     }
     function getCategoryClassroom(){
         $data_arr = $this->getInputToken2();
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
         $filter = $data_arr['filter'];
-       $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE ProdiID = '.$ProdiID.' AND Category LIKE  "%'.$filter.'%"')->result_array();
-        // $sql =  'SELECT * FROM db_webdivisi.facilities WHERE ProdiID = '.$ProdiID.' AND Category LIKE 
+       $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE DivisiID = '.$DivisiID.' AND Category LIKE  "%'.$filter.'%"')->result_array();
+        // $sql =  'SELECT * FROM db_webdivisi.facilities WHERE DivisiID = '.$DivisiID.' AND Category LIKE 
         // "%'.$filter.'%"';
         // print_r($sql);
         return print_r(json_encode($data));
@@ -971,27 +970,27 @@ class C_api_webdivisi extends CI_Controller {
     
     function getCategoryLaboratory(){
         $data_arr = $this->getInputToken2();
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
 
-        // $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE ProdiID = '.$ProdiID.' AND category = "Laboratory"')->result_array();
-        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities  WHERE ProdiID = '.$ProdiID.'  order by RAND() LIMIT 50')->result_array();
+        // $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE DivisiID = '.$DivisiID.' AND category = "Laboratory"')->result_array();
+        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities  WHERE DivisiID = '.$DivisiID.'  order by RAND() LIMIT 50')->result_array();
         
         return print_r(json_encode($data));
     }
     function getCategoryFacilities(){
         $data_arr = $this->getInputToken2();
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
 
-        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE ProdiID = '.$ProdiID.'')->result_array();
+        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE DivisiID = '.$DivisiID.'')->result_array();
         
         
         return print_r(json_encode($data));
     }
-    function getInstaProdi(){
+    function getInstaDivisi(){
         $data_arr = $this->getInputToken2();
-        $ProdiID = $data_arr['ProdiID'];
+        $DivisiID = $data_arr['DivisiID'];
 
-        $data = $this->db->query('SELECT * FROM db_academic.program_study_detail WHERE ProdiID = '.$ProdiID.'')->result_array();
+        $data = $this->db->query('SELECT * FROM db_webdivisi.host_divisi WHERE DivisiID = '.$DivisiID.'')->result_array();
         return print_r(json_encode($data));
     }
 

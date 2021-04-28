@@ -75,7 +75,7 @@ function loadDataLecture() {
         
     };
     var token = jwt_encode(data,'UAP)(*');
-    var url = base_url_js+'api-prodi/__crudDataProdi';
+    var url = base_url_js+'api-webdivisi/__crudDataDivisi';
     var locimg = base_url_js+'images/Lecturer/';
     $.post(url,{token:token},function (jsonResult) {
         $('#viewDataDesc').empty();
@@ -168,7 +168,7 @@ $('#btnSave').click(function () {
             loading_button('#btnSave');
             var token = jwt_encode(data,'UAP)(*');
             form_data.append('token',token);
-            var url = base_url_js+'api-prodi/__crudDataProdi';
+            var url = base_url_js+'api-webdivisi/__crudDataDivisi';
             $.ajax({
               type:"POST",
               url:url,
@@ -213,7 +213,7 @@ $(document).off('click', '#btn-hapus').on('click', '#btn-hapus',function(e) { //
     var form_data = new FormData();
     var token = jwt_encode(data,"UAP)(*");
     form_data.append('token',token);
-    var url = base_url_js + "api-prodi/__crudDataProdi";
+    var url = base_url_js + "api-webdivisi/__crudDataDivisi";
     $.ajax({
             type :"POST",
             url : url,

@@ -118,7 +118,7 @@
                         var token = jwt_encode(dataform,"UAP)(*");
                         form_data.append('token',token);
                         loading_button2(selector);
-                        var url = base_url_js + "api-prodi/__crudDataProdi";
+                        var url = base_url_js + "api-webdivisi/__crudDataDivisi";
                         $.ajax({
                           type:"POST",
                           url:url,
@@ -167,7 +167,7 @@
             action : 'readContactSosmed',
         };
         var token = jwt_encode(data,'UAP)(*');
-        var url = base_url_js+'api-prodi/__crudDataProdi';
+        var url = base_url_js+'api-webdivisi/__crudDataDivisi';
         var locimg = base_url_js+'images/icon/';
         $.post(url,{token:token},function (jsonResult) {
             $('#viewDataDesc').empty();
