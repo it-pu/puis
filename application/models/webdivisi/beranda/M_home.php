@@ -5,7 +5,7 @@ class M_home extends CI_Model{
     var $column_order = array('Title','Description',null); //set column field database for datatable orderable
     var $column_search = array('Title','Description'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $order = array('ID' => 'desc'); // default order 
-    // var $prodi_active_id = $this->session->userdata('prodi_active_id');
+    // var $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
 
 
     public function __construct()
@@ -18,44 +18,44 @@ class M_home extends CI_Model{
 
     function getTableProdi(){// db_academic
 
-    	$prodi_active_id = $this->session->userdata('prodi_active_id');
+    	$divisi_active_id = $this->session->userdata('IDdepartementNavigation');
 
-        $hasil=$this->db->query("SELECT * FROM db_academic.program_study_detail where ProdiID = '".$prodi_active_id."' ")->result_array();
+        $hasil=$this->db->query("SELECT * FROM db_academic.program_study_detail where DivisiID = '".$divisi_active_id."' ")->result_array();
         return $hasil;
     }
 
     function updateTableProdi($data_arr){
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
 
         $dataForm = (array) $data_arr['dataForm'];
 
         // Cek
         $dataCk = $this->db->get_where('db_academic.program_study_detail'
-            ,array('ProdiID'=>$prodi_active_id))->result_array();
+            ,array('DivisiID'=>$divisi_active_id))->result_array();
 
         if(count($dataCk)>0){
         // print_r($dataForm);die();
        // print_r($dataForm);die();
-            $this->db->where('ProdiID', $prodi_active_id);
+            $this->db->where('DivisiID', $divisi_active_id);
             $this->db->update('db_academic.program_study_detail',$dataForm);
         } else {
-            $dataForm['ProdiID'] = $prodi_active_id;
+            $dataForm['DivisiID'] = $divisi_active_id;
             $this->db->insert('db_academic.program_study_detail',$dataForm);
         }
 
     }
 
     function getDataTestimoni(){ // db_webdivisi
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
 
-        $hasil=$this->db->query("SELECT * FROM db_webdivisi.testimoni where ProdiID = '".$prodi_active_id."' ")->result_array();
+        $hasil=$this->db->query("SELECT * FROM db_webdivisi.testimoni where DivisiID = '".$divisi_active_id."' ")->result_array();
         return $hasil;
     }
 
     function getDataSlider(){ // db_webdivisi
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
 
-        $hasil = $this->db->query("SELECT * FROM db_webdivisi.slider where ProdiID = '".$prodi_active_id."' order by Sorting asc ")->result_array();
+        $hasil = $this->db->query("SELECT * FROM db_webdivisi.slider where DivisiID = '".$divisi_active_id."' order by Sorting asc ")->result_array();
         for ($i=0; $i < count($hasil); $i++) { 
             $data = $hasil[$i];
             $token = $this->jwt->encode($data,"UAP)(*");
@@ -66,21 +66,21 @@ class M_home extends CI_Model{
     }
 
     function updateDataProdi($data_arr){
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
 
         $dataForm = (array) $data_arr['dataForm'];
 
         // Cek
         $dataCk = $this->db->get_where('db_webdivisi.slider'
-            ,array('ProdiID'=>$prodi_active_id))->result_array();
+            ,array('DivisiID'=>$divisi_active_id))->result_array();
 
         if(count($dataCk)>0){
         // print_r($dataForm);die();
        // print_r($dataForm);die();
-            $this->db->where('ProdiID', $prodi_active_id);
+            $this->db->where('DivisiID', $divisi_active_id);
             $this->db->update('db_webdivisi.slider',$dataForm);
         } else {
-            $dataForm['ProdiID'] = $prodi_active_id;
+            $dataForm['DivisiID'] = $divisi_active_id;
             $this->db->insert('db_webdivisi.slider',$dataForm);
         }
         
@@ -89,7 +89,7 @@ class M_home extends CI_Model{
 
     private function _get_datatables_query()
     {
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
         if($this->input->post('type')){            
             $getvaID= $this->input->post('type');  
             $data=$this->db->where('Type', $getvaID);
@@ -99,7 +99,7 @@ class M_home extends CI_Model{
         $this->db->from('db_webdivisi.prodi_texting as pt'); 
         $this->db->join('db_webdivisi.language as l', 'pt.LangID = l.ID');
         $this->db->join('db_webdivisi.category_knowledge as ck', 'pt.ID_CatBase = ck.ID');
-        $this->db->where('pt.ProdiID', $prodi_active_id);
+        $this->db->where('pt.DivisiID', $divisi_active_id);
         $this->db->order_by('ID','desc');
         // $this->db->order_by("ID", "desc");
         $i = 0;
@@ -170,14 +170,14 @@ class M_home extends CI_Model{
 
     public function getCategory($getidlang)
     {
-        // $prodi_active_id = $this->session->userdata('prodi_active_id');
+        // $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
         // $this->db->from("db_webdivisi.category_knowledge");
-        // $this->db->where(array('Lang' => $getidlang,'ProdiID' => $prodi_active_id));
+        // $this->db->where(array('Lang' => $getidlang,'DivisiID' => $divisi_active_id));
         // $this->db->order_by('ID','desc');
         // $q = $this->db->get();
         // return $q->result();
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
-        $hasil=$this->db->query("SELECT * FROM db_webdivisi.category_knowledge where ProdiID = '".$prodi_active_id."' and Lang = '".$getidlang."' ")->result_array();
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
+        $hasil=$this->db->query("SELECT * FROM db_webdivisi.category_knowledge where DivisiID = '".$divisi_active_id."' and Lang = '".$getidlang."' ")->result_array();
         return $hasil;
     }
 
@@ -211,11 +211,11 @@ class M_home extends CI_Model{
     }
 
     function get_category(){
-        $prodi_active_id = $this->session->userdata('prodi_active_id');
+        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
         $this->db->select('ck.*,l.Language ');
         $this->db->from("db_webdivisi.category_knowledge as ck");
         $this->db->join("db_webdivisi.language as l", "ck.Lang = l.ID");
-        $this->db->where('ProdiID',$prodi_active_id);
+        $this->db->where('DivisiID',$divisi_active_id);
         $this->db->order_by('ck.ID','desc');
         $q = $this->db->get();
         return $q->result();  

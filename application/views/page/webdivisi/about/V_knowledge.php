@@ -279,7 +279,7 @@
      
             // Load data for the table's content from an Ajax source
             "ajax": {               
-                "url": base_url_js+'prodi/load_data',
+                "url": base_url_js+'webdivisi/load_data',
                 "type": "POST",
                 "data": function ( data ) {
                         data.type = '<?= $Segment2 ?>';                     

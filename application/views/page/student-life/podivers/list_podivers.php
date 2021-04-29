@@ -277,8 +277,7 @@
             $(this).next().empty();
         });
      
-    });
-     
+    });     
 
 // Craete content
     $(document).ready(function(){        
@@ -293,6 +292,9 @@
                     var html = '';
                     var i;
                     for(i=0; i<data.length; i++){
+                        if(i==0){
+                            html += '<option value="'+'%'+'">'+'--All--'+'</option>';                            
+                        }
                         html += '<option value='+data[i].ID_master_group+'>'+data[i].MasterGroupName+'</option>';
                     }
                     $('#showSetMasterGroup').html(html);
@@ -301,25 +303,50 @@
             return false;
     });
 
-    $(document).ready(function(){        
-            var id=$(this).val();
-            $.ajax({
-                url : base_url_js+'_crudSetGroup',
-                method : "POST",
-                data : {id: id},
-                async : true,
-                dataType : 'json',
-                success: function(data){                     
-                    var html = '';
-                    var i;
-                    for(i=0; i<data.length; i++){
-                        html += '<option value='+data[i].ID_set_group+'>'+data[i].GroupName+'</option>';
-                    }
-                    $('#showSetGroup').html(html);
+    // $(document).ready(function(){        
+    //         var id=$('.getSetcontent[name="ID_master_group"]').val();
+    //         alert(id);
+    //         $.ajax({
+    //             url : base_url_js+'_crudSetGroup',
+    //             method : "POST",
+    //             data : {id: id},
+    //             async : true,
+    //             dataType : 'json',
+    //             success: function(data){                     
+    //                 var html = '';
+    //                 var i;
+    //                 for(i=0; i<data.length; i++){
+    //                     html += '<option value='+data[i].ID_set_group+'>'+data[i].GroupName+'</option>';
+    //                 }
+    //                 $('#showSetGroup').html(html);
+    //             }
+    //         });
+    //         return false;
+    // });
+
+    $(document).ready(function(){
+        loadDataSetGroup();
+    })
+
+    function loadDataSetGroup(dataMaster) {
+        var id=dataMaster;
+        $.ajax({
+            url : base_url_js+'_crudSetGroup',
+            method : "POST",
+            data : {id: id},
+            async : true,
+            dataType : 'json',
+            success: function(data){                     
+                var html = '';
+                var i;
+                for(i=0; i<data.length; i++){
+                    html += '<option value='+data[i].ID_set_group+'>'+data[i].GroupName+'</option>';
                 }
-            });
-            return false;
-    });
+                $('#showSetGroup').html(html);
+            }
+        });
+        return false;
+    }
 
     $(document).ready(function(){        
             var id=$(this).val();
@@ -601,5 +628,11 @@
         }
     }
 
+    $(document).off('change', '#showSetMasterGroup').on('change', '#showSetMasterGroup',function(e) {
+        var dataMaster = $('.getSetcontent[name="ID_master_group"]').val();
+        var selectorOPsetGroup = $('.getSetcontent[name="ID_set_group"]').val('');
+        // alert(dataMaster);
+        loadDataSetGroup(dataMaster);
+    })
 
 </script>

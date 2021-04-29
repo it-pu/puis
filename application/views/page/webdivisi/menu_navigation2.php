@@ -19,32 +19,32 @@
                 </a>
                 <ul class="sub-menu">
                         <li class="<?php if($this->uri->segment(3)=='slide'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/beranda/slide'); ?>">
+                                <a href="<?php echo base_url('webdivisi/beranda/slide'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Slider
                                 </a>
                         </li>
                         <li class="<?php if($this->uri->segment(3)=='why-choose-us'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/beranda/why-choose-us/whychoose'); ?>">
+                                <a href="<?php echo base_url('webdivisi/beranda/why-choose-us/whychoose'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Why Choose us?
                                 </a>
                         </li>
                         <!-- <li class="<?php if($this->uri->segment(3)=='calltoaction'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/beranda/calltoaction'); ?>">
+                                <a href="<?php echo base_url('webdivisi/beranda/calltoaction'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Call to action
                                 </a>
                         </li> -->
                        
                         <li class="<?php if($this->uri->segment(3)=='testimoni'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/beranda/testimoni'); ?>">
+                                <a href="<?php echo base_url('webdivisi/beranda/testimoni'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Testimonials
                                 </a>
                         </li>
                         <li class="<?php if($this->uri->segment(3)=='client'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/beranda/partner'); ?>">
+                                <a href="<?php echo base_url('webdivisi/beranda/partner'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Partner Collaborations
                                 </a>
@@ -59,31 +59,31 @@
                 </a>
                 <ul class="sub-menu">
                         <li class="<?php if($this->uri->segment(3)=='overview'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/about/overview'); ?>">
+                                <a href="<?php echo base_url('webdivisi/about/overview'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Greetings
                                 </a>
                         </li>
                         <li class="<?php if($this->uri->segment(3)=='visimisi'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/about/vision'); ?>">
+                                <a href="<?php echo base_url('webdivisi/about/vision'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Vision dan Mission
                                 </a>
                         </li>
                         <li class="<?php if($this->uri->segment(3)=='struktur'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/about/sambutan'); ?>">
+                                <a href="<?php echo base_url('webdivisi/about/sambutan'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Organizational Structure
                                 </a>
                         </li>
                         <li class="<?php if($this->uri->segment(3)=='lecturer'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/about/lecturer'); ?>">
+                                <a href="<?php echo base_url('webdivisi/about/lecturer'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Lecturer
                                 </a>
                         </li>
                         <li class="<?php if($this->uri->segment(3)=='facilities'){echo "current";} ?>">
-                                <a href="<?php echo base_url('prodi/about/facilities'); ?>">
+                                <a href="<?php echo base_url('webdivisi/about/facilities'); ?>">
                                 <i class="icon-angle-right"></i>
                                 Facilities
                                 </a>
@@ -127,7 +127,7 @@
                 </a>
             </li> -->
             <li class="<?php if($this->uri->segment(2)=='contact'){echo "current";} ?>">
-                <a href="<?php echo base_url('prodi/contact'); ?>">
+                <a href="<?php echo base_url('webdivisi/contact'); ?>">
                     <i class="fa fa-phone"></i>
                    Contact
                     
