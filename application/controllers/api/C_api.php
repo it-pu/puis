@@ -9171,7 +9171,7 @@ class C_api extends CI_Controller
 
         $data_arr = $this->getInputToken();
 
-        if (count($data_arr > 0)) {
+        if (count($data_arr) > 0) {
             if ($data_arr['action'] == 'updateFP') {
 
                 // Cek apakah NIM sudah ada
