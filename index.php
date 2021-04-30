@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CodeIgniter
  *
@@ -54,7 +55,7 @@
  * NOTE: If you change these, also change the error_reporting() code below
  */
 
-	/*
+/*
 		Buat function https manual
 		Alhadi Rahman
 		08 Okt 2019
@@ -65,211 +66,197 @@ date_default_timezone_set("Asia/Jakarta");
 //setlocale(LC_ALL, 'id_ID.UTF8', 'id_ID.UTF-8', 'id_ID.8859-1', 'id_ID', 'IND.UTF8', 'IND.UTF-8', 'IND.8859-1', 'IND', 'Indonesian.UTF8', 'Indonesian.UTF-8', 'Indonesian.8859-1', 'Indonesian', 'Indonesia', 'id', 'ID', 'en_US.UTF8', 'en_US.UTF-8', 'en_US.8859-1', 'en_US', 'American', 'ENG', 'English');
 setlocale(LC_ALL, "en_US.UTF-8");
 
-	if (!function_exists('getallheaders')) {
-	    function getallheaders() {
-	    $headers = [];
-	    foreach ($_SERVER as $name => $value) {
-	        if (substr($name, 0, 5) == 'HTTP_') {
-	            $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-	        }
-	    }
-	    return $headers;
-	    }
-	}
-
-	function is_https_chek()
+if (!function_exists('getallheaders')) {
+	function getallheaders()
 	{
-		if ( ! empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
-		{
-			return TRUE;
+		$headers = [];
+		foreach ($_SERVER as $name => $value) {
+			if (substr($name, 0, 5) == 'HTTP_') {
+				$headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+			}
 		}
-		elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
-		{
-			return TRUE;
-		}
-		elseif ( ! empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off')
-		{
-			return TRUE;
-		}
+		return $headers;
+	}
+}
 
-		return FALSE;			
+function is_https_chek()
+{
+	if (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
+		return TRUE;
+	} elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') {
+		return TRUE;
+	} elseif (!empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off') {
+		return TRUE;
 	}
 
-	$HostPath=(is_https_chek() ? "https://" : "http://");
+	return FALSE;
+}
 
-	stream_context_set_default([
-		'ssl' => [
-			'verify_peer' => false,
-			'verify_peer_name' => false,
-		],
-	]);
-	/* End Function https */
+$HostPath = (is_https_chek() ? "https://" : "http://");
 
-	/*
+stream_context_set_default([
+	'ssl' => [
+		'verify_peer' => false,
+		'verify_peer_name' => false,
+	],
+]);
+/* End Function https */
+
+/*
 		Set Environtment if not exist, ref by docker instalation
 		Alhadi Rahman 2021 - 01 - 25
 	*/
-		define('_HOST_ID', isset($_SERVER['_HOST_ID']) ? $_SERVER['_HOST_ID'] : 'DEMO');
+define('_HOST_ID', isset($_SERVER['_HOST_ID']) ? $_SERVER['_HOST_ID'] : 'DEMO');
 
-		if (isset($_SERVER['_HOST_ID'])) {
-			if (_HOST_ID == 'DEMO') {
-				define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.59');
-				// IP public not set
-				define("URLAD","http://202.158.17.147:8076/", true);
-				define("url_files","https://"."files.uap.ac.id/", true);
-				define("url_DocxToPDf","http://x.x.x.x/apidocxtopdf/", true); // my local adhi
-			}
-			else
-			{
-				define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.18');
-				// IP public not set
-				define("URLAD","http://202.158.17.147:8076/", true);
-				define("url_files","https://"."files.podomorouniversity.ac.id/", true);
-				define("url_DocxToPDf","http://x.x.x.x/apidocxtopdf/", true); // my local adhi
-			}
-		}
-		else
-		{
-			define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.18');
-			define("URLAD","http://10.1.30.2:8076/", true);
-			define("url_files","https://"."files.podomorouniversity.ac.id/", true);
-			define("url_DocxToPDf","http://10.1.10.31/apidocxtopdf/", true); // my local adhi
-		}
-
-		define('_DB_USER', isset($_SERVER['_DB_USER']) ? $_SERVER['_DB_USER'] : 'db_itpu');
-		define('_DB_PASSWORD', isset($_SERVER['_DB_PASSWORD']) ? $_SERVER['_DB_PASSWORD'] : 'Uap)(*&^%');
-		define('_DB_NAME', isset($_SERVER['_DB_NAME']) ? $_SERVER['_DB_NAME'] : 'db_academic');
-		define('_DB_PORT', isset($_SERVER['_DB_PORT']) ? $_SERVER['_DB_PORT'] : '3306');
-
-		// Library
-		define('_DB_HOST_LIBRARY', isset($_SERVER['_DB_HOST_LIBRARY']) ? $_SERVER['_DB_HOST_LIBRARY'] : '10.1.30.63');
-		define('_DB_PORT_LIBRARY', isset($_SERVER['_DB_PORT_LIBRARY']) ? $_SERVER['_DB_PORT_LIBRARY'] : '3306');
-
-	$ServerName = $_SERVER['SERVER_NAME'];
-	switch ($ServerName) {
-		case 'pcam.podomorouniversity.ac.id':
-		    define("url_registration",$HostPath."admission.podomorouniversity.ac.id/", true);
-            define("serverRoot",$HostPath."pcam.podomorouniversity.ac.id", true);
-            define("url_pas",$HostPath."pcam.podomorouniversity.ac.id/", true);
-            define("url_img_employees",url_pas."uploads/employees/", true);
-            define("url_img_students",url_pas."uploads/students/", true);
-
-            define("url_pcam",$HostPath."pcam.podomorouniversity.ac.id/dashboard", true);
-            define("url_students",$HostPath."studentpu.podomorouniversity.ac.id/home", true);
-            define("url_lecturers",$HostPath."lecturerpu.podomorouniversity.ac.id/home", true);
-            define("url_sign_out",$HostPath."portal.podomorouniversity.ac.id/", true);
-    //
-            define("url_sign_in_lecturers",$HostPath."lecturerpu.podomorouniversity.ac.id/", true);
-            define("url_sign_in_students",$HostPath."studentpu.podomorouniversity.ac.id/", true);
-            define("url_library","http://library.podomorouniversity.ac.id/", true);
-            define("url_blogadmin",$HostPath."adminblogs.podomorouniversity.ac.id/", true);
-            
-            if (isset($_SERVER['_DB_HOST'])) {
-            	define("path_register_online","/home/docker1/admission/", true);
-            }
-            else
-            {
-            	define("path_register_online","/var/www/html/registeronline/", true);
-            }
-            
-            // define('ENVIRONMENT', 'production',true);
-            define('ENVIRONMENT', 'development',true);
-			break;
-		case 'pcam.uap.ac.id':
-		    define("url_registration",$HostPath."admission.uap.ac.id/", true);
-            define("serverRoot",$HostPath."pcam.uap.ac.id", true);
-            define("url_pas",$HostPath."pcam.uap.ac.id/", true);
-            define("url_img_employees",url_pas."uploads/employees/", true);
-            define("url_img_students",url_pas."uploads/students/", true);
-
-            define("url_pcam",$HostPath."pcam.uap.ac.id/dashboard", true);
-            define("url_students",$HostPath."studentpu.uap.ac.id/home", true);
-            define("url_lecturers",$HostPath."lecturerpu.uap.ac.id/home", true);
-            define("url_sign_out",$HostPath."portal.uap.ac.id/", true);
-    //
-            define("url_sign_in_lecturers",$HostPath."lecturerpu.uap.ac.id/", true);
-            define("url_sign_in_students",$HostPath."studentpu.uap.ac.id/", true);
-            define("url_library","http://library.podomorouniversity.ac.id/", true);
-            define("url_blogadmin",$HostPath."adminblogs.podomorouniversity.ac.id/", true);
-            
-            if (isset($_SERVER['_DB_HOST'])) {
-            	define("path_register_online","/home/docker1/admission/", true);
-            }
-            else
-            {
-            	define("path_register_online","/var/www/html/registeronline/", true);
-            }
-            
-            define('ENVIRONMENT', 'development',true);
-			break;
-		case 'demopcam.podomorouniversity.ac.id':
-		    define("url_registration",$HostPath."demoadmission.podomorouniversity.ac.id/", true);
-            define("serverRoot",$HostPath."demopcam.podomorouniversity.ac.id", true);
-            define("url_pas",$HostPath."demopcam.podomorouniversity.ac.id/", true);
-            define("url_img_employees",url_pas."uploads/employees/", true);
-            define("url_img_students",url_pas."uploads/students/", true);
-
-            define("url_pcam",$HostPath."demopcam.podomorouniversity.ac.id/dashboard", true);
-            define("url_students",$HostPath."demostudentpu.podomorouniversity.ac.id/home", true);
-            define("url_lecturers",$HostPath."demolecturerpu.podomorouniversity.ac.id/home", true);
-            define("url_sign_out",$HostPath."demoportal.podomorouniversity.ac.id/", true);
-    //
-            define("url_sign_in_lecturers",$HostPath."demolecturerpu.podomorouniversity.ac.id/", true);
-            define("url_sign_in_students",$HostPath."demostudentpu.podomorouniversity.ac.id/", true);
-            define("url_library","http://library.podomorouniversity.ac.id/", true);
-            define("url_blogadmin",$HostPath."demoadminblogs.podomorouniversity.ac.id/", true);
-            
-            if (isset($_SERVER['_DB_HOST'])) {
-            	define("path_register_online","/home/docker1/admission/", true);
-            }
-            else
-            {
-            	define("path_register_online","/var/www/html/registeronline/", true);
-            }
-            define('ENVIRONMENT', 'development',true);
-			break;		
-		default:
-            $port_user = ($_SERVER['SERVER_PORT']!='80') ? ':'.$_SERVER['SERVER_PORT'] : '';
-            $folder_user = 'puis';
-            $portal_user = 'portal';
-            define("port",$port_user, true);
-
-            // Local Nandang
-            define("url_registration",$HostPath."localhost/registeronline/", true);
-            define("serverRoot",$HostPath."localhost".port."/".$folder_user, true);
-            define("url_pas",$HostPath."localhost".port."/".$folder_user."/", true);
-            define("url_img_employees",url_pas."uploads/employees/", true);
-            define("url_img_students",url_pas."uploads/students/", true);
-
-            define("url_pcam",url_pas."dashboard", true);
-
-            define("url_sign_out",$HostPath."localhost".port."/".$portal_user."/", true);
-
-            // Auth From PCAM
-            define("url_sign_in_lecturers",$HostPath."localhost".port."/lecturer/", true);
-            define("url_sign_in_students",$HostPath."localhost".port."/students/", true);
-            define("url_library","http://library.podomorouniversity.ac.id/", true);
-            define("url_blogadmin",$HostPath."localhost/blogscms/", true);
-
-            define("url_lecturers",url_sign_in_lecturers."home", true);
-            define("url_students",url_sign_in_students."home", true);
-            if (isset($_SERVER['_DB_HOST'])) {
-            	define("path_register_online","/home/docker1/admission/", true);
-            }
-            else
-            {
-            	 define("path_register_online","c:/xampp/htdocs/registeronline/", true);
-            }
-
-            define('ENVIRONMENT', 'development',true);
-			break;
+if (isset($_SERVER['_HOST_ID'])) {
+	if (_HOST_ID == 'DEMO') {
+		define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.59');
+		// IP public not set
+		define("URLAD", "http://202.158.17.147:8076/", true);
+		define("url_files", "https://" . "files.uap.ac.id/", true);
+		define("url_DocxToPDf", "http://x.x.x.x/apidocxtopdf/", true); // my local adhi
+	} else {
+		define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.18');
+		// IP public not set
+		define("URLAD", "http://202.158.17.147:8076/", true);
+		define("url_files", "https://" . "files.podomorouniversity.ac.id/", true);
+		define("url_DocxToPDf", "http://x.x.x.x/apidocxtopdf/", true); // my local adhi
 	}
+} else {
+	define('_DB_HOST', isset($_SERVER['_DB_HOST']) ? $_SERVER['_DB_HOST'] : '10.1.30.18');
+	define("URLAD", "http://10.1.30.2:8076/", true);
+	define("url_files", "https://" . "files.podomorouniversity.ac.id/", true);
+	define("url_DocxToPDf", "http://10.1.10.31/apidocxtopdf/", true); // my local adhi
+}
 
-	/* replace $_SERVER['SERVER_NAME'] */
+define('_DB_USER', isset($_SERVER['_DB_USER']) ? $_SERVER['_DB_USER'] : 'db_itpu');
+define('_DB_PASSWORD', isset($_SERVER['_DB_PASSWORD']) ? $_SERVER['_DB_PASSWORD'] : 'Uap)(*&^%');
+define('_DB_NAME', isset($_SERVER['_DB_NAME']) ? $_SERVER['_DB_NAME'] : 'db_academic');
+define('_DB_PORT', isset($_SERVER['_DB_PORT']) ? $_SERVER['_DB_PORT'] : '3306');
 
-	if ($_SERVER['SERVER_NAME'] == 'pcam.uap.ac.id') {
-		$_SERVER['SERVER_NAME'] = 'pcam.podomorouniversity.ac.id';
-	}
+// Library
+define('_DB_HOST_LIBRARY', isset($_SERVER['_DB_HOST_LIBRARY']) ? $_SERVER['_DB_HOST_LIBRARY'] : '10.1.30.63');
+define('_DB_PORT_LIBRARY', isset($_SERVER['_DB_PORT_LIBRARY']) ? $_SERVER['_DB_PORT_LIBRARY'] : '3306');
+
+define("url_rest_server", "https://api.podomorouniversity.ac.id/", true);
+
+$ServerName = $_SERVER['SERVER_NAME'];
+switch ($ServerName) {
+	case 'pcam.podomorouniversity.ac.id':
+		define("url_registration", $HostPath . "admission.podomorouniversity.ac.id/", true);
+		define("serverRoot", $HostPath . "pcam.podomorouniversity.ac.id", true);
+		define("url_pas", $HostPath . "pcam.podomorouniversity.ac.id/", true);
+		define("url_img_employees", url_pas . "uploads/employees/", true);
+		define("url_img_students", url_pas . "uploads/students/", true);
+
+		define("url_pcam", $HostPath . "pcam.podomorouniversity.ac.id/dashboard", true);
+		define("url_students", $HostPath . "studentpu.podomorouniversity.ac.id/home", true);
+		define("url_lecturers", $HostPath . "lecturerpu.podomorouniversity.ac.id/home", true);
+		define("url_sign_out", $HostPath . "portal.podomorouniversity.ac.id/", true);
+		//
+		define("url_sign_in_lecturers", $HostPath . "lecturerpu.podomorouniversity.ac.id/", true);
+		define("url_sign_in_students", $HostPath . "studentpu.podomorouniversity.ac.id/", true);
+		define("url_library", "http://library.podomorouniversity.ac.id/", true);
+		define("url_blogadmin", $HostPath . "adminblogs.podomorouniversity.ac.id/", true);
+
+		if (isset($_SERVER['_DB_HOST'])) {
+			define("path_register_online", "/home/docker1/admission/", true);
+		} else {
+			define("path_register_online", "/var/www/html/registeronline/", true);
+		}
+
+		// define('ENVIRONMENT', 'production',true);
+		define('ENVIRONMENT', 'development', true);
+		break;
+	case 'pcam.uap.ac.id':
+		define("url_registration", $HostPath . "admission.uap.ac.id/", true);
+		define("serverRoot", $HostPath . "pcam.uap.ac.id", true);
+		define("url_pas", $HostPath . "pcam.uap.ac.id/", true);
+		define("url_img_employees", url_pas . "uploads/employees/", true);
+		define("url_img_students", url_pas . "uploads/students/", true);
+
+		define("url_pcam", $HostPath . "pcam.uap.ac.id/dashboard", true);
+		define("url_students", $HostPath . "studentpu.uap.ac.id/home", true);
+		define("url_lecturers", $HostPath . "lecturerpu.uap.ac.id/home", true);
+		define("url_sign_out", $HostPath . "portal.uap.ac.id/", true);
+		//
+		define("url_sign_in_lecturers", $HostPath . "lecturerpu.uap.ac.id/", true);
+		define("url_sign_in_students", $HostPath . "studentpu.uap.ac.id/", true);
+		define("url_library", "http://library.podomorouniversity.ac.id/", true);
+		define("url_blogadmin", $HostPath . "adminblogs.podomorouniversity.ac.id/", true);
+
+		if (isset($_SERVER['_DB_HOST'])) {
+			define("path_register_online", "/home/docker1/admission/", true);
+		} else {
+			define("path_register_online", "/var/www/html/registeronline/", true);
+		}
+
+		define('ENVIRONMENT', 'development', true);
+		break;
+	case 'demopcam.podomorouniversity.ac.id':
+		define("url_registration", $HostPath . "demoadmission.podomorouniversity.ac.id/", true);
+		define("serverRoot", $HostPath . "demopcam.podomorouniversity.ac.id", true);
+		define("url_pas", $HostPath . "demopcam.podomorouniversity.ac.id/", true);
+		define("url_img_employees", url_pas . "uploads/employees/", true);
+		define("url_img_students", url_pas . "uploads/students/", true);
+
+		define("url_pcam", $HostPath . "demopcam.podomorouniversity.ac.id/dashboard", true);
+		define("url_students", $HostPath . "demostudentpu.podomorouniversity.ac.id/home", true);
+		define("url_lecturers", $HostPath . "demolecturerpu.podomorouniversity.ac.id/home", true);
+		define("url_sign_out", $HostPath . "demoportal.podomorouniversity.ac.id/", true);
+		//
+		define("url_sign_in_lecturers", $HostPath . "demolecturerpu.podomorouniversity.ac.id/", true);
+		define("url_sign_in_students", $HostPath . "demostudentpu.podomorouniversity.ac.id/", true);
+		define("url_library", "http://library.podomorouniversity.ac.id/", true);
+		define("url_blogadmin", $HostPath . "demoadminblogs.podomorouniversity.ac.id/", true);
+
+		if (isset($_SERVER['_DB_HOST'])) {
+			define("path_register_online", "/home/docker1/admission/", true);
+		} else {
+			define("path_register_online", "/var/www/html/registeronline/", true);
+		}
+		define('ENVIRONMENT', 'development', true);
+		break;
+	default:
+		$port_user = ($_SERVER['SERVER_PORT'] != '80') ? ':' . $_SERVER['SERVER_PORT'] : '';
+		$folder_user = 'puis';
+		$portal_user = 'portal';
+		define("port", $port_user, true);
+
+		// Local Nandang
+		define("url_registration", $HostPath . "localhost/registeronline/", true);
+		define("serverRoot", $HostPath . "localhost" . port . "/" . $folder_user, true);
+		define("url_pas", $HostPath . "localhost" . port . "/" . $folder_user . "/", true);
+		define("url_img_employees", url_pas . "uploads/employees/", true);
+		define("url_img_students", url_pas . "uploads/students/", true);
+
+		define("url_pcam", url_pas . "dashboard", true);
+
+		define("url_sign_out", $HostPath . "localhost" . port . "/" . $portal_user . "/", true);
+
+		// Auth From PCAM
+		define("url_sign_in_lecturers", $HostPath . "localhost" . port . "/lecturer/", true);
+		define("url_sign_in_students", $HostPath . "localhost" . port . "/students/", true);
+		define("url_library", "http://library.podomorouniversity.ac.id/", true);
+		define("url_blogadmin", $HostPath . "localhost/blogscms/", true);
+
+		define("url_lecturers", url_sign_in_lecturers . "home", true);
+		define("url_students", url_sign_in_students . "home", true);
+		if (isset($_SERVER['_DB_HOST'])) {
+			define("path_register_online", "/home/docker1/admission/", true);
+		} else {
+			define("path_register_online", "c:/xampp/htdocs/registeronline/", true);
+		}
+
+		define('ENVIRONMENT', 'development', true);
+		break;
+}
+
+/* replace $_SERVER['SERVER_NAME'] */
+
+if ($_SERVER['SERVER_NAME'] == 'pcam.uap.ac.id') {
+	$_SERVER['SERVER_NAME'] = 'pcam.podomorouniversity.ac.id';
+}
 
 
 
@@ -281,25 +268,21 @@ setlocale(LC_ALL, "en_US.UTF-8");
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
  */
-switch (ENVIRONMENT)
-{
+switch (ENVIRONMENT) {
 	case 'development':
 		error_reporting(-1);
 		ini_set('display_errors', 1);
-	break;
+		break;
 
 	case 'testing':
 	case 'production':
 		ini_set('display_errors', 0);
-		if (version_compare(PHP_VERSION, '5.3', '>='))
-		{
+		if (version_compare(PHP_VERSION, '5.3', '>=')) {
 			error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-		}
-		else
-		{
+		} else {
 			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
 		}
-	break;
+		break;
 
 	default:
 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
@@ -315,7 +298,7 @@ switch (ENVIRONMENT)
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-	$system_path = 'system';
+$system_path = 'system';
 
 /*
  *---------------------------------------------------------------
@@ -332,7 +315,7 @@ switch (ENVIRONMENT)
  *
  * NO TRAILING SLASH!
  */
-	$application_folder = 'application';
+$application_folder = 'application';
 
 /*
  *---------------------------------------------------------------
@@ -347,7 +330,7 @@ switch (ENVIRONMENT)
  *
  * NO TRAILING SLASH!
  */
-	$view_folder = '';
+$view_folder = '';
 
 
 /*
@@ -369,15 +352,15 @@ switch (ENVIRONMENT)
  *
  * Un-comment the $routing array below to use this feature
  */
-	// The directory name, relative to the "controllers" directory.  Leave blank
-	// if your controller is not in a sub-directory within the "controllers" one
-	// $routing['directory'] = '';
+// The directory name, relative to the "controllers" directory.  Leave blank
+// if your controller is not in a sub-directory within the "controllers" one
+// $routing['directory'] = '';
 
-	// The controller class file name.  Example:  mycontroller
-	// $routing['controller'] = '';
+// The controller class file name.  Example:  mycontroller
+// $routing['controller'] = '';
 
-	// The controller function you wish to be called.
-	// $routing['function']	= '';
+// The controller function you wish to be called.
+// $routing['function']	= '';
 
 
 /*
@@ -394,7 +377,7 @@ switch (ENVIRONMENT)
  *
  * Un-comment the $assign_to_config array below to use this feature
  */
-	// $assign_to_config['name_of_config_item'] = 'value of config item';
+// $assign_to_config['name_of_config_item'] = 'value of config item';
 
 
 
@@ -408,120 +391,97 @@ switch (ENVIRONMENT)
  * ---------------------------------------------------------------
  */
 
-	// Set the current directory correctly for CLI requests
-	if (defined('STDIN'))
-	{
-		chdir(dirname(__FILE__));
-	}
+// Set the current directory correctly for CLI requests
+if (defined('STDIN')) {
+	chdir(dirname(__FILE__));
+}
 
-	if (($_temp = realpath($system_path)) !== FALSE)
-	{
-		$system_path = $_temp.DIRECTORY_SEPARATOR;
-	}
-	else
-	{
-		// Ensure there's a trailing slash
-		$system_path = strtr(
-			rtrim($system_path, '/\\'),
-			'/\\',
-			DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
-		).DIRECTORY_SEPARATOR;
-	}
+if (($_temp = realpath($system_path)) !== FALSE) {
+	$system_path = $_temp . DIRECTORY_SEPARATOR;
+} else {
+	// Ensure there's a trailing slash
+	$system_path = strtr(
+		rtrim($system_path, '/\\'),
+		'/\\',
+		DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
+	) . DIRECTORY_SEPARATOR;
+}
 
-	// Is the system path correct?
-	if ( ! is_dir($system_path))
-	{
-		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-		echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(__FILE__, PATHINFO_BASENAME);
-		exit(3); // EXIT_CONFIG
-	}
+// Is the system path correct?
+if (!is_dir($system_path)) {
+	header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+	echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: ' . pathinfo(__FILE__, PATHINFO_BASENAME);
+	exit(3); // EXIT_CONFIG
+}
 
 /*
  * -------------------------------------------------------------------
  *  Now that we know the path, set the main path constants
  * -------------------------------------------------------------------
  */
-	// The name of THIS file
-	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
+// The name of THIS file
+define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
-	// Path to the system directory
-	define('BASEPATH', $system_path);
+// Path to the system directory
+define('BASEPATH', $system_path);
 
-	// Path to the front controller (this file) directory
-	define('FCPATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
+// Path to the front controller (this file) directory
+define('FCPATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
-	// Name of the "system" directory
-	define('SYSDIR', basename(BASEPATH));
+// Name of the "system" directory
+define('SYSDIR', basename(BASEPATH));
 
-	// The path to the "application" directory
-	if (is_dir($application_folder))
-	{
-		if (($_temp = realpath($application_folder)) !== FALSE)
-		{
-			$application_folder = $_temp;
-		}
-		else
-		{
-			$application_folder = strtr(
-				rtrim($application_folder, '/\\'),
-				'/\\',
-				DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
-			);
-		}
-	}
-	elseif (is_dir(BASEPATH.$application_folder.DIRECTORY_SEPARATOR))
-	{
-		$application_folder = BASEPATH.strtr(
-			trim($application_folder, '/\\'),
+// The path to the "application" directory
+if (is_dir($application_folder)) {
+	if (($_temp = realpath($application_folder)) !== FALSE) {
+		$application_folder = $_temp;
+	} else {
+		$application_folder = strtr(
+			rtrim($application_folder, '/\\'),
 			'/\\',
-			DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
+			DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
 		);
 	}
-	else
-	{
-		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-		echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
-		exit(3); // EXIT_CONFIG
-	}
+} elseif (is_dir(BASEPATH . $application_folder . DIRECTORY_SEPARATOR)) {
+	$application_folder = BASEPATH . strtr(
+		trim($application_folder, '/\\'),
+		'/\\',
+		DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
+	);
+} else {
+	header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+	echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: ' . SELF;
+	exit(3); // EXIT_CONFIG
+}
 
-	define('APPPATH', $application_folder.DIRECTORY_SEPARATOR);
+define('APPPATH', $application_folder . DIRECTORY_SEPARATOR);
 
-	// The path to the "views" directory
-	if ( ! isset($view_folder[0]) && is_dir(APPPATH.'views'.DIRECTORY_SEPARATOR))
-	{
-		$view_folder = APPPATH.'views';
-	}
-	elseif (is_dir($view_folder))
-	{
-		if (($_temp = realpath($view_folder)) !== FALSE)
-		{
-			$view_folder = $_temp;
-		}
-		else
-		{
-			$view_folder = strtr(
-				rtrim($view_folder, '/\\'),
-				'/\\',
-				DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
-			);
-		}
-	}
-	elseif (is_dir(APPPATH.$view_folder.DIRECTORY_SEPARATOR))
-	{
-		$view_folder = APPPATH.strtr(
-			trim($view_folder, '/\\'),
+// The path to the "views" directory
+if (!isset($view_folder[0]) && is_dir(APPPATH . 'views' . DIRECTORY_SEPARATOR)) {
+	$view_folder = APPPATH . 'views';
+} elseif (is_dir($view_folder)) {
+	if (($_temp = realpath($view_folder)) !== FALSE) {
+		$view_folder = $_temp;
+	} else {
+		$view_folder = strtr(
+			rtrim($view_folder, '/\\'),
 			'/\\',
-			DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
+			DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
 		);
 	}
-	else
-	{
-		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-		echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
-		exit(3); // EXIT_CONFIG
-	}
+} elseif (is_dir(APPPATH . $view_folder . DIRECTORY_SEPARATOR)) {
+	$view_folder = APPPATH . strtr(
+		trim($view_folder, '/\\'),
+		'/\\',
+		DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
+	);
+} else {
+	header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+	echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: ' . SELF;
+	exit(3); // EXIT_CONFIG
+}
 
-	define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
+define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);
 
 /*
  * --------------------------------------------------------------------
@@ -530,4 +490,4 @@ switch (ENVIRONMENT)
  *
  * And away we go...
  */
-require_once BASEPATH.'core/CodeIgniter.php';
+require_once BASEPATH . 'core/CodeIgniter.php';
