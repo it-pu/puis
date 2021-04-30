@@ -3,7 +3,7 @@
         <div class="well">
             <select class="form-control" id="filterStatus">
                 <option value="">-- All Status --</option>
-                <option value="1">Request</option>
+                <option value="1">Request / Waiting Action</option>
                 <option value="2">Approved</option>
                 <option value="-1">Rejected</option>
                 <option value="-2">Canceled</option>
@@ -21,7 +21,11 @@
 <script>
     $(document).ready(function() {
         loadDataBooking();
-    })
+    });
+
+    $('#filterStatus').change(function() {
+        loadDataBooking();
+    });
 
     function loadDataBooking() {
 
