@@ -5437,12 +5437,9 @@ class C_api3 extends CI_Controller
 
             $dataSearch = '';
             if (!empty($requestData['search']['value'])) {
-
                 $search = $requestData['search']['value'];
                 $w = ($data_arr['Status'] != '') ? ' AND ' : 'WHERE ';
-                $dataSearch = $w . ' (fpf.NPM LIKE "%' . $search . '%" OR ats.Name LIKE "%' . $search . '%"
-                                OR ps.Name LIKE "%' . $search . '%" OR fpf.JudulInd LIKE "%' . $search . '%"
-                                 OR fpf.JudulEng LIKE "%' . $search . '%" )';
+                $dataSearch = $w . ' (b.Username LIKE "%' . $search . '%" )';
             }
 
 
@@ -5480,8 +5477,8 @@ class C_api3 extends CI_Controller
                 }
 
                 $btnAct = ($row['status'] == 1) ? '<div class="btn-group" role="group" aria-label="...">
-                <button type="button" data-status="2" data-id="'.$row['ID'].'" data-biblio="'.$row['biblio_id'].'" class="btn btn-sm btn-success actionBooking">Approve</button>
-                <button type="button" data-status="-1" data-id="'.$row['ID'].'" data-biblio="'.$row['biblio_id'].'" class="btn btn-sm btn-danger actionBooking">Reject</button>
+                <button type="button" data-status="2" data-id="' . $row['ID'] . '" data-biblio="' . $row['biblio_id'] . '" class="btn btn-sm btn-success actionBooking">Approve</button>
+                <button type="button" data-status="-1" data-id="' . $row['ID'] . '" data-biblio="' . $row['biblio_id'] . '" class="btn btn-sm btn-danger actionBooking">Reject</button>
               </div>' : '';
 
                 $viewStatus = '<span class="label label-warning">Waiting Action</span>';

@@ -53,7 +53,7 @@
             "iDisplayLength": 10,
             "ordering": false,
             "language": {
-                "searchPlaceholder": "NIM, Name Student, Titile TA"
+                "searchPlaceholder": "Search by NIM / NIP"
             },
             "ajax": {
                 url: base_url_js + "api3/__crudLibraryBooking", // json datasource
