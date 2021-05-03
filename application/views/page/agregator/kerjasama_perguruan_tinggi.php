@@ -88,6 +88,7 @@
                         auth : 's3Cr3T-G4N',
                         mode : 'DataKerjaSamaAggregator',
                         Kategori_kegiatan : Kategori_kegiatan,
+                        filterYear : $('.filterYear option:selected').val(),
                     };
                     var get_token = jwt_encode(data,"UAP)(*");
                     token.token = get_token;
@@ -125,14 +126,23 @@
                 passToExcel = json.queryPass;
               $("div.toolbar")
                  .html('<div class="toolbar no-padding pull-right" style = "margin-left : 15px;">'+
+                    '<div class = "row"><div class = "col-md-6">'+
                     '<select class="form-control Kategori_kegiatan"">'+
                         '<option disabled selected value="">--Pilih Kategori Kegiatan--</option>'+
                         '<option value="PKM">PKM</option>'+
                         '<option value="Penelitian">Penelitian</option>'+
                         '<option value="Pendidikan">Pendidikan</option>'+
                         '<option value="%">All</option>'+
+                    '</select>'+'</div>'+
+                    '<div class = "col-md-6">'+
+                        '<select class="form-control filterYear"">'+
+                        '</select>'+
+                    '</div>'+
                     '</div>'+    
                 '</div>');
+
+                 const selOPYear = $('.filterYear');
+                 selectFilterOpYear(selOPYear);
 
             }
         });
@@ -154,6 +164,10 @@
     })
 
     $(document).off('change', '.Kategori_kegiatan').on('change', '.Kategori_kegiatan',function(e) {
+        oTable.ajax.reload( null, false );
+    })
+
+    $(document).off('change', '.filterYear').on('change', '.filterYear',function(e) {
         oTable.ajax.reload( null, false );
     })
 

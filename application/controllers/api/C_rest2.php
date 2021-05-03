@@ -4901,15 +4901,38 @@ class C_rest2 extends CI_Controller {
                              echo json_encode($json_data);
                         break;
                     case 'DataKerjaSamaAggregator':
+
+                    $WhereFiltering = '';
+                    // filter year
+                    if (array_key_exists('filterYear', $dataToken)) {
                         $Year = date('Y');
-                        $Year3 = $Year - 2;
+                        if ($dataToken['filterYear'] == -3 || $dataToken['filterYear'] == '-3') {
+                            $Year3 = $Year - 2;
+                            // $WhereFiltering =  'where Year(x.EndDate) >= '.$Year3;
+                            $WhereFiltering =  'where Year(x.EndDate) >= '.$Year3.' and Year(x.EndDate) <= '.$Year;
+                        }
+                        elseif ($dataToken['filterYear'] == -5 || $dataToken['filterYear'] == '-5') {
+                           $Year3 = $Year - 4;
+                           // $WhereFiltering =  'where Year(x.EndDate) >= '.$Year3;
+                           $WhereFiltering =  'where Year(x.EndDate) >= '.$Year3.' and Year(x.EndDate) <= '.$Year;
+                        }
+                        elseif ($dataToken['filterYear'] > 0) {
+                            $Year3 = $dataToken['filterYear'];
+                            $WhereFiltering =  'where Year(x.EndDate) = '.$Year3;
+                        }
+
+                        // print_r($WhereFiltering);
+                        // print_r($dataToken);die();
+                    }
+
+                        
                         $sqltotalData = 'select count(*) as total from (
                                     select z.ID,z.JudulKegiatan,z.BentukKegiatan,z.ManfaatKegiatan,z.Kategori_kegiatan,x.Lembaga,x.EndDate,yy.Departement
                                     from db_cooperation.kegiatan as z
                                         join db_cooperation.kerjasama as x on z.KerjasamaID = x.ID
                                         join db_cooperation.keg_department as yy on z.ID = yy.KegiatanID
                             ';
-                        $WhereFiltering =  'where Year(x.EndDate) >= '.$Year3;
+                        
                         if (array_key_exists('ProdiID', $dataToken)) {
                             $WhereORAnd = ($WhereFiltering == '') ? ' where ' : ' And';
                             $WhereFiltering .= $WhereORAnd.' yy.Departement = "AC.'.$dataToken['ProdiID'].'" ';
@@ -4934,7 +4957,7 @@ class C_rest2 extends CI_Controller {
                         $querytotalData = $this->db->query($sqltotalData)->result_array();
                         $totalData = $querytotalData[0]['total'];
 
-                        $sql = 'select z.ID,z.JudulKegiatan,z.BentukKegiatan,z.ManfaatKegiatan,z.StartDate,z.EndDate,z.Kategori_kegiatan,x.Lembaga,z.KerjasamaID,
+                        $sql = 'select z.ID,z.JudulKegiatan,z.BentukKegiatan,z.ManfaatKegiatan,z.StartDate,z.EndDate as keg_enddate,x.EndDate,z.Kategori_kegiatan,x.Lembaga,z.KerjasamaID,
                                 if(x.Tingkat = "Nasional",1,0) as Nasional,if(x.Tingkat = "Internasional",1,0) as Internasional,
                                 if(x.Tingkat= "Lokal",1,0) as Lokal,x.BuktiName,x.BuktiUpload,z.SemesterID,y.Name as SemesterName,x.Kategori
                                 from db_cooperation.kegiatan as z
@@ -4976,6 +4999,7 @@ class C_rest2 extends CI_Controller {
                           )';
                       $sql.= ' group by z.ID ORDER BY z.StartDate asc LIMIT '.$requestData['start'].' , '.$requestData['length'].' ';
                       $query = $this->db->query($sql)->result_array();
+                      //print_r($this->db->last_query());die();
                       $No = $requestData['start'] + 1;
                       $data = array();
                       for($i=0;$i<count($query);$i++){
