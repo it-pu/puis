@@ -1336,7 +1336,8 @@ class C_api3 extends CI_Controller
 
             $rs = array('header' => array(), 'body' => array());
             $Year = date('Y');
-            $Year3 = $Year - 2;
+            // $Year3 = $Year - 2;
+            $Year3 = 2014;
             $arr_year = array();
             for ($i = $Year; $i >= $Year3; $i--) {
                 $arr_year[] = $i;
@@ -1372,7 +1373,8 @@ class C_api3 extends CI_Controller
 
             $rs = array('header' => array(), 'body' => array());
             $Year = date('Y');
-            $Year3 = $Year - 2;
+            // $Year3 = $Year - 2;
+            $Year3 = 2014;
             $arr_year = array();
             for ($i = $Year; $i >= $Year3; $i--) {
                 $arr_year[] = $i;
@@ -2059,7 +2061,14 @@ class C_api3 extends CI_Controller
             $header = array('No', 'Program Pendidikan');
             // dapatkan 3 tahun belakang
             $Year = date('Y');
-            $Year3 = $Year - 2;
+            // $Year3 = $Year - 2;
+            $Year3 = 2014;
+
+            // indeks inc number Jumlah Lulusan pada
+            $ci = $Year - $Year3 + 2;
+
+            $countYear = $Year - $Year3 + 1; // for colspan
+
             for ($i = $Year; $i >= $Year3; $i--) {
                 $header[] = (int)$i;
             }
@@ -2089,7 +2098,7 @@ class C_api3 extends CI_Controller
                 if ($i == 4) {
                     for ($j = 2; $j < count($header); $j++) {
                         $get_tayear = $header[$j];
-                        if ($j <= 4) { // Jumlah Lulusan pada by Year
+                        if ($j <= $ci) { // Jumlah Lulusan pada by Year
                             $sql = 'select count(*) as total from db_academic.auth_students where GraduationYear = "' . $get_tayear . '" and StatusStudentID = ?';
                             $query = $this->db->query($sql, array(1))->result_array();
                             // get data detail
@@ -2131,7 +2140,7 @@ class C_api3 extends CI_Controller
                 } else {
                     for ($j = 2; $j < count($header); $j++) {
                         // $temp[] = 0;
-                        if ($j <= 4) {
+                        if ($j <= $ci) {
                             $temp[] = array('show' => 0, 'data' => '');
                         } else {
                             $temp[] = 0;
@@ -2141,6 +2150,8 @@ class C_api3 extends CI_Controller
                 $body[] = $temp;
             }
             $rs['body'] = $body;
+            $rs['ci'] = $ci;
+            $rs['countYear'] = $countYear;
             return print_r(json_encode($rs));
         } else if ($data_arr['action'] == 'getloopdatastudy') {
 
@@ -2232,8 +2243,15 @@ class C_api3 extends CI_Controller
             return print_r(1);
         } else if ($data_arr['action'] == 'getYearJasaAdopsi') {
 
-            $db = $data_arr['db'];
-            $data = $this->db->query('SELECT Year FROM ' . $db . ' GROUP BY Year ORDER BY Year DESC')->result_array();
+            // $db = $data_arr['db'];
+            // $data = $this->db->query('SELECT Year FROM ' . $db . ' GROUP BY Year ORDER BY Year DESC')->result_array();
+            $data = [];
+            $Year = date('Y');
+            // $Year3 = $Year - 2;
+            $Year3 = 2014;
+            for ($i = $Year; $i >= $Year3; $i--) {
+                $data[] = ['Year' => $i];
+            }
 
             return print_r(json_encode($data));
         } else if ($data_arr['action'] == 'getDetailJasaAdopsi') {
@@ -2268,7 +2286,14 @@ class C_api3 extends CI_Controller
             */
             // dapatkan 3 tahun belakang
             $Year = date('Y');
-            $Year3 = $Year - 2;
+            // $Year3 = $Year - 2;
+            $Year3 = 2014;
+
+            // indeks inc number Jumlah Lulusan pada
+            $ci = $Year - $Year3 + 3;
+
+            $countYear = $Year - $Year3 + 1; // for colspan
+
             for ($i = $Year; $i >= $Year3; $i--) {
                 $header[] = (int)$i;
             }
@@ -2309,7 +2334,7 @@ class C_api3 extends CI_Controller
                             // $temp[] = $query[0]['total']; // Jumlah PS
                             continue;
                         } else {
-                            if ($j <= 5) { // pembeda Jumlah Lulusan pada dan Rata-rata IPK Lulusan pada
+                            if ($j <= $ci) { // pembeda Jumlah Lulusan pada dan Rata-rata IPK Lulusan pada
                                 $get_tayear = $header[$j]; // ex : 2014
                                 $sql = 'select count(*) as total from db_academic.auth_students where GraduationYear = "' . $get_tayear . '" and StatusStudentID = ?';
                                 $query = $this->db->query($sql, array(1))->result_array();
@@ -2359,8 +2384,11 @@ class C_api3 extends CI_Controller
             }
 
             $rs['body'] = $body;
+            $rs['ci'] = $ci;
+            $rs['countYear'] = $countYear;
 
             return print_r(json_encode($rs));
+
         } else if ($data_arr['action'] == 'getprogrampendik') {
             $data = $this->db->query('SELECT ID, NamaProgramPendidikan FROM db_agregator.program_pendidikan')->result_array();
             return print_r(json_encode($data));
@@ -2382,7 +2410,8 @@ class C_api3 extends CI_Controller
 
             $rs = array('header' => array(), 'body' => array());
             $Year = date('Y');
-            $Year3 = $Year - 2;
+            // $Year3 = $Year - 2;
+            $Year3 = 2014;
             $arr_year = array();
             for ($i = $Year; $i >= $Year3; $i--) {
                 $arr_year[] = $i;

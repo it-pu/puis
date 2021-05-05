@@ -86,7 +86,7 @@
                                  '<tr style="background: #20485A;color: #FFFFFF;">'+
                                    '<td style="vertical-align : middle;text-align:center;width: 1%;" rowspan="2">No</td>'+
                                    '<td rowspan="2" style="vertical-align : middle;text-align:center;width: 15%;">Jenis Publikasi</td>'+
-                                   '<td colspan="3" style="vertical-align : middle;text-align:center;">Jumlah Judul</td>'+
+                                   '<td colspan="'+arr_header_table.length+'" style="vertical-align : middle;text-align:center;">Jumlah Judul</td>'+
                                    '<td rowspan="2" style="vertical-align : middle;text-align:center;width: 5%;">Jumlah</td> </tr><tr style="background: #20485A;color: #FFFFFF;">';
 
            
