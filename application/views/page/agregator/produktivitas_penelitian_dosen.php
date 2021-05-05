@@ -88,7 +88,7 @@
                                     '<tr style="background: #20485A;color: #FFFFFF;">'+
                                          '<td style="vertical-align : middle;text-align:center;width: 1%;" rowspan="2">No</td>'+
                                          '<td rowspan="2" style="vertical-align : middle;text-align:center;width: 15%;">Sumber Pembiayaan</td>'+
-                                         '<td colspan="3" style="vertical-align : middle;text-align:center;">Jumlah Judul Penelitian</td>'+
+                                         '<td colspan="'+arr_header_table.length+'" style="vertical-align : middle;text-align:center;">Jumlah Judul Penelitian</td>'+
                                          '<td rowspan="2" style="vertical-align : middle;text-align:center;width: 10%;">Jumlah</td> </tr><tr style="background: #20485A;color: #FFFFFF;">';
 
             for (var i = 0; i < arr_header_table.length; i++) {

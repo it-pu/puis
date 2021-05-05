@@ -32,8 +32,8 @@
                                     '<tr>'+
                                         '<th colspan="2" style="border-right: 1px solid #ccc;"></th>'+
                                         '<th style="border-right: 1px solid #ccc; text-align: center"> Jumlah PS </th>'+
-                                        '<th colspan="3" style="border-right: 1px solid #ccc; text-align: center">Jumlah Lulusan pada</th>'+
-                                        '<th colspan="3" style="border-right: 1px solid #ccc; text-align: center">Rata-rata IPK Lulusan pada</th>'+
+                                        '<th colspan="'+jsonResult.countYear+'" style="border-right: 1px solid #ccc; text-align: center">Jumlah Lulusan pada</th>'+
+                                        '<th colspan="'+jsonResult.countYear+'" style="border-right: 1px solid #ccc; text-align: center">Rata-rata IPK Lulusan pada</th>'+
                                         '<th style="border-right: 1px solid #ccc;"></th>'+
                                     '</tr>'+
                                     '<tr>';
@@ -42,7 +42,7 @@
            var arr_total = [];
            for (var i = 0; i < header.length; i++) {
                 HtmlTable += '<td>'+header[i]+'</td>';
-                if (i >= 2 && i <= 5) { // define total Jumlah PS dan Jumlah Lulusan pada
+                if (i >= 2 && i <= jsonResult.ci) { // define total Jumlah PS dan Jumlah Lulusan pada
                     arr_total.push(0);
                 }
             }
@@ -59,7 +59,7 @@
                 // console.log(arr_body);
                 htmlBody += '<td>'+No+'</td>';
                 for (var j = 0; j < arr_body.length; j++) {
-                    if(j < 5){
+                    if(j < jsonResult.ci){
                         // htmlBody += '<td>'+arr_body[j]+'</td>';
                         if (j == 0) {
                             htmlBody += '<td>'+arr_body[j].show+'</td>';

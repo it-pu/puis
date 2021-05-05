@@ -32,15 +32,7 @@
     });
 
     function loadDataPAM() {
-        var HtmlTable = ' <table class="table dataTable2Excel" id="dataTablesPAM" data-name="TblLamaStudiMahasiswa">' +
-            '                <thead>' +
-			'                <tr>    ' +
-			'                    <th colspan="2" style="border-right: 1px solid #ccc;"></th> ' +
-			'                    <th colspan="3" style="border-right: 1px solid #ccc;">Jumlah Lulusan pada</th> ' +
-			'                    <th colspan="3" style="border-right: 1px solid #ccc;">Rata-rata Masa Studi Lulusan pada</th>  ' +
-			'                    <th style="border-right: 1px solid #ccc;"></th>  ' +
-			'                </tr>';
-
+       
 
 
         var data = {
@@ -52,12 +44,20 @@
         var url = base_url_js+'api3/__crudAgregatorTB5';
 
         $.post(url,{token:token},function (jsonResult) {
-        	// console.log(jsonResult);
+        	        var HtmlTable = ' <table class="table dataTable2Excel" id="dataTablesPAM" data-name="TblLamaStudiMahasiswa">' +
+                        '                <thead>' +
+                        '                <tr>    ' +
+                        '                    <th colspan="2" style="border-right: 1px solid #ccc;"></th> ' +
+                        '                    <th colspan="'+jsonResult.countYear+'" style="border-right: 1px solid #ccc;">Jumlah Lulusan pada</th> ' +
+                        '                    <th colspan="'+jsonResult.countYear+'" style="border-right: 1px solid #ccc;">Rata-rata Masa Studi Lulusan pada</th>  ' +
+                        '                    <th style="border-right: 1px solid #ccc;"></th>  ' +
+                        '                </tr>';
+
             var header = jsonResult.header;
             var arr_total = [];
             for (var i = 0; i < header.length; i++) {
                  HtmlTable += '<td style = "text-align: center">'+header[i]+'</td>';
-                 if (i >= 2 && i <= 4) { // define total Jumlah PS dan Jumlah Lulusan pada
+                 if (i >= 2 && i <= jsonResult.ci) { // define total Jumlah PS dan Jumlah Lulusan pada
                      arr_total.push(0);
                  }
             }
@@ -75,7 +75,7 @@
                     var arr_body = body[i];
                     htmlBody += '<td>'+No+'</td>';
                     for (var j = 0; j < arr_body.length; j++) {
-                        if(j < 4){
+                        if(j < jsonResult.ci){
                             if (j == 0) {
                                 htmlBody += '<td style = "text-align: left">'+arr_body[j].show+'</td>';
                             }
