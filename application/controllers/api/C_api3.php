@@ -3302,7 +3302,7 @@ class C_api3 extends CI_Controller
                                                     WHERE ssp.SemesterID = "' . $SemesterID . '"
                                                     AND ats.ProdiID = "' . $data[$i]['ID'] . '"
                                                      AND ats.Year <= "' . $Year . '"
-                                                     AND mk.Yudisium = "1"')->result_array();
+                                                     AND mk.Yudisium = "1" GROUP BY ats.NPM')->result_array();
 
                 $data[$i]['dataMahasiwaTA'] = $dataTA;
 
