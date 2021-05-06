@@ -969,7 +969,8 @@ class C_rest3 extends CI_Controller {
                           join db_research.jenis_publikasi as jp on jp.ID_jns_pub = a.ID_jns_pub
                           join db_research.list_anggota_publikasi as b on a.ID_publikasi = b.ID_publikasi
                           join db_research.master_anggota_publikasi as c on b.ID = c.ID
-                          join db_employees.employees as d on c.NIP = d.NIP
+                          #join db_employees.employees as d on c.NIP = d.NIP
+                          join db_employees.employees as d on SUBSTRING(c.ID_user, 5) = d.NIP
                            where Year(a.Tgl_terbit) = ? and d.NIP = ?
                            '; 
                         $queryPenelitian =$this->db->query($sqlPenelitian, array($FilterTahun,$NIP,$FilterTahun,$NIP))->result_array();
@@ -986,14 +987,19 @@ class C_rest3 extends CI_Controller {
                         
                         // PKM Note : Convert to sks untuk mendapatkan satu PKM
                         // $sqlPKM = 'select *,1 as Credit from db_research.pengabdian_masyarakat where ID_thn_laks = ? and NIP = ? '; 
-                        $sqlPKM = 'select a.*,1 as Credit from db_research.pengabdian_masyarakat as a 
-                                  join db_research.list_anggota_pkm as b on a.ID_PKM = b.ID_PKM
-                                  join db_research.master_anggota_pkm as c on b.ID_anggota = c.ID
-                                  where a.ID_thn_laks = ? and c.NIP = ? '; 
-                        $queryPKM =$this->db->query($sqlPKM, array($FilterTahun,$NIP))->result_array();
+
+                        // $sqlPKM = 'select a.*,1 as Credit from db_research.pengabdian_masyarakat as a 
+                        //           join db_research.list_anggota_pkm as b on a.ID_PKM = b.ID_PKM
+                        //           join db_research.master_anggota_pkm as c on b.ID_anggota = c.ID
+                        //           #where a.ID_thn_laks = ? and c.NIP = ?  
+                        //           where a.ID_thn_laks = ? and c.SUBSTRING(c.ID_user, 5) = ? '; 
+                        // $queryPKM =$this->db->query($sqlPKM, array($FilterTahun,$NIP))->result_array();
+
                         // encode token
-                        $tot = count($queryPKM);
-                        $token = $this->jwt->encode($queryPKM,"UAP)(*");
+                        // $tot = count($queryPKM);
+                        $tot =0;
+                        // $token = $this->jwt->encode($queryPKM,"UAP)(*");
+                        $token = '';
                         $temp[] = array('count' => $tot ,'data' => $token); 
                         $arr_get[] = $tot; 
                         // End PKM
