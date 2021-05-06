@@ -4,7 +4,7 @@
         <table class="table">
             
             <tr>
-                <td style="width: 15%;">Name Lecture</td>
+                <td style="width: 15%;">Name Team</td>
                 <td style="width: 1%;">:</td>
                 
                 <td>
@@ -65,7 +65,6 @@
 
 <script>
 $(document).ready(function () {
-    
     loadDataLecture();
     LoadNama();
 });
@@ -100,10 +99,12 @@ function loadDataLecture() {
 }
 function LoadNama() { // load data student
         var selector =$('#NIP');
-        var url = base_url_js+'api/__getDosenSelectOption';
+        var getdepartement = "<?= $this->session->userdata('IDdepartementNavigation') ?>";
+        var url = base_url_js+'api-webdivisi/__getEmployees';
         var data = {
             auth : 's3Cr3T-G4N',
-            mode : 'showDataDosen'
+            mode : 'showDataDosen',
+            getdepartement: getdepartement,
         };
         var token = jwt_encode(data,"UAP)(*");
         $.post(url,{ token:token },function (resultJson) {
