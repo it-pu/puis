@@ -510,7 +510,7 @@ class C_api_webdivisi extends CI_Controller {
 
         else if($data_arr['action']=='loadDataLecturer'){
 
-            $data = $this->db->query('SELECT l.* , l.photo,em.Name FROM db_webdivisi.lecturer l
+            $data = $this->db->query('SELECT l.*,l.photo,em.Name FROM db_webdivisi.lecturer l
                                       INNER JOIN db_employees.employees as em ON em.NIP=l.NIP
                                       WHERE l.DivisiID = "'.$divisi_active_id.'" ')->result_array();
             // $data = $this->db->get_where('db_webdivisi.lecturer',array(
@@ -795,6 +795,7 @@ class C_api_webdivisi extends CI_Controller {
         return print_r(json_encode($query));
     }
 
+
     
     function getDataDivisiTexting(){
 
@@ -879,6 +880,16 @@ class C_api_webdivisi extends CI_Controller {
         $data_arr = $this->getInputToken2();
         $LangCode = $data_arr['LangCode'];
         $DivisiID = $data_arr['DivisiID'];
+
+        $data = $this->db->query('SELECT * FROM db_employees.employees em
+                                  WHERE em.PositionMain like "%'.$DivisiID.'.%" AND em.Status="1" ORDER BY em.PositionMain ASC')->result_array();
+        
+        return print_r(json_encode($data));
+    }
+
+    function getEmployees(){
+        $data_arr = $this->getInputToken2();
+        $DivisiID = $data_arr['getdepartement'];
 
         $data = $this->db->query('SELECT * FROM db_employees.employees em
                                   WHERE em.PositionMain like "%'.$DivisiID.'.%" AND em.Status="1" ORDER BY em.PositionMain ASC')->result_array();
