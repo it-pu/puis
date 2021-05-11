@@ -6,6 +6,8 @@
         <ul id="nav">
             <?php 
                 $getData  = $this->session->userdata('menu_budgeting_grouping');
+                if (is_array($getData)) {
+                
                 for ($i=0; $i < count($getData); $i++) {
                     $temp = array();
                     $chkSubMenu1 = 0;
@@ -168,7 +170,9 @@
                     <?php endif ?>
             <?php         
 
-                }    
+                }
+
+                } // end if is_array($getData)   
 
              ?>
         </ul>
