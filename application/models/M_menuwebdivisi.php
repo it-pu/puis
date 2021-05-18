@@ -116,7 +116,7 @@ class M_menuwebdivisi extends CI_Model {
           if ($i == 0) {
               // SORTING ASC
                   usort($arr2, function($a, $b) {
-                      return $a['SubMenu1'] - $b['SubMenu1'];
+                      return (int)$a['SubMenu1'] - (int)$b['SubMenu1'];
                   });
           }
           
