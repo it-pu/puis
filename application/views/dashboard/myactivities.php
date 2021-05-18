@@ -5,7 +5,11 @@
     }
     ul.nav > li > a{cursor: pointer;}
 </style>
-
+<div class="row">
+    <div class="col-md-12">
+        <p style="color: red;">Jika data tidak muncul di table, mohon untuk disable plugin adblock dari browsernya</p>
+    </div>
+</div>
 
 <div id="activities">
     <div class="nav-tabs">
