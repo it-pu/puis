@@ -692,10 +692,11 @@ class C_api_webdivisi extends CI_Controller {
 
         }
         else if($data_arr['action']=='readContactAddress'){
-            // $data_arr = $this->getInputToken2();
-            // $divisi_active_id = $data_arr['DivisiID'];
+            $data_arr = $this->getInputToken2();
+            $webdivisi_active_id = $data_arr['DivisiID'];
+            // print_r($webdivisi_active_id);die();
             $data = $this->db->query('SELECT cd.* FROM db_webdivisi.contact_detail cd 
-                                                  WHERE cd.DivisiID = '.$divisi_active_id.'
+                                                  WHERE cd.DivisiID = '.$webdivisi_active_id.'
                                                 ')->result_array();
             return print_r(json_encode($data));
 
