@@ -883,7 +883,7 @@ class C_api_webdivisi extends CI_Controller {
         $DivisiID = $data_arr['DivisiID'];
 
         $data = $this->db->query('SELECT * FROM db_employees.employees em
-                                  WHERE em.PositionMain like "%'.$DivisiID.'.%" AND em.StatusEmployeeID not in("-1","-2") ORDER BY em.PositionMain ASC')->result_array();
+                                  WHERE (em.PositionMain like "'.$DivisiID.'.%" OR em.PositionOther1 like "'.$DivisiID.'.%" OR em.PositionOther2 like "'.$DivisiID.'.%" OR em.PositionOther3 like "'.$DivisiID.'.%") AND em.StatusEmployeeID not in("-1","-2") ORDER BY em.PositionMain ASC')->result_array();
         
         return print_r(json_encode($data));
     }
@@ -893,7 +893,7 @@ class C_api_webdivisi extends CI_Controller {
         $DivisiID = $data_arr['getdepartement'];
 
         $data = $this->db->query('SELECT * FROM db_employees.employees em
-                                  WHERE em.PositionMain like "%'.$DivisiID.'.%" AND em.StatusEmployeeID not in("-1","-2") ORDER BY em.PositionMain ASC')->result_array();
+                                  WHERE (em.PositionMain like "'.$DivisiID.'.%" OR em.PositionOther1 like "'.$DivisiID.'.%" OR em.PositionOther2 like "'.$DivisiID.'.%" OR em.PositionOther3 like "'.$DivisiID.'.%") AND em.StatusEmployeeID not in("-1","-2") ORDER BY em.PositionMain ASC')->result_array();
         
         return print_r(json_encode($data));
     }
