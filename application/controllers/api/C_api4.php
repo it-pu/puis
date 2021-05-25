@@ -662,6 +662,17 @@ class C_api4 extends CI_Controller
                                     </div></a>';
                     array_push($nestedData, $arr);
                 }
+
+                // looping tambahan
+                $tambahanLoop = (count($dataSession) == 14) ? 2 : 1;
+                for ($t = 1; $t <= $tambahanLoop; $t++) {
+                    $arr = '-';
+                    array_push($nestedData, $arr);
+                }
+
+                // if(count($dataSession)==14){
+
+                // }
             }
 
 
