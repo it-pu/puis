@@ -2304,15 +2304,28 @@ class M_rest extends CI_Model
 
         $dateStart = $this->getFirstDatelearningOnline($dateRangeStart, $Day);
         $f = $this->getRangeDateMidSemester(0, $dateStart, $dataSch[0]['SemesterID']);
+        $nextSesi = count($f) + 1;
+
+
+
 
         $dateStart_AfterUTS = $this->getFirstDatelearningOnline($dateRangeStart_AfterUTS, $Day);
         $f2 = $this->getRangeDateMidSemester(1, $dateStart_AfterUTS, $dataSch[0]['SemesterID']);
+
+
         if (count($f2) > 0) {
+
             for ($i = 0; $i < count($f2); $i++) {
-                $f2[$i]['Session'] = $i + 8;
+
+                $f2[$i]['Session'] = $i + ($nextSesi);
                 array_push($f, $f2[$i]);
             }
         }
+
+        // print_r($f2);
+        // exit();
+
+
 
 
         $dateNow = date('Y-m-d');
@@ -2341,6 +2354,8 @@ class M_rest extends CI_Model
 
             $f[$c]['ManualSet'] = (count($dataManual) > 0) ? 1 : 0;
         }
+
+
 
         return $f;
     }
