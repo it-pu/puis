@@ -1,10 +1,10 @@
-
-
 <style>
     #tbMonitoringAttdLect thead th {
         text-align: center;
-        background-color: #436888;color: #ffffff;
+        background-color: #436888;
+        color: #ffffff;
     }
+
     #tbMonitoringAttdLect tbody td {
         text-align: center;
     }
@@ -32,45 +32,46 @@
 
 <div class="row">
     <div class="col-md-12">
-        <hr/>
+        <hr />
         <div id="divShowMonitoringAttd"></div>
     </div>
     <form id="FormHide2PDF" action="<?php echo base_url('save2pdf/monitoringAttdLecturer'); ?>" method="post" target="_blank">
-        <textarea id="dataFormHide2PDF" class="hide" hidden name="token" ></textarea>
+        <textarea id="dataFormHide2PDF" class="hide" hidden name="token"></textarea>
     </form>
 
 </div>
 
 
 <script>
+    $(document).ready(function() {
 
-    $(document).ready(function () {
+        setLoadFullPage();
 
         window.save2PDF = [];
 
         $('#filterSemester').empty();
-        loSelectOptionSemester('#filterSemester','');
+        loSelectOptionSemester('#filterSemester', '');
 
-        loadSelectOptionBaseProdi('#filterProgrammeStudy','');
+        loadSelectOptionBaseProdi('#filterProgrammeStudy', '');
 
-        window.loadFirstTime = setInterval(function () {
+        window.loadFirstTime = setInterval(function() {
             var filterSemester = $('#filterSemester').val();
             var filterProgrammeStudy = $('#filterProgrammeStudy').val();
-            if(filterSemester!='' && filterSemester!=null &&
-                filterProgrammeStudy!='' && filterProgrammeStudy!=null){
+            if (filterSemester != '' && filterSemester != null &&
+                filterProgrammeStudy != '' && filterProgrammeStudy != null) {
                 loadingDataMonitoringAttd();
 
                 clearInterval(loadFirstTime);
             }
-        },1000);
+        }, 1000);
 
     });
 
-    $(document).on('change','#filterSemester,#filterProgrammeStudy',function () {
+    $(document).on('change', '#filterSemester,#filterProgrammeStudy', function() {
         loadingDataMonitoringAttd();
     });
 
-    $(document).on('click','#btnSave2PDF_monitoringAttdLec',function () {
+    $(document).on('click', '#btnSave2PDF_monitoringAttdLec', function() {
         $('#FormHide2PDF').submit();
     });
 
@@ -78,27 +79,29 @@
         var filterSemester = $('#filterSemester').val();
         var filterProgrammeStudy = $('#filterProgrammeStudy').val();
 
-        if(filterSemester!='' && filterSemester!=null &&
-            filterProgrammeStudy!='' && filterProgrammeStudy!=null){
+        if (filterSemester != '' && filterSemester != null &&
+            filterProgrammeStudy != '' && filterProgrammeStudy != null) {
 
             save2PDF = [];
-            $('#btnSave2PDF_monitoringAttdLec').prop('disabled',true);
+            $('#btnSave2PDF_monitoringAttdLec').prop('disabled', true);
 
             var SemesterID = filterSemester.split('.')[0];
             var ProdiID = filterProgrammeStudy.split('.')[0];
 
             var data = {
-                action : 'monitoringLecturer',
-                SemesterID : SemesterID,
-                ProdiID : ProdiID
+                action: 'monitoringLecturer',
+                SemesterID: SemesterID,
+                ProdiID: ProdiID
             };
-            var token = jwt_encode(data,'UAP)(*');
-            var url = base_url_js+'api/__crudAttendance';
+            var token = jwt_encode(data, 'UAP)(*');
+            var url = base_url_js + 'api/__crudAttendance';
 
-            $.post(url,{token:token},function (jsonResult) {
+            $.post(url, {
+                token: token
+            }, function(jsonResult) {
 
 
-                if(jsonResult.length>0){
+                if (jsonResult.length > 0) {
 
                     $('#divShowMonitoringAttd').html('' +
                         '<div class="table-responsive">' +
@@ -130,35 +133,35 @@
 
                     var no = 1;
                     // var pdf = [];
-                    for(var i=0;i<jsonResult.length;i++){
+                    for (var i = 0; i < jsonResult.length; i++) {
                         var d = jsonResult[i];
 
                         var rwSpan = 1 + parseInt(d.Schedule.length);
 
-                        var lec = (d.Lecturer!=null && d.Lecturer!='') ? d.Lecturer : '-';
+                        var lec = (d.Lecturer != null && d.Lecturer != '') ? d.Lecturer : '-';
                         tr.append('<tr>' +
-                            '<td rowspan="'+rwSpan+'">'+no+'</td>' +
-                            '<td rowspan="'+rwSpan+'">'+d.MKCode+'</td>' +
-                            '<td rowspan="'+rwSpan+'" style="text-align: left;">'+d.MKNameEng+'</td>' +
-                            '<td rowspan="'+rwSpan+'">'+d.ClassGroup+'</td>' +
-                            '<td rowspan="'+rwSpan+'" style="text-align: left;">'+lec+'</td>' +
+                            '<td rowspan="' + rwSpan + '">' + no + '</td>' +
+                            '<td rowspan="' + rwSpan + '">' + d.MKCode + '</td>' +
+                            '<td rowspan="' + rwSpan + '" style="text-align: left;">' + d.MKNameEng + '</td>' +
+                            '<td rowspan="' + rwSpan + '">' + d.ClassGroup + '</td>' +
+                            '<td rowspan="' + rwSpan + '" style="text-align: left;">' + lec + '</td>' +
                             '</tr>');
 
 
 
                         var arr_course_pdf = [];
-                        for(var s=0;s<d.Schedule.length;s++){
+                        for (var s = 0; s < d.Schedule.length; s++) {
 
                             var dt2 = d.Schedule[s];
-                            var time = dt2.StartSessions.substr(0,5)+' - '+dt2.EndSessions.substr(0,5);
+                            var time = dt2.StartSessions.substr(0, 5) + ' - ' + dt2.EndSessions.substr(0, 5);
 
                             tr.append('<tr>' +
-                                '<td>'+dt2.DayEng+'</td>' +
-                                '<td>'+time+'</td>' +
-                                '<td>'+dt2.Room+'</td>' +
-                                '<td>14</td>' +
-                                '<td style="background: #f5f5f5;"><span id="idAttd'+i+'_'+s+'">0</span></td>' +
-                                '<td><span id="idAttdPercent'+i+'_'+s+'"></span> %</td>' +
+                                '<td>' + dt2.DayEng + '</td>' +
+                                '<td>' + time + '</td>' +
+                                '<td>' + dt2.Room + '</td>' +
+                                '<td>' + d.totalSession + '</td>' +
+                                '<td style="background: #f5f5f5;"><span id="idAttd' + i + '_' + s + '">0</span></td>' +
+                                '<td><span id="idAttdPercent' + i + '_' + s + '"></span> %</td>' +
                                 '</tr>');
 
                             // Hitung Attd
@@ -171,29 +174,29 @@
                             //     }
                             // }
 
-                            $('#idAttd'+i+'_'+s).html(Attd);
+                            $('#idAttd' + i + '_' + s).html(Attd);
 
-                            var percent = (Attd!=0) ? (Attd/14 * 100) : 0.00;
-                            $('#idAttdPercent'+i+'_'+s).html(percent.toFixed(2));
+                            var percent = (Attd != 0) ? (Attd / d.totalSession * 100) : 0.00;
+                            $('#idAttdPercent' + i + '_' + s).html(percent.toFixed(2));
 
                             var course_pdf = {
-                                Day : dt2.DayEng,
-                                Time : time,
-                                Room : dt2.Room,
-                                Target : 14,
-                                Real : Attd,
-                                Percent : percent.toFixed(2) +' %'
+                                Day: dt2.DayEng,
+                                Time: time,
+                                Room: dt2.Room,
+                                Target: d.totalSession,
+                                Real: Attd,
+                                Percent: percent.toFixed(2) + ' %'
                             };
                             arr_course_pdf.push(course_pdf);
                         }
 
                         var pdf = {
-                            No : no,
-                            MKCode : d.MKCode,
-                            MKNameEng : d.MKNameEng,
-                            ClassGroup : d.ClassGroup,
-                            Lecturer : lec,
-                            Schedule : arr_course_pdf
+                            No: no,
+                            MKCode: d.MKCode,
+                            MKNameEng: d.MKNameEng,
+                            ClassGroup: d.ClassGroup,
+                            Lecturer: lec,
+                            Schedule: arr_course_pdf
                         };
 
                         save2PDF.push(pdf);
@@ -205,15 +208,15 @@
                 }
 
                 var token = jwt_encode({
-                    Prodi : $('#filterProgrammeStudy option:selected').text(),
-                    Semester : $('#filterSemester option:selected').text(),
-                    save2PDF : save2PDF
-                },'UAP)(*');
+                    Prodi: $('#filterProgrammeStudy option:selected').text(),
+                    Semester: $('#filterSemester option:selected').text(),
+                    save2PDF: save2PDF
+                }, 'UAP)(*');
 
                 $('#dataFormHide2PDF').val(token);
 
 
-                $('#btnSave2PDF_monitoringAttdLec').prop('disabled',false);
+                $('#btnSave2PDF_monitoringAttdLec').prop('disabled', false);
 
             });
 

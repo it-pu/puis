@@ -621,8 +621,8 @@ class C_api4 extends CI_Controller
 
                     $dataDetail = $this->m_rest->checkKelengkapanLearningOnline($row['ScheduleID'], $s);
 
-                    $rangeSt = date('d/M/Y', strtotime($d['RangeStart']));
-                    $rangeEn = date('d/M/Y', strtotime($d['RangeEnd']));
+                    $rangeSt = date('d/M/y', strtotime($d['RangeStart']));
+                    $rangeEn = date('d/M/y', strtotime($d['RangeEnd']));
 
                     $bg = ($d['Status'] == '1' || $d['Status'] == 1)
                         ? 'background: #ffeb3b42;border: 1px solid #9E9E9E;border-radius: 5px;' : '';
@@ -633,22 +633,22 @@ class C_api4 extends CI_Controller
                     // Material
                     $viewMaterial = (count($dataDetail['dataMaterial']))
                         ? '<a href="' . url_sign_in_lecturers . 'uploads/material/' . $dataDetail['dataMaterial'][0]['File'] . '" target="_blank">
-                                <span class="label label-default" style="font-size: 8px;">Material</span></a>'
+                                <span class="label label-default" style="font-size: 8px;">Matrl</span></a>'
                         : '';
 
                     // Cek Topik
                     $viewCkTopik = ($dataDetail['CheckTopik'] > 0)
-                        ? '<span class="label label-primary" style="font-size: 8px;">Forum</span>'
+                        ? '<span class="label label-primary" style="font-size: 8px;">Frm</span>'
                         : '';
 
                     // Cek Task
                     $viewTask = ($dataDetail['CheckTask'] > 0)
-                        ? '<span class="label label-success" style="font-size: 8px;">Task</span>'
+                        ? '<span class="label label-success" style="font-size: 8px;">Tsk</span>'
                         : '';
 
                     // Cek Quiz
                     $viewQuiz = ($dataDetail['CheckQuiz'] > 0)
-                        ? '<span class="label label-warning" style="font-size: 8px;">Quiz</span>'
+                        ? '<span class="label label-warning" style="font-size: 8px;">Qz</span>'
                         : '';
 
                     $arr = '<div style="' . $bg . 'padding-top: 5px;padding-bottom: 5px;">
@@ -2301,9 +2301,9 @@ class C_api4 extends CI_Controller
         }
     }
 
-    public function getkelompok_profesi(){
-        $data = $this->db->where('DeletedBy is NULL')->order_by('ID_kelompok_profesi','ASC')->get('db_employees.employees_kelompok_profesi')->result_array();
+    public function getkelompok_profesi()
+    {
+        $data = $this->db->where('DeletedBy is NULL')->order_by('ID_kelompok_profesi', 'ASC')->get('db_employees.employees_kelompok_profesi')->result_array();
         return print_r(json_encode($data));
     }
-
 }
