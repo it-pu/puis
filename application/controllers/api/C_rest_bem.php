@@ -100,7 +100,7 @@ class C_rest_bem extends CI_Controller {
       }
     }
 
-    public function authbemAPISession(){      
+    public function authBemAPISession(){      
       // print_r('ok');die();
       $input = $this->getInputToken();
       $action = $input['action'];
