@@ -379,9 +379,16 @@ class C_api4 extends CI_Controller
             $ScheduleID = $data_arr['ScheduleID'];
             $NPM = $data_arr['NPM'];
 
+            // get settingan total sesi
+            $settings = $this->db->query('SELECT ay.totalSession FROM db_academic.academic_years ay 
+                                            LEFT JOIN db_academic.schedule s 
+                                            ON (s.SemesterID = ay.SemesterID)
+                                            WHERE s.ID = "' . $ScheduleID . '" LIMIT 1 ')->result_array();
+
+            $totalSession = $settings[0]['totalSession'];
             $result = [];
 
-            for ($i = 1; $i <= 14; $i++) {
+            for ($i = 1; $i <= $totalSession; $i++) {
 
                 // Task
                 $dataTask = $this->db->query('SELECT COUNT(*) AS Total FROM db_academic.schedule_task_student sts 
@@ -435,11 +442,6 @@ class C_api4 extends CI_Controller
                         }
                     }
                 }
-
-
-
-
-
 
                 $result[$i - 1] = array(
                     'ScheduleID' => $ScheduleID,

@@ -141,7 +141,10 @@ class M_rest extends CI_Model
 
     public function __getKSM($db, $ProdiID, $NPM, $ClassOf)
     {
-        $dataSemester = $this->db->query('SELECT s.* FROM db_academic.semester s WHERE s.Year >= ' . $ClassOf . ' ORDER BY s.ID ASC')->result_array();
+        $dataSemester = $this->db->query('SELECT s.*, ay.totalSession 
+        FROM db_academic.semester s 
+        LEFT JOIN db_academic.academic_years ay ON (s.ID = ay.SemesterID)
+        WHERE s.Year >= ' . $ClassOf . ' ORDER BY s.ID ASC')->result_array();
 
         //        print_r($dataSemester);
 
@@ -226,7 +229,7 @@ class M_rest extends CI_Model
                                                             WHERE gc.ScheduleID = "' . $data[$sc]['ScheduleID'] . '"
                                                              ')->result_array();
 
-                        $meeting = 0;
+                        $meeting = $dataSemester[$i]['totalSession'];
                         $Totalpresen = 0;
                         // Get Attendance
                         if (count($dataSchedule) > 0) {
@@ -243,8 +246,8 @@ class M_rest extends CI_Model
                                 if (count($dataAttd) > 0) {
                                     $presen = 0;
                                     $ArrPresensi = [];
-                                    for ($m = 1; $m <= 14; $m++) {
-                                        $meeting += 1;
+                                    for ($m = 1; $m <= 16; $m++) {
+                                        // $meeting += 1;
                                         if ($dataAttd[0]['M' . $m] == '1') {
                                             $presen += 1;
                                             $Totalpresen += 1;
@@ -282,6 +285,7 @@ class M_rest extends CI_Model
                 }
 
                 $dataArr = array(
+                    'totalSession' => $dataSemester[$i]['totalSession'],
                     'SemesterID' => $dataSemester[$i]['ID'],
                     'Semester' => $smt,
                     'SemesterName' => $dataSemester[$i]['Name'],
