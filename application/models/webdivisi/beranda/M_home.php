@@ -45,13 +45,6 @@ class M_home extends CI_Model{
 
     }
 
-    function getDataTestimoni(){ // db_webdivisi
-        $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
-
-        $hasil=$this->db->query("SELECT * FROM db_webdivisi.testimoni where DivisiID = '".$divisi_active_id."' ")->result_array();
-        return $hasil;
-    }
-
     function getDataSlider(){ // db_webdivisi
         $divisi_active_id = $this->session->userdata('IDdepartementNavigation');
 
