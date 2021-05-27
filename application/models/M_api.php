@@ -350,7 +350,10 @@ class M_api extends CI_Model
             //            $dt = (count($dataDetail)>0) ? $dataDetail[0] : '';
 
             // Get Setting Attd
-            $dataSetting = $this->db->get_where('db_academic.attendance_setting', array('SemesterID' => $id))->result_array();
+            $dataSetting = $this->db->query('SELECT asg.*, ay.totalSession 
+                            FROM db_academic.attendance_setting asg 
+                            LEFT JOIN db_academic.academic_years ay ON (asg.SemesterID = ay.SemesterID)
+                            WHERE asg.SemesterID = "' . $id . '"')->result_array();
 
             if (count($dataDetail) > 0) {
                 $result['DetailTA'] = $dataDetail[0];
