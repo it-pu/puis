@@ -131,10 +131,9 @@ class C_api_webdivisi extends CI_Controller {
 
                 $arr_file =  $sql[0]['Images'];
                 $path = './images/Slider/'. $arr_file;
-
-                if(is_file($path)){
-                    $this->db->where('ID',$dataSave2['ID']);
-                    $this->db->update('db_webdivisi.slider',$dataSave2);
+                $this->db->where('ID',$dataSave2['ID']);
+                $this->db->update('db_webdivisi.slider',$dataSave2);
+                if(is_file($path)){                    
                     unlink($path);
                 }
            }
@@ -142,21 +141,24 @@ class C_api_webdivisi extends CI_Controller {
             return print_r(1);
         }
         else if ($data_arr['action']=='deleteDataslider') 
-        {
-            $sql = 'select * from db_webdivisi.slider  where DivisiID= ?';
-            $DivisiID = $divisi_active_id;
-            $query = $this->db->query($sql, array($DivisiID))->result_array();
-
+        {   
             $ID = $data_arr['ID'];
-            if ($ID !=''){
-                $this->db->where('ID', $ID);
-                $this->db->delete('db_webdivisi.slider'); 
-                //delete images
-                $arr_file =  $query[0]['Images'];
-                $path = './images/Slider/'. $arr_file;
-                unlink($path);                
-            }
+            $sql = 'select * from db_webdivisi.slider  where ID= ?';
+            $DivisiID = $divisi_active_id;
+            $query = $this->db->query($sql, array($ID))->result_array();
+
+            if($ID){
+            
+            //delete images
+            $arr_file =  $query[0]['Images'];
+            $path = './images/Slider/'. $arr_file;             
+            $this->db->where('ID', $ID);
+            $this->db->delete('db_webdivisi.slider');                  
+            unlink($path);
+                
             return print_r(1);
+
+            }
         }
         elseif ($data_arr['action'] == 'change_sorting'){
             $ID = $data_arr['ID'];
@@ -513,7 +515,6 @@ class C_api_webdivisi extends CI_Controller {
     function getTeamDivisi(){
         $data_arr = $this->getInputToken2();
         $DivisiID = $this->session->userdata('IDdepartementNavigation');
-        print_r($DivisiID);die();
         $data = $this->db->query('SELECT * FROM db_employees.employees em
                                   WHERE (em.PositionMain like "'.$DivisiID.'.%" OR em.PositionOther1 like "'.$DivisiID.'.%" OR em.PositionOther2 like "'.$DivisiID.'.%" OR em.PositionOther3 like "'.$DivisiID.'.%") AND em.StatusEmployeeID not in("-1","-2") ORDER BY em.PositionMain ASC')->result_array();
         
@@ -530,42 +531,7 @@ class C_api_webdivisi extends CI_Controller {
         return print_r(json_encode($data));
     }
 
-    function getAllCategory(){
-        $data_arr = $this->getInputToken2();
-        $DivisiID = $data_arr['DivisiID'];
-
-        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities  WHERE DivisiID = '.$DivisiID.'  order by RAND() LIMIT 50')->result_array();
-        return print_r(json_encode($data));
-    }
-    function getCategoryClassroom(){
-        $data_arr = $this->getInputToken2();
-        $DivisiID = $data_arr['DivisiID'];
-        $filter = $data_arr['filter'];
-       $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE DivisiID = '.$DivisiID.' AND Category LIKE  "%'.$filter.'%"')->result_array();
-        // $sql =  'SELECT * FROM db_webdivisi.facilities WHERE DivisiID = '.$DivisiID.' AND Category LIKE 
-        // "%'.$filter.'%"';
-        // print_r($sql);
-        return print_r(json_encode($data));
-    }
-    
-    function getCategoryLaboratory(){
-        $data_arr = $this->getInputToken2();
-        $DivisiID = $data_arr['DivisiID'];
-
-        // $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE DivisiID = '.$DivisiID.' AND category = "Laboratory"')->result_array();
-        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities  WHERE DivisiID = '.$DivisiID.'  order by RAND() LIMIT 50')->result_array();
-        
-        return print_r(json_encode($data));
-    }
-    function getCategoryFacilities(){
-        $data_arr = $this->getInputToken2();
-        $DivisiID = $data_arr['DivisiID'];
-
-        $data = $this->db->query('SELECT * FROM db_webdivisi.facilities WHERE DivisiID = '.$DivisiID.'')->result_array();
-        
-        
-        return print_r(json_encode($data));
-    }
+ 
     function getInstaDivisi(){
         $data_arr = $this->getInputToken2();
         $DivisiID = $data_arr['DivisiID'];

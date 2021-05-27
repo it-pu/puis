@@ -245,5 +245,21 @@ class M_home extends CI_Model{
         $this->db->delete($this->table);
     }
 
+    public function get_slider_by_id($id)
+    {
+        $this->db->from('db_webdivisi.slider');
+        $this->db->where('ID',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
+    public function updateSlider($where, $data)
+    {
+        $this->db->update('db_webdivisi.slider', $data, $where);
+        return $this->db->affected_rows();
+    }
+
+
 }
 ?>
