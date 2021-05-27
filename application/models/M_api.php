@@ -3874,13 +3874,15 @@ class M_api extends CI_Model
 
 
         $dataCourse = $this->db->query('SELECT mk.NameEng, mk.MKCode, sdc.MKID, s.ClassGroup, smt.Name AS Semester,
-                                                  em.Name AS Lecturer
+                                                  em.Name AS Lecturer, ay.totalSession
                                                   FROM db_academic.schedule_details_course sdc
                                                  LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = sdc.MKID)
                                                  LEFT JOIN db_academic.schedule s ON (s.ID = sdc.ScheduleID)
                                                  LEFT JOIN db_academic.semester smt ON (smt.ID = s.SemesterID)
                                                  LEFT JOIN db_employees.employees em ON (em.NIP = s.Coordinator)
-                                                 WHERE sdc.ScheduleID = "' . $ScheduleID . '" AND s.SemesterID = "' . $SemesterID . '" LIMIT 1')->result_array();
+                                                 LEFT JOIN db_academic.academic_years ay ON (ay.SemesterID = s.SemesterID)
+                                                 WHERE sdc.ScheduleID = "' . $ScheduleID . '" 
+                                                 AND s.SemesterID = "' . $SemesterID . '" LIMIT 1')->result_array();
 
         $dataStd = $this->getStudentByScheduleID($SemesterID, $ScheduleID);
 

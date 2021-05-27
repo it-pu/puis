@@ -1274,10 +1274,11 @@ class C_api2 extends CI_Controller
                 $ScheduleID = $data_arr['ScheduleID'];
 
                 // Get Course
-                $dataCourse = $this->db->query('SELECT mk.NameEng AS CourseEng, mk.MKCode, s.ClassGroup, em.NIP, em.Name, s.TeamTeaching FROM db_academic.schedule s
+                $dataCourse = $this->db->query('SELECT mk.NameEng AS CourseEng, mk.MKCode, s.ClassGroup, em.NIP, em.Name, s.TeamTeaching, ay.totalSession FROM db_academic.schedule s
                                                           LEFT JOIN db_academic.schedule_details_course sdc ON (sdc.ScheduleID = s.ID)
                                                           LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = sdc.MKID)
                                                           LEFT JOIN db_employees.employees em ON (em.NIP = s.Coordinator)
+                                                          LEFT JOIN db_academic.academic_years ay ON (ay.SemesterID = s.SemesterID)
                                                           WHERE s.ID = "' . $ScheduleID . '" GROUP BY s.ID LIMIT 1')->result_array();
 
                 // Get Lecturer
@@ -1322,15 +1323,18 @@ class C_api2 extends CI_Controller
                 $ScheduleID = $data_arr['ScheduleID'];
                 $SDID = $data_arr['SDID'];
 
-                $dataAttd = $this->db->query('SELECT * FROM db_academic.attendance attd
-                                        WHERE attd.ScheduleID = "' . $ScheduleID . '" AND attd.SDID = "' . $SDID . '" LIMIT 1')->result_array();
+                $dataAttd = $this->db->query('SELECT attd.*, ay.totalSession FROM db_academic.attendance attd
+                                        LEFT JOIN db_academic.academic_years ay ON (ay.SemesterID = attd.SemesterID)
+                                        WHERE attd.ScheduleID = "' . $ScheduleID . '" 
+                                        AND attd.SDID = "' . $SDID . '" LIMIT 1')->result_array();
 
                 $result = [];
                 if (count($dataAttd) > 0) {
 
                     $ID_Attd = $dataAttd[0]['ID'];
+                    $totalSession = $dataAttd[0]['totalSession'];
 
-                    for ($i = 1; $i <= 14; $i++) {
+                    for ($i = 1; $i <= $totalSession; $i++) {
                         $bap = $this->db->query('SELECT b.*, auts.Name AS Student, em.Name AS Lecturer
                                                   FROM db_academic.attendance_bap b
                                                   LEFT JOIN db_academic.auth_students auts ON (auts.NPM = b.StudentSignBy)
