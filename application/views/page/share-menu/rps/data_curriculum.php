@@ -1,43 +1,16 @@
 
 
-<!-- <div class="row" style="margin-top: 30px;">
-    <div class="col-md-12" style="text-align: right;">
-      <a href="<?= base_url('academic/curriculum_cross/2014/1') ?>" style="float:left;" target="_blank" class="btn btn-default"><b>Check Curriculum Cross</b></a>
 
+<style>
 
-        <div class="btn-group">
-            <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                Add Curriculum
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" id="yearAddKurikulum">
-            </ul>
-        </div>
+.item-question:hover {
+    cursor: pointer;
+}
 
-        <div class="btn-group">
-            <button class="btn btn-default btn-default-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                Add Semester
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" id="addSmt">
-            </ul>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <i class="fa fa-cog" aria-hidden="true"></i>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <li><a href="javascript:void(0)" data-action="ConfProgram" data-header="Campus Programme" class="btn-conf">Campus Programme</a></li>
-                <li><a href="javascript:void(0)" data-action="ConfJenisKurikulum" data-header="Curriculum Type" class="btn-conf">Curriculum Type</a></li>
-                <li><a href="javascript:void(0)" data-action="ConfJenisKelompok" data-header="Course Group" class="btn-conf">Course Group</a></li>
-            </ul>
-        </div>
-
-        <hr/>
-    </div>
-</div> -->
+.item-question:hover div {
+    background: lightyellow;
+}
+</style>
 
 <div class="row" style="">
 
@@ -89,21 +62,21 @@
         pageKurikulum();
     });
 
-    $(document).on('click','.btn-add-mksmt', function () {
-       var semester = $(this).attr('data-smt');
-       modal_add_mk(semester,'add');
-    });
+    // $(document).on('click','.btn-add-mksmt', function () {
+    //    var semester = $(this).attr('data-smt');
+    //    modal_add_mk(semester,'add');
+    // });
 
-    $(document).on('click','.btn-conf',function () {
-        var action = $(this).attr('data-action');
-        var header = $(this).attr('data-header');
-        if(action == 'ConfJenisKurikulum' || action == 'ConfJenisKelompok' || action=='ConfProgram'){
-            modal_dataConf(action,header);
-        }
-        // else if(action=='ClassGroup'){
-        //     modal_dataClassGroup(action,header);
-        // }
-    });
+    // $(document).on('click','.btn-conf',function () {
+    //     var action = $(this).attr('data-action');
+    //     var header = $(this).attr('data-header');
+    //     if(action == 'ConfJenisKurikulum' || action == 'ConfJenisKelompok' || action=='ConfProgram'){
+    //         modal_dataConf(action,header);
+    //     }
+    //     // else if(action=='ClassGroup'){
+    //     //     modal_dataClassGroup(action,header);
+    //     // }
+    // });
 
     $(document).on('click','.btn-control',function () {
 
@@ -119,33 +92,6 @@
 
     });
 
-    $(document).on('click','.btnAddRPS',function () {
-        var semester = $(this).attr('data-smt');
-        var CDID = $(this).attr('data-id');
-        modal_add(semester,'addRPS',CDID);
-    });
-
-    // function modal_add_RPS(semester,action,ID='') {
-    //     var url = base_url_js+"rps/loadPageModal";
-    //     var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
-    //     var curriculumYear = curriculum[1];
-    //     var data = {
-    //         Action : action,
-    //         CDID : ID,
-    //         Semester : semester,
-    //         curriculumYear : curriculumYear
-    //     };
-    //     var token = jwt_encode(data,"UAP)(*");
-    //     $.post(url,{ token:token }, function (html) {
-    //         $('#GlobalModal .modal-header').html('<h4 class="modal-title">Add Rencana Pembelajaran Semester (RPS)</h4>');
-    //         $('#GlobalModal .modal-body').html(html);
-    //         $('#GlobalModal .modal-footer').html(' ');
-    //         $('#GlobalModal').modal({
-    //             'show' : true,
-    //             'backdrop' : 'static'
-    //         });
-    //     })
-    // }
 
     $(document).on('click','.btnManageCPL',function () {
         var semester = $(this).attr('data-smt');
@@ -165,124 +111,104 @@
             curriculumYear : curriculumYear
         };
         var token = jwt_encode(data,"UAP)(*");
-        window.location.assign("<?php echo base_url('rps/manage-CPL/'); ?>"+ token);
+        window.open("<?php echo base_url('rps/manage-CPL/'); ?>"+ token,"_blank");
     });
 
-    $(document).on('click','.btnViewCPMK',function () {
-        var CDID = $(this).attr('data-id');
-        var semester = $(this).attr('data-smt');
-        var MKCode = $(this).attr('data-mkcode');
-        var prodi = $(this).attr('data-prodi');
-        var course = $(this).attr('data-course');
-        var url = base_url_js+"rps/loadPageModal";
-        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
-        var curriculumYear = curriculum[1];
-        var data = {
-            CDID : CDID,
-            MKCode : MKCode,
-            Prodi : prodi,
-            Course : course,
-            Semester : semester,
-            curriculumYear : curriculumYear
-        };
-        var token = jwt_encode(data,"UAP)(*");
-        window.location.assign("<?php echo base_url('rps/list-CPMK/'); ?>"+ token);
-    });
-
-    $(document).on('click','.btnViewDescMK',function () {
-        var CDID = $(this).attr('data-id');
-        var semester = $(this).attr('data-smt');
-        var MKCode = $(this).attr('data-mkcode');
-        var prodi = $(this).attr('data-prodi');
-        var course = $(this).attr('data-course');
-        var url = base_url_js+"rps/loadPageModal";
-        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
-        var curriculumYear = curriculum[1];
-        var data = {
-            CDID : CDID,
-            MKCode : MKCode,
-            Prodi : prodi,
-            Course : course,
-            Semester : semester,
-            curriculumYear : curriculumYear
-        };
-        var token = jwt_encode(data,"UAP)(*");
-        window.location.assign("<?php echo base_url('rps/desc-MK/'); ?>"+ token);
-    });
-
-    $(document).on('click','.btnViewMaterial',function () {
-        var CDID = $(this).attr('data-id');
-        var semester = $(this).attr('data-smt');
-        var MKCode = $(this).attr('data-mkcode');
-        var prodi = $(this).attr('data-prodi');
-        var course = $(this).attr('data-course');
-        var url = base_url_js+"rps/loadPageModal";
-        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
-        var curriculumYear = curriculum[1];
-        var data = {
-            CDID : CDID,
-            MKCode : MKCode,
-            Prodi : prodi,
-            Course : course,
-            Semester : semester,
-            curriculumYear : curriculumYear
-        };
-        var token = jwt_encode(data,"UAP)(*");
-        window.location.assign("<?php echo base_url('rps/bahan-kajian/'); ?>"+ token);
-    });
-
-    $(document).on('click','.btnViewRPS',function () {
-        var CDID = $(this).attr('data-id');
-        var semester = $(this).attr('data-smt');
-        var MKCode = $(this).attr('data-mkcode');
-        var prodi = $(this).attr('data-prodi');
-        var course = $(this).attr('data-course');
-        var url = base_url_js+"rps/loadPageModal";
-        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
-        var curriculumYear = curriculum[1];
-        var data = {
-            CDID : CDID,
-            MKCode : MKCode,
-            Prodi : prodi,
-            Course : course,
-            Semester : semester,
-            curriculumYear : curriculumYear
-        };
-        var token = jwt_encode(data,"UAP)(*");
-        window.location.assign("<?php echo base_url('rps/list-rps/'); ?>"+ token);
-    });
 
     $(document).on('click','.btnAddCPMK',function () {
-        var semester = $(this).attr('data-smt');
+        // var semester = $(this).attr('data-smt');
+        // var CDID = $(this).attr('data-id');
         var CDID = $(this).attr('data-id');
-        modal_add(semester,'addCPMK',CDID);
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+
+        action_modal(listdata,'addMaterial',CDID);
+    
     });
 
+
+
     $(document).on('click','.btnAddDescMK',function () {
-        var semester = $(this).attr('data-smt');
+        // var semester = $(this).attr('data-smt');
+        // var CDID = $(this).attr('data-id');
         var CDID = $(this).attr('data-id');
-        modal_add(semester,'addDescMK',CDID);
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+        action_modal(listdata,'addDescMK',CDID);
     });
 
     $(document).on('click','.btnAddMaterial',function () {
-        var semester = $(this).attr('data-smt');
+        // var semester = $(this).attr('data-smt');
+        // var CDID = $(this).attr('data-id');
         var CDID = $(this).attr('data-id');
-        modal_add(semester,'addMaterial',CDID);
-    });
-
-    $(document).on('click','.btnViewCPL',function () {
-        console.log('testview')
-    });
-
-    function modal_add(semester,action,ID='') {
-        var url = base_url_js+"rps/loadPageModal";
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
         var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
         var curriculumYear = curriculum[1];
-        var data = {
-            Action : action,
-            CDID : ID,
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
             Semester : semester,
             curriculumYear : curriculumYear
+        };
+        action_modal(listdata,'addMaterial',CDID);
+    });
+
+    $(document).on('click','.btnAddRPS',function () {
+        // var semester = $(this).attr('data-smt');
+        // var CDID = $(this).attr('data-id');
+        var CDID = $(this).attr('data-id');
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+        action_modal(listdata,'addRPS',CDID);
+    });
+
+    function action_modal(listdata,action,ID='') {
+     
+        var url = base_url_js+"rps/loadPageModal";
+        var data = {
+            Action : action,
+            data : listdata,
         };
         var token = jwt_encode(data,"UAP)(*");
         if (action === 'addRPS') {
@@ -295,7 +221,8 @@
                     'backdrop' : 'static'
                 });
             })
-        } else if (action === 'addCPMK') {
+        } 
+        else if (action === 'addCPMK') {
             $.post(url,{ token:token }, function (html) {
                 $('#GlobalModal .modal-header').html('<h4 class="modal-title">Add Capaian Pembelajaran Mata Kuliah (CPMK)</h4>');
                 $('#GlobalModal .modal-body').html(html);
@@ -305,7 +232,8 @@
                     'backdrop' : 'static'
                 });
             })
-        } else if (action === 'addDescMK') {
+        } 
+        else if (action === 'addDescMK') {
             $.post(url,{ token:token }, function (html) {
                 $('#GlobalModal .modal-header').html('<h4 class="modal-title">Add Deskripsi MK</h4>');
                 $('#GlobalModal .modal-body').html(html);
@@ -315,7 +243,8 @@
                     'backdrop' : 'static'
                 });
             })
-        } else if (action === 'addMaterial') {
+        } 
+        else if (action === 'addMaterial') {
             $.post(url,{ token:token }, function (html) {
                 $('#GlobalModal .modal-header').html('<h4 class="modal-title">Add Bahan Kajian</h4>');
                 $('#GlobalModal .modal-body').html(html);
@@ -326,8 +255,136 @@
                 });
             })
         }
+        else if (action === 'viewMaterial') {
+            $.post(url,{ token:token }, function (html) {
+                $('#GlobalModalLarge .modal-header').html('<h4 class="modal-title">Bahan Kajian</h4>');
+                $('#GlobalModalLarge .modal-body').html(html);
+                $('#GlobalModalLarge .modal-footer').html(' ');
+                $('#GlobalModalLarge').modal({
+                    'show' : true,
+                    'backdrop' : 'static'
+                });
+            })
+        } 
+        else if (action === 'viewRPS') {
+            $.post(url,{ token:token }, function (html) {
+                $('#GlobalModalLarge .modal-header').html('<h4 class="modal-title">Rencana Pembelajaran Semester (RPS)</h4>');
+                $('#GlobalModalLarge .modal-body').html(html);
+                $('#GlobalModalLarge .modal-footer').html(' ');
+                $('#GlobalModalLarge').modal({
+                    'show' : true,
+                    'backdrop' : 'static'
+                });
+            })
+        } 
+        else if (action === 'viewDescMK') {
+            $.post(url,{ token:token }, function (html) {
+                $('#GlobalModalLarge .modal-header').html('<h4 class="modal-title">Deskripsi MK</h4>');
+                $('#GlobalModalLarge .modal-body').html(html);
+                $('#GlobalModalLarge .modal-footer').html(' ');
+                $('#GlobalModalLarge').modal({
+                    'show' : true,
+                    'backdrop' : 'static'
+                });
+            })
+        } 
+        else {
+            $.post(url,{ token:token }, function (html) {
+                $('#GlobalModal .modal-header').html('<h4 class="modal-title">Capaian Pembelajaran Mata Kuliah (CPMK)</h4>');
+                $('#GlobalModal .modal-body').html(html);
+                $('#GlobalModal .modal-footer').html(' ');
+                $('#GlobalModal').modal({
+                    'show' : true,
+                    'backdrop' : 'static'
+                });
+            })
+        }
         
     }
+
+
+    $(document).on('click','.btnViewMaterial',function () {
+        var CDID = $(this).attr('data-id');
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+ 
+        action_modal(listdata,'viewMaterial',CDID);
+
+    });
+
+    $(document).on('click','.btnViewRPS',function () {
+        var CDID = $(this).attr('data-id');
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+
+        action_modal(listdata,'viewRPS',CDID);
+
+    });
+
+    $(document).on('click','.btnViewDescMK',function () {
+        var CDID = $(this).attr('data-id');
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+        action_modal(listdata,'viewDescMK',CDID);
+    });
+
+    $(document).on('click','.btnViewCPMK',function () {
+        var CDID = $(this).attr('data-id');
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+        action_modal(listdata,'viewCPMK',CDID);
+    });
+
+    
+    
 
     $(document).on('click','.detailMataKuliah',function () {
         var semester = $(this).attr('data-smt');
@@ -374,69 +431,69 @@
                 '</a></li>');
         }
     }
-    function modal_add_kurikulum(year) {
-        var url = base_url_js+"academic/kurikulum/add-kurikulum";
-        var data = {
-            Year : year,
-            Name : 'Kurikulum '+year,
-            NameEng : 'Curriculum '+year,
-            CreateAt : dateTimeNow(),
-            CreateBy : '2017090',
-            UpdateAt : dateTimeNow(),
-            UpdateBy : '2017090'
-        };
-        var token = jwt_encode(data,"UAP)(*");
-        $.post(url,{token:token},function (html) {
-            $('#GlobalModal .modal-header').html('<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-                '<h4 class="modal-title">Add Curriculum</h4>');
-            $('#GlobalModal .modal-body').html(html);
-            $('#GlobalModal .modal-footer').html(' ');
-            $('#GlobalModal').modal({
-                'show' : true,
-                'backdrop' : 'static'
-            });
-        })
-    }
-    function modal_add_mk(semester,action,ID='') {
-        var url = base_url_js+"academic/kurikulum/loadPageDetailMataKuliah";
-        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
-        var curriculumYear = curriculum[1];
-        var data = {
-            Action : action,
-            CDID : ID,
-            Semester : semester,
-            curriculumYear : curriculumYear
-        };
-        var token = jwt_encode(data,"UAP)(*");
-        $.post(url,{ token:token }, function (html) {
-            $('#GlobalModal .modal-header').html('<h4 class="modal-title">Add MK Semester '+semester+' - Curriculum '+curriculumYear+'</h4>');
-            $('#GlobalModal .modal-body').html(html);
-            $('#GlobalModal .modal-footer').html(' ');
-            $('#GlobalModal').modal({
-                'show' : true,
-                'backdrop' : 'static'
-            });
-        })
-    }
-    function modal_dataConf(action,header) {
-        var url = base_url_js+'academic/kurikulum/data-conf';
+    // function modal_add_kurikulum(year) {
+    //     var url = base_url_js+"academic/kurikulum/add-kurikulum";
+    //     var data = {
+    //         Year : year,
+    //         Name : 'Kurikulum '+year,
+    //         NameEng : 'Curriculum '+year,
+    //         CreateAt : dateTimeNow(),
+    //         CreateBy : '2017090',
+    //         UpdateAt : dateTimeNow(),
+    //         UpdateBy : '2017090'
+    //     };
+    //     var token = jwt_encode(data,"UAP)(*");
+    //     $.post(url,{token:token},function (html) {
+    //         $('#GlobalModal .modal-header').html('<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+    //             '<h4 class="modal-title">Add Curriculum</h4>');
+    //         $('#GlobalModal .modal-body').html(html);
+    //         $('#GlobalModal .modal-footer').html(' ');
+    //         $('#GlobalModal').modal({
+    //             'show' : true,
+    //             'backdrop' : 'static'
+    //         });
+    //     })
+    // }
+    // function modal_add_mk(semester,action,ID='') {
+    //     var url = base_url_js+"academic/kurikulum/loadPageDetailMataKuliah";
+    //     var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+    //     var curriculumYear = curriculum[1];
+    //     var data = {
+    //         Action : action,
+    //         CDID : ID,
+    //         Semester : semester,
+    //         curriculumYear : curriculumYear
+    //     };
+    //     var token = jwt_encode(data,"UAP)(*");
+    //     $.post(url,{ token:token }, function (html) {
+    //         $('#GlobalModal .modal-header').html('<h4 class="modal-title">Add MK Semester '+semester+' - Curriculum '+curriculumYear+'</h4>');
+    //         $('#GlobalModal .modal-body').html(html);
+    //         $('#GlobalModal .modal-footer').html(' ');
+    //         $('#GlobalModal').modal({
+    //             'show' : true,
+    //             'backdrop' : 'static'
+    //         });
+    //     })
+    // }
+    // function modal_dataConf(action,header) {
+    //     var url = base_url_js+'academic/kurikulum/data-conf';
 
-       var data = {
-            action : action
-        };
+    //    var data = {
+    //         action : action
+    //     };
 
-        var token = jwt_encode(data,'UAP)(*');
-        $.post(url,{token:token}, function (html) {
-            $('#GlobalModal .modal-header').html('<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
-                '<span aria-hidden="true">&times;</span></button>' +
-                '<h4 class="modal-title">'+header+'</h4>');
-            $('#GlobalModal .modal-body').html(html);
-            $('#GlobalModal .modal-footer').html(' ');
-            $('#GlobalModal').modal({
-                'show' : true,
-                'backdrop' : 'static'
-            });
-        });
-    }
+    //     var token = jwt_encode(data,'UAP)(*');
+    //     $.post(url,{token:token}, function (html) {
+    //         $('#GlobalModal .modal-header').html('<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+    //             '<span aria-hidden="true">&times;</span></button>' +
+    //             '<h4 class="modal-title">'+header+'</h4>');
+    //         $('#GlobalModal .modal-body').html(html);
+    //         $('#GlobalModal .modal-footer').html(' ');
+    //         $('#GlobalModal').modal({
+    //             'show' : true,
+    //             'backdrop' : 'static'
+    //         });
+    //     });
+    // }
 
 </script>

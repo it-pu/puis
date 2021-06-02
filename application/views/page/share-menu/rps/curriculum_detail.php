@@ -163,10 +163,10 @@
                     // '            <li role="separator" class="divider"></li>' +
                     
                     '            <li><a href="javascript:void(0);" class="btnManageCPL" data-smt="'+MataKuliah[i].Semester+'" data-mkcode="'+detailSemester[s].MKCode +'" data-id="'+detailSemester[s].CDID+'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">1. CPL (Capaian Pembelajaran Lulusan)</a></li>' +
-                    '            <li><a href="javascript:void(0);" class="btnAddCPMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'">2. CPMK (Capaian Pembelajaran Mata Kuliah)</a></li>' +
-                    '            <li><a href="javascript:void(0);" class="btnAddDescMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'">3. Deskripsi MK</a></li>' +
-                    '            <li><a href="javascript:void(0);" class="btnAddMaterial" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'">4. Bahan Kajian    </a></li>' +
-                    '            <li><a href="javascript:void(0);" class="btnAddRPS" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'">5. RPS (Rencana Pembelajaran Semester)</a></li>' +
+                    '            <li><a href="javascript:void(0);" class="btnAddCPMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">2. CPMK (Capaian Pembelajaran Mata Kuliah)</a></li>' +
+                    '            <li><a href="javascript:void(0);" class="btnAddDescMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">3. Deskripsi MK</a></li>' +
+                    '            <li><a href="javascript:void(0);" class="btnAddMaterial" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">4. Bahan Kajian    </a></li>' +
+                    '            <li><a href="javascript:void(0);" class="btnAddRPS" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">5. RPS (Rencana Pembelajaran Semester)</a></li>' +
                     // '            <li role="separator" class="divider"></li>' +
                     // '            <li><a href="javascript:void(0);" class="btnShareToPublic">Share to the public</a></li>' +
                     // '            <li class="'.$btnRemove.'"><a href="javascript:void(0);">Remove</a></li>' +

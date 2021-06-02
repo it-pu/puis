@@ -122,13 +122,9 @@
             '               <thead>' +
             '                <tr style="background: #eceff1;">' +
             '                    <th style="width: 1%;text-align: center;">No</th>'+
-            // '                    <th style="width: 8%;text-align: center;">Curriculum Code</th>'+
-            // '                    <th style="width: 16%;text-align: center;">Course</th>'+
-            // '                    <th style="width: 11%;text-align: center;">Base Prodi</th>'+
             '                    <th style="width: 10%; text-align: center;">Type</th>'+
             '                    <th style="width: 10%; text-align: center;">Code</th>'+
             '                    <th style="text-align: center;">Description</th>'+
-            //'                    <th style="width: 5%;text-align: left;">Order</th>'+ 
 
             '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
             '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
@@ -141,6 +137,8 @@
         var data = {
             action : 'getDataCPMK',
             CDID : '<?= $CDID; ?>',
+            viewData: 'viewData',
+
         };
 
         var token = jwt_encode(data,'UAP)(*');
@@ -178,7 +176,6 @@
         var MKCode = $(this).attr('data-mkcode');
         var CPMKType = $(this).attr('data-type');
         var CPMKCode = $(this).attr('data-code');
-        var CPMKOrder = $(this).attr('data-order');
         var CPMKDesc = $(this).attr('data-description');
         var html = '<div class="col-md-12" id="modalEdit">'+
             '<form class="form-horizontal">'+
@@ -229,17 +226,6 @@
 
             '            </div>'+
             '        </div>'+
-            '        <div class="form-group">'+
-            '            <label class="col-sm-4 control-label">Order '+
-            '    <span><strong style="color: #fc4b6c;">*</strong></span>'+
-
-            '</label>'+
-            '            <div class="col-sm-8">'+
-            '                <input id="modalCPMKOrder" type="number" class="form-control" value="'+CPMKOrder+'">'+
-            '       <span class="help-block spanInputCPMKOrder" style="display: none;"></span>'+ 
-
-            '            </div>'+
-            '        </div>'+
             '    <div class="form-group" style="border-top: 1px solid #d3d3d3;padding-top: 10px;text-align: right;">'+
             '        <div class="col-sm-12" id="BtnFooter">'+
             '            <button type="button" id="ModalbtnCancleForm" data-dismiss="modal" class="btn btn-default">Close</button>'+
@@ -262,7 +248,7 @@
     });
 
     $(document).on('click','#ModalbtnCPMK',function () {
-        if( $("#ModalSelectTypeCPMK").val() == null ||   $("#modalCPMKCode").val() == "" ||  $("#modalCPMKDesc").val() == "" ||  $("#modalCPMKOrder").val() == "" )
+        if( $("#ModalSelectTypeCPMK").val() == null ||   $("#modalCPMKCode").val() == "" ||  $("#modalCPMKDesc").val() == "" )
         {
             if($("#ModalSelectTypeCPMK").val() == null )
             {
@@ -291,15 +277,6 @@
                     $(".spanInputCPMKDesc").html("");
                 },3000);
             } 
-            else if($("#modalCPMKOrder").val() == "" )
-            {
-                $(".spanInputCPMKOrder").css("display", "");
-                $(".spanInputCPMKOrder").html("<strong style='color: #fc4b6c;'>Order tidak boleh kosong !</strong>");
-                setTimeout(function () {
-                    $(".spanInputCPMKOrder").css("display", "none");
-                    $(".spanInputCPMKOrder").html("");
-                },3000);
-            } 
         }
         else{
             var url = base_url_js+'rps/crud-CPMK';
@@ -309,7 +286,6 @@
                 CPMKType : $("#ModalSelectTypeCPMK").val(),
                 CPMKCode : $("#modalCPMKCode").val(),
                 CPMKDesc : $("#modalCPMKDesc").val(),
-                CPMKOrder : $("#modalCPMKOrder").val(),
 
             };
 
@@ -326,13 +302,6 @@
                     setTimeout(function () {
                         window.location = '';
                     },1000);
-                } else {
-                    $(".spanInputCPMKOrder").css("display", "");
-                    $(".spanInputCPMKOrder").html("<strong style='color: #fc4b6c;'>Order sudah ada !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputCPMKOrder").css("display", "none");
-                        $(".spanInputCPMKOrder").html("");
-                    },3000);
                 }
             });
         }

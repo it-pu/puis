@@ -141,6 +141,7 @@ class C_rps extends Globalclass {
 
                     $nestedData[] = '<div style="text-align: left;">'.$row['EntredAt'].'</div>';
                     $nestedData[] = '<div style="text-align: left;">'.$row['EntredBy'].'</div>';
+                   
                     $nestedData[] = $btnAct;
             
 
@@ -157,6 +158,32 @@ class C_rps extends Globalclass {
                 );
                 echo json_encode($json_data);
         }
+
+        else if($datatoken['action']=='showModalRPS'){
+
+            $CDID = $datatoken['CDID'];
+
+            $data = $this->db->query('SELECT rb.*, cd.MKID, cd.ProdiID, mk.MKCode, mk.NameEng, ps.Name AS ProdiName
+            FROM db_academic.rps_basic rb 
+            LEFT JOIN db_academic.curriculum_details cd ON (cd.ID = rb.CDID)
+            LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = cd.MKID)
+            LEFT JOIN db_academic.program_study ps ON (ps.ID = cd.ProdiID)
+            WHERE rb.CDID='.$CDID.' ORDER BY rb.ID ASC ')
+                                    ->result_array();
+
+
+            return print_r(json_encode($data));
+
+
+        }
+
+        else if($datatoken['action']=='updateQueueRPS'){
+            $this->db->where('ID', $datatoken['ID']);
+            $this->db->update('db_academic.rps_basic'
+                ,array('Order' => $datatoken['Queue']));
+            return print_r(1);
+        }
+
         else if($datatoken['action']=='AddRPS'){
        
             $formData = $datatoken['dataAdd'];
@@ -458,8 +485,7 @@ class C_rps extends Globalclass {
         if($datatoken['action']=='getDataCPMK'){  
             $requestData = $_REQUEST;
             $CDID = $datatoken['CDID'];
-
-
+           
             $dataSearch = '';
             if( !empty($requestData['search']['value']) ) {
                 $search = $requestData['search']['value'];
@@ -473,7 +499,7 @@ class C_rps extends Globalclass {
             LEFT JOIN db_academic.curriculum_details cd ON (cd.ID = rc.CDID)
             LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = cd.MKID)
             LEFT JOIN db_academic.program_study ps ON (ps.ID = cd.ProdiID)
-            WHERE rc.CDID='.$CDID.$dataSearch;                                        
+            WHERE rc.CDID='.$CDID.$dataSearch.' ORDER BY rc.Order ASC';                                        
 
             $queryDefaultTotal = 'SELECT COUNT(*) AS Total FROM ('.$queryDefault.') xx';
 
@@ -531,14 +557,41 @@ class C_rps extends Globalclass {
                 echo json_encode($json_data);
         }
 
+        else if($datatoken['action']=='showModalCPMK'){
+
+            $CDID = $datatoken['CDID'];
+
+            $data = $this->db->query('SELECT rc.*, cd.MKID, cd.ProdiID, mk.MKCode, mk.NameEng, ps.Name AS ProdiName
+            FROM db_academic.rps_cpmk rc 
+            LEFT JOIN db_academic.curriculum_details cd ON (cd.ID = rc.CDID)
+            LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = cd.MKID)
+            LEFT JOIN db_academic.program_study ps ON (ps.ID = cd.ProdiID)
+            WHERE rc.CDID='.$CDID.' ORDER BY rc.Order ASC ')
+                                    ->result_array();
+
+
+            return print_r(json_encode($data));
+
+
+        }
+
+        else if($datatoken['action']=='updateQueueCPMK'){
+            $this->db->where('ID', $datatoken['ID']);
+            $this->db->update('db_academic.rps_cpmk'
+                ,array('Order' => $datatoken['Queue']));
+            return print_r(1);
+        }
+
         else if($datatoken['action']=='AddCPMK'){
             $formData = $datatoken['dataAdd'];
+            $TotalQuestion = $this->db->query('SELECT COUNT(*) AS Total 
+            FROM db_academic.rps_material
+            WHERE CDID = "'.$formData['CDID'].'" ')->result_array()[0]['Total'];
 
             $addCDID = $formData['CDID'];
             $addTypeCPMK = $formData['subCPMK'];
             $addCodeCPMK = $formData['codeCPMK'];
             $addDescCPMK = $formData['descCPMK'];
-            $addOrderCPMK = $formData['orderCPMK'];
             $ActionBy = $this->session->userdata('Name');
 
             $inserts = array(
@@ -546,7 +599,7 @@ class C_rps extends Globalclass {
                 'Type' => $addTypeCPMK,
                 'Code' => $addCodeCPMK,
                 'Description' => $addDescCPMK,
-                'Order' => $addOrderCPMK,
+                'Order' => $TotalQuestion+1,
                 'EntredAt' => date('Y-m-d H:i:s'),
                 'EntredBy' => $ActionBy,
             );
@@ -564,14 +617,12 @@ class C_rps extends Globalclass {
             $editCPMKType = $formData['CPMKType'];
             $editCPMKCode = $formData['CPMKCode'];
             $editCPMKDesc = $formData['CPMKDesc'];
-            $editCPMKOrder = $formData['CPMKOrder'];
             $ActionBy = $this->session->userdata('Name');
 
             $updates = array(
                 'Type' => $editCPMKType,
                 'Code' => $editCPMKCode,
                 'Description' => $editCPMKDesc,
-                'Order' => $editCPMKOrder,
                 'EntredAt' => date('Y-m-d H:i:s'),
                 'EntredBy' => $ActionBy,
             );
@@ -634,7 +685,7 @@ class C_rps extends Globalclass {
             LEFT JOIN db_academic.curriculum_details cd ON (cd.ID = dmk.CDID)
             LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = cd.MKID)
             LEFT JOIN db_academic.program_study ps ON (ps.ID = cd.ProdiID)
-            WHERE dmk.CDID='.$CDID.$dataSearch;                                        
+            WHERE dmk.CDID='.$CDID.$dataSearch.' ORDER BY dmk.Order ASC' ;                                        
 
             $queryDefaultTotal = 'SELECT COUNT(*) AS Total FROM ('.$queryDefault.') xx';
 
@@ -690,18 +741,46 @@ class C_rps extends Globalclass {
                 echo json_encode($json_data);
         }
 
+        else if($datatoken['action']=='showModalDescMK'){
+
+            $CDID = $datatoken['CDID'];
+
+            $data = $this->db->query('SELECT dmk.*, cd.MKID, cd.ProdiID, mk.MKCode, mk.NameEng, ps.Name AS ProdiName
+            FROM db_academic.rps_desc_mk dmk 
+            LEFT JOIN db_academic.curriculum_details cd ON (cd.ID = dmk.CDID)
+            LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = cd.MKID)
+            LEFT JOIN db_academic.program_study ps ON (ps.ID = cd.ProdiID)
+            WHERE dmk.CDID='.$CDID.' ORDER BY dmk.Order ASC ')
+                                    ->result_array();
+
+
+            return print_r(json_encode($data));
+
+
+        }
+
+        else if($datatoken['action']=='updateQueueDescMK'){
+            $this->db->where('ID', $datatoken['ID']);
+            $this->db->update('db_academic.rps_desc_mk'
+                ,array('Order' => $datatoken['Queue']));
+            return print_r(1);
+        }
+
         else if($datatoken['action']=='AddDescMK'){
             $formData = $datatoken['dataAdd'];
 
+            $TotalQuestion = $this->db->query('SELECT COUNT(*) AS Total 
+            FROM db_academic.rps_desc_mk
+            WHERE CDID = "'.$formData['CDID'].'" ')->result_array()[0]['Total'];
+
             $addCDID = $formData['CDID'];
             $addDescMK = $formData['descMK'];
-            $addOrderMK = $formData['orderMK'];
             $ActionBy = $this->session->userdata('Name');
 
             $inserts = array(
                 'CDID' => $addCDID,
                 'Description' => $addDescMK,
-                'Order' => $addOrderMK,
+                'Order' => $TotalQuestion+1,
                 'EntredAt' => date('Y-m-d H:i:s'),
                 'EntredBy' => $ActionBy,
             );
@@ -717,12 +796,10 @@ class C_rps extends Globalclass {
             $formData = $datatoken['dataEdit'];
             $editIDDescMK = $formData['descMKID'];
             $editDescMK = $formData['descMKDesc'];
-            $editDescMKOrder = $formData['descMKOrder'];
             $ActionBy = $this->session->userdata('Name');
            
             $updates = array(
             'Description' => $editDescMK,
-            'Order' => $editDescMKOrder,
             'EntredAt' => date('Y-m-d H:i:s'),
             'EntredBy' => $ActionBy,
             );
@@ -758,7 +835,6 @@ class C_rps extends Globalclass {
         $data['Prodi'] = $data_arr['Prodi'];
         $data['Course'] = $data_arr['Course'];
         
-        // $page = $this->load->view('page/share-menu/rps/desc_mk',$data,true);
         $page = $this->load->view('page/share-menu/rps/bahan_kajian',$data,true);
         $this->menu_rps($page);
     }
@@ -785,7 +861,7 @@ class C_rps extends Globalclass {
             LEFT JOIN db_academic.curriculum_details cd ON (cd.ID = rm.CDID)
             LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = cd.MKID)
             LEFT JOIN db_academic.program_study ps ON (ps.ID = cd.ProdiID)
-            WHERE rm.CDID = '.$CDID.$dataSearch;                                        
+            WHERE rm.CDID = '.$CDID.$dataSearch.' ORDER BY rm.Order ASC';                                        
 
             $queryDefaultTotal = 'SELECT COUNT(*) AS Total FROM ('.$queryDefault.') xx';
 
@@ -841,8 +917,38 @@ class C_rps extends Globalclass {
                 echo json_encode($json_data);
         }
 
+        else if($datatoken['action']=='showModalMaterial'){
+
+            $CDID = $datatoken['CDID'];
+
+            $data = $this->db->query('SELECT rm.*, cd.MKID, cd.ProdiID, mk.MKCode, mk.NameEng, ps.Name AS ProdiName
+            FROM db_academic.rps_material rm
+            LEFT JOIN db_academic.curriculum_details cd ON (cd.ID = rm.CDID)
+            LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = cd.MKID)
+            LEFT JOIN db_academic.program_study ps ON (ps.ID = cd.ProdiID)
+            WHERE rm.CDID = '.$CDID.' ORDER BY rm.Order ASC ')
+                                    ->result_array();
+
+
+            return print_r(json_encode($data));
+
+
+        }
+
+        else if($datatoken['action']=='updateQueueMaterial'){
+            $this->db->where('ID', $datatoken['ID']);
+            $this->db->update('db_academic.rps_material'
+                ,array('Order' => $datatoken['Queue']));
+            return print_r(1);
+        }
+
         else if($datatoken['action']=='AddMaterial'){
             $formData = $datatoken['dataAdd'];
+
+            
+            $TotalQuestion = $this->db->query('SELECT COUNT(*) AS Total 
+            FROM db_academic.rps_material
+            WHERE CDID = "'.$formData['CDID'].'" ')->result_array()[0]['Total'];
 
             $addCDID = $formData['CDID'];
             $addDescMaterial = $formData['descMaterial'];
@@ -852,7 +958,7 @@ class C_rps extends Globalclass {
             $inserts = array(
                 'CDID' => $addCDID,
                 'Description' => $addDescMaterial,
-                'Order' => $addOrderMaterial,
+                'Order' => $TotalQuestion + 1,
                 'EntredAt' => date('Y-m-d H:i:s'),
                 'EntredBy' => $ActionBy,
             );
@@ -868,12 +974,10 @@ class C_rps extends Globalclass {
             $formData = $datatoken['dataEdit'];
             $editIDMaterial = $formData['MaterialID'];
             $editDescMaterial = $formData['MaterialDesc'];
-            $editOrderMaterial = $formData['MaterialOrder'];
             $ActionBy = $this->session->userdata('Name');
         
             $updates = array(
             'Description' => $editDescMaterial,
-            'Order' => $editOrderMaterial,
             'EntredAt' => date('Y-m-d H:i:s'),
             'EntredBy' => $ActionBy,
             );
@@ -895,6 +999,8 @@ class C_rps extends Globalclass {
 
             return print_r(json_encode($result));
         }
+
+        
     
     }
 
@@ -990,6 +1096,13 @@ class C_rps extends Globalclass {
                 echo json_encode($json_data);
         }
 
+        else if($datatoken['action']=='updateQueueCPL'){
+            $this->db->where('ID', $datatoken['ID']);
+            $this->db->update('db_academic.rps_cpl'
+                ,array('Order' => $datatoken['Queue']));
+            return print_r(1);
+        }
+
         else if($datatoken['action']=='manageDataCPL'){  
             $requestData = $_REQUEST;
 
@@ -1050,7 +1163,7 @@ class C_rps extends Globalclass {
             $data = $this->db->query('SELECT c.*, cm.Code, cm.Description
                                             FROM db_academic.rps_cpl c
                                             LEFT JOIN db_academic.rps_cpl_master cm ON (cm.ID = c.CPLMasterID)
-                                            WHERE c.CDID = "'.$CDID.'"')->result_array();
+                                            WHERE c.CDID = "'.$CDID.'" ORDER BY c.Order')->result_array();
             // print_r($data);
             // die();
             return print_r(json_encode($data));
@@ -1155,12 +1268,45 @@ class C_rps extends Globalclass {
         $token = $this->input->post('token');
         $key = "UAP)(*";
         $data_arr = (array) $this->jwt->decode($token,$key);
+        $listdata = (array) $data_arr['data'];
 
+ 
         if(count($data_arr)>0){
             // $data['department'] = parent::__getDepartement();
-            $data['CDID'] = $data_arr['CDID'];
+            $data['CDID'] = $listdata['CDID'];
             $data['action'] = $data_arr['Action'];
-            $data['semester'] = $data_arr['Semester'];
+            $data['semester'] = $listdata['Semester'];
+            $data['Course'] = $listdata['Course'];
+            $data['Prodi'] = $listdata['Prodi'];
+            $data['MKCode'] = $listdata['MKCode'];
+            $data['curriculumYear'] = $listdata['curriculumYear'];
+
+
+            $this->load->view('page/share-menu/rps/action_modal',$data);
+        } else {
+            echo '<h3>Data Is Empty!</h3>';
+        }
+
+    }
+
+    public function loadPageModalView(){
+        $token = $this->input->post('token');
+        $key = "UAP)(*";
+        $data_arr = (array) $this->jwt->decode($token,$key);
+        $listdata = (array) $data_arr['data'];
+
+ 
+        if(count($data_arr)>0){
+            // $data['department'] = parent::__getDepartement();
+            $data['CDID'] = $listdata['CDID'];
+            $data['action'] = $data_arr['Action'];
+            $data['semester'] = $listdata['Semester'];
+            $data['Course'] = $listdata['Course'];
+            $data['Prodi'] = $listdata['Prodi'];
+            $data['MKCode'] = $listdata['MKCode'];
+            $data['curriculumYear'] = $listdata['curriculumYear'];
+
+
             $this->load->view('page/share-menu/rps/action_modal',$data);
         } else {
             echo '<h3>Data Is Empty!</h3>';

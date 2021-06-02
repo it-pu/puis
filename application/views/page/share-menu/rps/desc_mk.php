@@ -118,11 +118,7 @@
             '               <thead>' +
             '                <tr style="background: #eceff1;">' +
             '                    <th style="width: 1%;text-align: center;">No</th>'+
-            // '                    <th style="width: 8%;text-align: center;">Curriculum Code</th>'+
-            // '                    <th style="width: 16%;text-align: center;">Course</th>'+
-            // '                    <th style="width: 11%;text-align: center;">Base Prodi</th>'+
             '                    <th style="text-align: center;">Description</th>'+
-            //'                    <th style="width: 5%;text-align: left;">Order</th>'+ 
 
             '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
             '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
@@ -134,6 +130,8 @@
         var data = {
             action : 'getDataDescMK',
             CDID : '<?= $CDID; ?>',
+            viewData: 'viewData',
+
         };
 
         var token = jwt_encode(data,'UAP)(*');
@@ -169,7 +167,6 @@
     $(document).on('click','.btnEditDescMK',function () {
         var DescMKID = $(this).attr('data-id');
         var DescMKCode = $(this).attr('data-mkcode');
-        var DescMKOrder = $(this).attr('data-order');
         var DescMKDesc = $(this).attr('data-description');
         var html = '<div class="col-md-12" id="modalEdit">'+
             '<form class="form-horizontal">'+
@@ -188,17 +185,6 @@
             '            <div class="col-sm-8">'+
             '                <textarea class="form-control" id="modalDescMKDesc" rows="2" value="'+DescMKDesc+'">'+DescMKDesc+'</textarea>'+
             '       <span class="help-block spanInputDescMKDesc" style="display: none;"></span>'+ 
-
-            '            </div>'+
-            '        </div>'+
-            '        <div class="form-group">'+
-            '            <label class="col-sm-4 control-label">Order '+
-            '    <span><strong style="color: #fc4b6c;">*</strong></span>'+
-
-            '</label>'+
-            '            <div class="col-sm-8">'+
-            '                <input id="modalDescMKOrder" type="number" class="form-control" value="'+DescMKOrder+'">'+
-            '       <span class="help-block spanInputDescMKOrder" style="display: none;"></span>'+ 
 
             '            </div>'+
             '        </div>'+
@@ -224,7 +210,7 @@
     });
 
     $(document).on('click','#ModalbtnDescMK',function () {
-        if( $("#modalDescMKDesc").val() == "" ||   $("#modalDescMKOrder").val() == "" )
+        if( $("#modalDescMKDesc").val() == ""  )
         {
             if($("#modalDescMKDesc").val() == "" )
                 {
@@ -235,15 +221,6 @@
                         $(".spanInputDescMKDesc").html("");
                     },3000);
                 } 
-            else if($("#modalDescMKOrder").val() == "" )
-                {
-                    $(".spanInputDescMKOrder").css("display", "");
-                    $(".spanInputDescMKOrder").html("<strong style='color: #fc4b6c;'>Order tidak boleh kosong !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputDescMKOrder").css("display", "none");
-                        $(".spanInputDescMKOrder").html("");
-                    },3000);
-                } 
         }
         else{
             var url = base_url_js+'rps/crud-desc-MK';
@@ -252,7 +229,6 @@
                 descMKID: $("#modalIDDescMK").val(),
                 descMKCode : $("#modalCodeDescMK").val(),
                 descMKDesc : $("#modalDescMKDesc").val(),
-                descMKOrder : $("#modalDescMKOrder").val(),
 
             };
 
@@ -269,13 +245,6 @@
                     setTimeout(function () {
                         window.location = '';
                     },1000);
-                } else {
-                    $(".spanInputDescMKOrder").css("display", "");
-                    $(".spanInputDescMKOrder").html("<strong style='color: #fc4b6c;'>Order sudah ada !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputDescMKOrder").css("display", "none");
-                        $(".spanInputDescMKOrder").html("");
-                    },3000);
                 }
                 
             });
