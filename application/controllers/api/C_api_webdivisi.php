@@ -255,9 +255,7 @@ class C_api_webdivisi extends CI_Controller {
 
         }
 
-        // Add by yamin =====
-        
-       
+        // Add by yamin =====       
         else if($data_arr['action']=='saveDataPhoto'){
             if (array_key_exists('uploadFile', $_FILES)) { // jika file di upload
                 $upload = $this->m_master->uploadDokumenMultiple(uniqid(),'uploadFile',$path = './images/Kaprodi');
@@ -289,20 +287,19 @@ class C_api_webdivisi extends CI_Controller {
 
                     $arr_file =  $query[0]['Photo'];
                     $path = './images/Kaprodi/'. $arr_file;
-
-                      if(is_file($path)){
-                        $ID = $query[0]['ID'];
-                        $dataupdate['Photo'] = $upload;
-                        $this->db->where('ID',$ID);
-                        $this->db->update('db_webdivisi.prodi_sambutan',$dataupdate);
+                    $ID = $query[0]['ID'];
+                    $dataupdate['Photo'] = $upload;
+                    $this->db->where('ID',$ID);
+                    $this->db->update('db_webdivisi.prodi_sambutan',$dataupdate);
+                    if(is_file($path)){                        
                         unlink($path);
-                      }
-                      // else{
-                      //   $ID = $query[0]['ID'];
-                      //   $dataupdate['Photo'] = $upload;
-                      //   $this->db->where('ID',$ID);
-                      //   $this->db->update('db_webdivisi.prodi_sambutan',$dataupdate);
-                      // }
+                    }
+                    // else{
+                    //   $ID = $query[0]['ID'];
+                    //   $dataupdate['Photo'] = $upload;
+                    //   $this->db->where('ID',$ID);
+                    //   $this->db->update('db_webdivisi.prodi_sambutan',$dataupdate);
+                    // }
                        
                 }
 

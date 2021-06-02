@@ -43,11 +43,7 @@ class C_home extends Webdivisi_Controler {
         $content = $this->load->view('page/webdivisi/beranda/whyus/menu_whyus',$data,true);
         $this->index($content);
     }
-    public function whychoose(){
-        $data['department'] = parent::__getDepartement();
-        $page = $this->load->view('page/webdivisi/beranda/whyus/whyus',$data,true);
-        $this->menu_whyus($page);
-    }
+    
     public function about(){
         $data['department'] = parent::__getDepartement();
         $page = $this->load->view('page/webdivisi/beranda/whyus/about',$data,true);
@@ -77,9 +73,8 @@ class C_home extends Webdivisi_Controler {
     }
     
 // ===== overview ======
-    function overview()
-    {
-        
+    public function overview()
+    {        
         $data['department'] = parent::__getDepartement();
         $content = $this->load->view('page/webdivisi/about/V_sambutan',$data,true);
         $this->index($content);
