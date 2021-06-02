@@ -756,23 +756,22 @@ if(JSON.parse(jsonResult).length>0){
 if(JSON.parse(jsonResult).length>0){
 
     var tr = '';
+    var nilai = '';
         if(JSON.parse(jsonResult).length>0){
             $.each(JSON.parse(jsonResult),function (i,v) {
-
+                if (v.ValueDesc=="") {
+                    nilai = '<div style="text-align: left;">'+v.Value+'</div>';
+                } else {
+                    nilai = '<div style="text-align: left;">'+v.Value+'% ('+v.ValueDesc+')</div>';
+                }
                 tr = tr+'<tr class="item-question" data-id="'+v.ID+'">' +
                     '<td><div style="text-align: left;">'+v.Week+'</div></td>' +
                     '<td><div style="text-align: left;">'+v.SubCPMK+'</div></td>' +
                     '<td><div style="text-align: left;">'+v.Material+'</div></td>' +
-                    
                     '<td><div style="text-align: left;">'+v.Indikator+'</div></td>' +
                     '<td><div style="text-align: left;">'+v.Kriteria+'</div></td>' +
                     '<td><div style="text-align: left;">'+v.Description+'</div></td>' +
-'if ('+v.ValueDesc+'=="") {'+
-    '<td><div style="text-align: left;">'+v.Value+'</div></td>' +
-'} else {'+
-    '<td><div style="text-align: left;">'+v.Value+'% ('+v.ValueDesc+')</div></td>' +
-'}'+
-
+                    '<td>'+nilai+'</td>'+
                     '<td><div style="text-align: left;"><a href ="'+base_url_js+'fileGetAny/document-RPS_'+v.CDID+'_'+v.Week+'-'+v.File+'" target="_blank">'+v.File+'</a></div></td>' +
                     '<td><div style="text-align: left;">'+v.EntredAt+'</div></td>' +
                     '<td><div style="text-align: left;">'+v.EntredBy+'</div></td>' +
