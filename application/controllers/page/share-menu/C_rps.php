@@ -585,7 +585,7 @@ class C_rps extends Globalclass {
         else if($datatoken['action']=='AddCPMK'){
             $formData = $datatoken['dataAdd'];
             $TotalQuestion = $this->db->query('SELECT COUNT(*) AS Total 
-            FROM db_academic.rps_material
+            FROM db_academic.rps_cpmk
             WHERE CDID = "'.$formData['CDID'].'" ')->result_array()[0]['Total'];
 
             $addCDID = $formData['CDID'];
