@@ -509,9 +509,9 @@ class C_api_webdivisi extends CI_Controller {
         return print_r(json_encode($data));
     }
 
-    function getTeamDivisi(){
+    function getTeamDivisi(){//frontand webdivisi
         $data_arr = $this->getInputToken2();
-        $DivisiID = $this->session->userdata('IDdepartementNavigation');
+        $DivisiID = $data_arr['DivisiID'];//devisi dari website
         $data = $this->db->query('SELECT * FROM db_employees.employees em
                                   WHERE (em.PositionMain like "'.$DivisiID.'.%" OR em.PositionOther1 like "'.$DivisiID.'.%" OR em.PositionOther2 like "'.$DivisiID.'.%" OR em.PositionOther3 like "'.$DivisiID.'.%") AND em.StatusEmployeeID not in("-1","-2") ORDER BY em.PositionMain ASC')->result_array();
         
@@ -521,7 +521,7 @@ class C_api_webdivisi extends CI_Controller {
 
     function getSliderDivisi(){
         $data_arr = $this->getInputToken2();
-        $DivisiID = $this->session->userdata('IDdepartementNavigation');
+        $DivisiID = $data_arr['DivisiID'];
         $data = $this->db->query('SELECT s.* FROM db_webdivisi.slider s WHERE s.DivisiID = '.$DivisiID.' ORDER BY s.Sorting ASC ')->result_array();
         
         
