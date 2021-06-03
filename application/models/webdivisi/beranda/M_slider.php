@@ -53,7 +53,7 @@ class M_slider extends CI_Model{
         'gambar' => 'gambar',
         'date'  => 'date',
         'user' => 'user'
-        );
+        ); 
          return array();
         // return $hasil->result();
     }
@@ -65,17 +65,13 @@ class M_slider extends CI_Model{
     }
 
 
-    function get_slider_by_id($idslider){
-        $hsl=$this->db2->query("SELECT * FROM slider WHERE ID_Slider='$idslider'");
-        if($hsl->num_rows()>0){
-            foreach ($hsl->result() as $data) {
-                $hasil=array(
-                    'judul' => $data->judul,
-                    'gambar' => $data->gambar,
-                    );
-            }
-        }
-        return $hasil;
+    public function get_by_id($id)
+    {
+        $this->db->from('db_webdivisi.slider');
+        $this->db->where('ID',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
     }
 
 

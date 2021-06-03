@@ -1,7 +1,9 @@
 
 <div class="" style="margin-top: 30px;">
     <div class="col-md-12">
-
+        <p style="color: red;">Jika data tidak muncul di table, mohon untuk disable plugin adblock dari browsernya</p>
+    </div>
+    <div class="col-md-12">
         <div class="pull-right">
             <button class="btn btn-default" id="btnClearLog"><i class="fa fa-eraser margin-right"></i> Clear Log</button>
         </div>

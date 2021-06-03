@@ -10957,7 +10957,7 @@ class C_api extends CI_Controller
     {
         $data_arr = $this->getInputToken();
 
-        if (count($data_arr > 0)) {
+        if ( is_array($data_arr) && count($data_arr) > 0 ) {
             if ($data_arr['action'] == 'readDataStudent') {
 
                 $DB_Student = $data_arr['DB_Student'];

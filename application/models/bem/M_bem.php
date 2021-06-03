@@ -55,6 +55,7 @@ class M_bem extends CI_Model {
     public function authLogin($data){
         $NPM = $data['NPM'];
         $Password = $data['Password'];
+        // print_r($NPM);die();
         $dataMHS = $this->db->query('select ID,NPM,Year from db_academic.auth_students where NPM = "'.$NPM.'" and Password = "'.$Password.'" ')->result_array();        
         $databem = $this->db->query('select count(*) as total from db_bem.set_list_member where NIPNPM = "'.$NPM.'"  ')->result_array();
         if (count($dataMHS) > 0 && $databem[0]['total'] > 0 ) {
@@ -88,7 +89,7 @@ class M_bem extends CI_Model {
             'bem_Semester'  => $dataUser[0]['SemesterNow'],
             'bem_Year'  => $dataUser[0]['Year'],
             'bem_SemesterCode'  => $dataUser[0]['SemesterCode'],
-            'bem_Photo'  => 'https://pcam.podomorouniversity.ac.id/'.'uploads/students/'.$dataUser[0]['Photo'],
+            'bem_Photo'  => 'https://pcam.podomorouniversity.ac.id/uploads/students/ta_'.$dataAuth['Year'].'/'.$dataUser[0]['Photo'],
             'bem_StatusStudentID'  => $dataUser[0]['StatusStudentID'],
             'bem_ClassOf'  => $dataAuth['Year'],
             'bem_AcademicMentor'  => $dataUser[0]['AcademicMentor'],
