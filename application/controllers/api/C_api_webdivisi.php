@@ -385,8 +385,6 @@ class C_api_webdivisi extends CI_Controller {
         }
         else if($data_arr['action']=='readContactAddress'){
             $data_arr = $this->getInputToken2();
-            $webdivisi_active_id = $divisi_active_id;
-            // print_r($webdivisi_active_id);die();
             $data = $this->db->get_where('db_webdivisi.contact_detail',array(
                 'DivisiID' => $divisi_active_id,                
             ))->result_array();
