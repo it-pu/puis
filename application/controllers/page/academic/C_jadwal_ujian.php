@@ -201,7 +201,18 @@ class C_jadwal_ujian extends Academic_Controler
                 if (array_key_exists('Files', $_FILES)) {
                     $filename = str_replace(' ', '_', $_FILES['Files']['name'][0]);
                     $path = './uploads/task-exam/';
-                    $uploadFile = $this->m_master->uploadDokumenSetFileName($filename, 'Files', $path);
+                    if ($_SERVER['SERVER_NAME'] != 'pcam.podomorouniversity.ac.id') {
+                        $uploadFile = $this->m_master->uploadDokumenSetFileName($filename, 'Files', $path);
+                    }
+                    else
+                    {
+                        // upload files.podomoro
+                        $headerOrigin = ($_SERVER['SERVER_NAME'] == 'localhost') ? "http://localhost" : serverRoot;
+                        $path = 'task-exam';
+                        $TheFile = 'Files';
+                        $uploadFile = $this->m_master->UploadManyFilesToNas($headerOrigin, $filename, $TheFile, $path, 'array');
+                    }
+
                     $dataSave['File'] = $uploadFile[0];
                 }
 
