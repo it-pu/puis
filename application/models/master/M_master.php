@@ -4305,7 +4305,7 @@ a.`delete`,c.`read` as readMenu,c.`update` as updateMenu,c.`write` as writeMenu,
 
               $filenameUpload = $_FILES['file']['name'];
               $ext = pathinfo($filenameUpload, PATHINFO_EXTENSION);
-              $filenameNew = (count($countfiles) > 1) ? $filename.'_'.$no.'_'.mt_rand().'.'.$ext : $filename;
+              $filenameNew = ($countfiles > 1) ? $filename.'_'.$no.'_'.mt_rand().'.'.$ext : $filename;
 
               //Load upload library
               $this->load->library('upload',$config);
@@ -4315,7 +4315,7 @@ a.`delete`,c.`read` as readMenu,c.`update` as updateMenu,c.`write` as writeMenu,
               if($this->upload->do_upload('file')){
                 // Get data about the file
                 $uploadData = $this->upload->data();
-                if (count($countfiles) > 1) {
+                if ($countfiles > 1) {
                    $filePath = $uploadData['file_path'];
                    $filename_uploaded = $uploadData['file_name'];
                    // rename file
