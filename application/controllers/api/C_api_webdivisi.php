@@ -387,7 +387,9 @@ class C_api_webdivisi extends CI_Controller {
             $data_arr = $this->getInputToken2();
             $webdivisi_active_id = $divisi_active_id;
             // print_r($webdivisi_active_id);die();
-            $data = $this->db->query('SELECT cd.* FROM db_webdivisi.contact_detail cd WHERE cd.DivisiID = '.$webdivisi_active_id.'')->result_array();
+            $data = $this->db->get_where('db_webdivisi.contact_detail',array(
+                'DivisiID' => $divisi_active_id,                
+            ))->result_array();
             return print_r(json_encode($data));
 
         }
