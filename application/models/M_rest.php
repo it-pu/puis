@@ -1315,7 +1315,8 @@ class M_rest extends CI_Model
                                                       LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = sdc.MKID)
                                                         WHERE s.SemesterID ="' . $SemesterID . '"
                                                         AND stt.NIP = "' . $NIP . '"
-                                                        AND s.IsSemesterAntara = "0" ')->result_array();
+                                                        AND s.IsSemesterAntara = "0" 
+                                                        GROUP BY s.ID')->result_array();
 
                 $dataCourse = $Coordinator;
                 if (count($TeamTheaching) > 0) {
