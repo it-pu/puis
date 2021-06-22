@@ -1,4 +1,10 @@
-<div class="row">
+<style>
+    #listOption td:first-child {
+        text-align: center;
+    }
+
+</style>
+<div class="row btn-read">
 	<div class="col-md-10 col-md-offset-1">
 		<div class="alert alert-warning">
 		    <lu>
@@ -9,7 +15,7 @@
 	</div>
 </div>
 
-<div class="row">
+<div class="row btn-read">
 	<div class="col-md-12">
 		<div class="panel panel-default" id="panelInput">
 		    <div class="panel-heading">
@@ -46,7 +52,7 @@
 		        </div>
 		    </div>
 		    <div class="panel-footer text-right">
-		        <button class="btn btn-success" id="btnSaveQuestion">Save</button>
+		        <button class="btn btn-success btn-add" id="btnSaveQuestion">Save</button>
 		    </div>
 		</div>
 	</div>
@@ -208,6 +214,7 @@
 	}
 
 	const load_default = async() => {
+		Global_CantAction('.btn-add');
 		await loadQuestionType();
 		$('#formSummernoteID').val(sessionNIP+'_question_admission_'+NewQuestion);
 		loadMultipleChoice(1);
@@ -395,114 +402,115 @@
 	})
 
 	const saveQuestion = async(action='',itsme) => {
-		var formID = $('#formID').val();
 
-		var formTQID = $('#formTQID').val();
-		var formQuestion = $('#formQuestion').val();
-		var formNote = $('#formNote').val();
+		if (confirm('Are you sure ?')) {
+			var formID = $('#formID').val();
 
-		var submitQ = true;
+			var formTQID = $('#formTQID').val();
+			var formQuestion = $('#formQuestion').val();
+			var formNote = $('#formNote').val();
 
-		var dataOption = [];
+			var submitQ = true;
 
-		var errMsg = 'Please check the required form';
+			var dataOption = [];
 
-		if(formTQID==3){
-		    submitQ = (formQuestion!='' && formQuestion!=null) ? true : false;
-		}
-		else if(formTQID==1){
-		    var totalOption = $('#totalOption').val();
-		    for(var i=1;i<=totalOption;i++){
-		        var des = $('#desc_'+i).val();
-		        submitQ = (des!='' && des!=null) ? true : false;
-		        var IsTheAnswer = ($('#opt_'+i).is(':checked')) ? '1' : '0';
-		        var formSummernoteID = $('#formSummernoteID_'+i).val();
-		        var arrOpt = {
-		            SummernoteID : formSummernoteID,
-		            Option : des,
-		            IsTheAnswer : IsTheAnswer
-		        };
+			var errMsg = 'Please check the required form';
 
-		        dataOption.push(arrOpt);
-		    }
-		}
-		else if(formTQID==2){
-		    var totalOption = $('#totalOption').val();
-		    var totalPointBenar = 0;
-		    var totalPointSalah = 0;
-		    for(var i=1;i<=totalOption;i++){
-		        var des = $('#desc_'+i).val();
-		        var Point = $('#point_'+i).val();
-		        submitQ = (des!='' && des!=null) ? true : false;
-		        var IsTheAnswer = ($('#opt_'+i).is(':checked')) ? '1' : '0';
-		        var formSummernoteID = $('#formSummernoteID_'+i).val();
-		        var arrOpt = {
-		            SummernoteID : formSummernoteID,
-		            Option : des,
-		            IsTheAnswer : IsTheAnswer,
-		            Point : (Point!='' && Point!=null) ? Point : 0
-		        };
-
-		        if($('#opt_'+i).is(':checked')){
-		            totalPointBenar = parseFloat(totalPointBenar) + parseFloat(Point);
-		        } else {
-		            totalPointSalah = parseFloat(totalPointSalah) + parseFloat(Point);
-		        }
-
-		        dataOption.push(arrOpt);
-		    }
-
-		    if(totalPointBenar==100 && totalPointSalah==-100){
-		        submitQ = true;
-		    } else {
-		        errMsg = 'The number of points for correct answers must be equal to 100 ' +
-		            'and the number of points for correct answers must be equal to -100';
-		        submitQ = false;
-		    }
-
-		}
-
-		var data = {
-		    action : 'saveQuestion',
-		    ID : (formID!='' && formID!=null) ? formID : '',
-		    SummernoteID : $('#formSummernoteID').val(),
-		    NIP : sessionNIP,
-		    dataQustion : {
-		        QTID : formTQID,
-		        Question : formQuestion,
-		        Note : (formNote!='' && formNote!=null) ? formNote : ''
-		    },
-		    dataOption : dataOption
-		};
-
-		var token = jwt_encode(data,'UAP)(*');
-		var url = '<?php echo $module_url.'save' ?>';
-
-		loadingStart();
-		try{
-			const response = await AjaxSubmitFormPromises(url,token);
-			if (response == 1) {
-				// save & add to quiz
-				toastr.success('Data saved','Success');
-
-				setTimeout(function () {
-				    window.location.href='';
-				},500);
+			if(formTQID==3){
+			    submitQ = (formQuestion!='' && formQuestion!=null) ? true : false;
 			}
-			else
-			{
+			else if(formTQID==1){
+			    var totalOption = $('#totalOption').val();
+			    for(var i=1;i<=totalOption;i++){
+			        var des = $('#desc_'+i).val();
+			        submitQ = (des!='' && des!=null) ? true : false;
+			        var IsTheAnswer = ($('#opt_'+i).is(':checked')) ? '1' : '0';
+			        var formSummernoteID = $('#formSummernoteID_'+i).val();
+			        var arrOpt = {
+			            SummernoteID : formSummernoteID,
+			            Option : des,
+			            IsTheAnswer : IsTheAnswer
+			        };
+
+			        dataOption.push(arrOpt);
+			    }
+			}
+			else if(formTQID==2){
+			    var totalOption = $('#totalOption').val();
+			    var totalPointBenar = 0;
+			    var totalPointSalah = 0;
+			    for(var i=1;i<=totalOption;i++){
+			        var des = $('#desc_'+i).val();
+			        var Point = $('#point_'+i).val();
+			        submitQ = (des!='' && des!=null) ? true : false;
+			        var IsTheAnswer = ($('#opt_'+i).is(':checked')) ? '1' : '0';
+			        var formSummernoteID = $('#formSummernoteID_'+i).val();
+			        var arrOpt = {
+			            SummernoteID : formSummernoteID,
+			            Option : des,
+			            IsTheAnswer : IsTheAnswer,
+			            Point : (Point!='' && Point!=null) ? Point : 0
+			        };
+
+			        if($('#opt_'+i).is(':checked')){
+			            totalPointBenar = parseFloat(totalPointBenar) + parseFloat(Point);
+			        } else {
+			            totalPointSalah = parseFloat(totalPointSalah) + parseFloat(Point);
+			        }
+
+			        dataOption.push(arrOpt);
+			    }
+
+			    if(totalPointBenar==100 && totalPointSalah==-100){
+			        submitQ = true;
+			    } else {
+			        errMsg = 'The number of points for correct answers must be equal to 100 ' +
+			            'and the number of points for correct answers must be equal to -100';
+			        submitQ = false;
+			    }
+
+			}
+
+			var data = {
+			    action : 'saveQuestion',
+			    ID : (formID!='' && formID!=null) ? formID : '',
+			    SummernoteID : $('#formSummernoteID').val(),
+			    NIP : sessionNIP,
+			    dataQustion : {
+			        QTID : formTQID,
+			        Question : formQuestion,
+			        Note : (formNote!='' && formNote!=null) ? formNote : ''
+			    },
+			    dataOption : dataOption
+			};
+
+			var token = jwt_encode(data,'UAP)(*');
+			var url = '<?php echo $module_url.'save' ?>';
+
+			loadingStart();
+			try{
+				const response = await AjaxSubmitFormPromises(url,token);
+				if (response == 1) {
+					// save & add to quiz
+					toastr.success('Data saved','Success');
+
+					setTimeout(function () {
+					    window.location.href='';
+					},500);
+				}
+				else
+				{
+					toastr.info('error save data'); 
+				}
+				
+			}
+			catch(err){
+				console.log(err)
 				toastr.info('error save data'); 
 			}
-			
+
+			loadingEnd(500);
 		}
-		catch(err){
-			console.log(err)
-			toastr.info('error save data'); 
-		}
-
-		 loadingEnd(500);
-
-
 
 	}
 </script>
