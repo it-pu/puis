@@ -20,7 +20,8 @@ class C_quiz extends Admission_Controler {
 
     public function filter_ta(){
       $TA =  $this->db->get('db_admission.set_ta')->row()->Ta;
-      $x = $TA - 1;
+      $TA =  $TA + 1;
+      $x = $TA - 3;
       $arr = [];
       for ($i=$TA; $i >=$x ; $i--) { 
         $arr[] = $i;
