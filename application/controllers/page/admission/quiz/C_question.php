@@ -14,9 +14,7 @@ class C_question extends Admission_Controler {
     }
 
     public function index(){
-        $NIP = $this->session->userdata('NIP');
-        $dataQuiz = $this->db->query('SELECT COUNT(*) Total FROM db_admission.q_question 
-                                        WHERE CreatedBy = "' . $NIP . '" ')->result_array();
+        $dataQuiz = $this->db->query('SELECT COUNT(*) Total FROM db_admission.q_question where active = 1')->result_array();
 
         $this->data['Total'] = $dataQuiz[0]['Total'];
     	$content = $this->load->view('page/'.$this->data['department'].'/master/quiz/question',$this->data,true);
@@ -72,7 +70,106 @@ class C_question extends Admission_Controler {
         echo json_encode(1);
     }
 
-    
+    public function getArrDataQuestion(){
+        $ArrQID = (array) $data_arr['ArrQID'];
+
+        $result = [];
+
+        if (count($ArrQID) > 0) {
+            for ($i = 0; $i < count($ArrQID); $i++) {
+                $QID = $ArrQID[$i];
+                $dataQuestion = $this->db->query('SELECT q.ID,q.Question,q.Note, qt.Description AS Type, q.QTID FROM db_admission.q_question q 
+                                                                LEFT JOIN db_academic.q_question_type qt ON (q.QTID = qt.ID)
+                                                                WHERE q.ID = "' . $QID . '" ')->result_array();
+                $dataOption = $this->db->select('Option,IsTheAnswer,Point')
+                    ->get_where('db_admission.q_question_options', array('QID' => $QID))->result_array();
+                $arrP = array(
+                    'Question' => (count($dataQuestion) > 0) ? $dataQuestion[0] : [],
+                    'Option' => $dataOption,
+                    'Status' => (count($dataQuestion) > 0) ? 1 : 0,
+                    'QID' => $QID
+                );
+                array_push($result, $arrP);
+            }
+        }
+
+        echo json_encode($result);
+    }
+
+    public function countTotalMyQuestion(){
+        $dataQuiz = $this->db->query('SELECT COUNT(*) Total FROM db_admission.q_question where active = 1')->result_array();
+        return print_r(json_encode(array('Total' => $dataQuiz[0]['Total'])));
+    }
+
+    public function getMyQuestion(){
+        $requestData = $_REQUEST;
+
+        $dataSearch = '';
+        if (!empty($requestData['search']['value'])) {
+            $search = $requestData['search']['value'];
+            $dataSearch = 'WHERE ( q.Question LIKE "%' . $search . '%" )';
+        }
+
+        $queryDefault = 'SELECT q.*, qt.Description FROM db_admission.q_question q 
+                                    LEFT JOIN db_academic.q_question_type qt ON (qt.ID = q.QTID)
+                                    ' . $dataSearch;
+
+        $queryDefaultTotal = 'SELECT COUNT(*) AS Total FROM (' . $queryDefault . ') xx';
+
+
+
+        $sql = $queryDefault . ' ORDER BY q.UpdatedAt DESC , q.CreatedAt DESC LIMIT ' . $requestData['start'] . ',' . $requestData['length'] . ' ';
+
+        $query = $this->db->query($sql)->result_array();
+        $queryDefaultRow = $this->db->query($queryDefaultTotal)->result_array()[0]['Total'];
+
+        $no = $requestData['start'] + 1;
+        $data = array();
+
+        for ($i = 0; $i < count($query); $i++) {
+            $nestedData = array();
+            $row = $query[$i];
+
+            $nestedData[] = '<div>' . $no . '</div>';
+            $nestedData[] = '<div style="text-align: left;">' . $row['Question'] . '
+                                <div>
+                                    <span class="lbl-' . $row['QTID'] . '">' . $row['Description'] . '</span>
+                                     <span class="label label-default" style="left: 0px;font-size: 11px;">Last modify : ' . date('d M Y H:i', strtotime($row['UpdatedAt'])) . '</span> 
+                                </div>
+                                </div>';
+            $nestedData[] = '<div>
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-edit"></i> <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" style="left: -114px;">
+                                <li><a href="javascript:void(0);" class="addToQuizFromMyQuestion" data-id="' . $row['ID'] . '">Add to quiz</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="hide"><a href="javascript:void(0);" class="editQuestion" data-tqid="' . $row['QTID'] . '" data-id="' . $row['ID'] . '">Edit</a></li>
+                                <li><a href="javascript:void(0);" class="removeQuestion" data-tqid="' . $row['QTID'] . '" data-id="' . $row['ID'] . '">Remove</a></li>
+                              </ul>
+                            </div>
+                            </div>';
+
+
+            $no++;
+
+            $data[] = $nestedData;
+        }
+
+        $json_data = array(
+            "draw"            => intval($requestData['draw']),
+            "recordsTotal"    => intval($queryDefaultRow),
+            "recordsFiltered" => intval($queryDefaultRow),
+            "data"            => $data
+        );
+
+        echo json_encode($json_data);
+    }
+
+    public function dataQuiz(){
+        
+    }
 
     
 

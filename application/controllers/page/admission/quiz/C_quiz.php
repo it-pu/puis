@@ -9,6 +9,7 @@ class C_quiz extends Admission_Controler {
         parent::__construct();
         $this->data['department'] = parent::__getDepartement();
         $this->data['module_url'] = base_url().'page/admission/quiz/c_quiz/';
+        $this->data['module_url_question'] = base_url().'page/admission/quiz/c_question/';
         
     }
 
@@ -61,6 +62,43 @@ class C_quiz extends Admission_Controler {
 
       $this->db->insert('db_admission.q_quiz_schedule',$data);
       echo json_encode($rs);
+    }
+
+    public function load_quiz(){
+      $dataArr = $this->getInputToken();
+
+      $ID_q_quiz_schedule = $dataArr['ID_q_quiz_schedule'];
+      $ID_q_quiz_category = $dataArr['ID_q_quiz_category'];
+
+      $data = $this->db->query(
+          '
+            SELECT qd.QID, qd.Point FROM db_admission.q_quiz_details qd 
+                                               LEFT JOIN db_admission.q_quiz q ON (q.ID = qd.QuizID)
+                                               WHERE q.ID_q_quiz_schedule = "' . $ID_q_quiz_schedule . '" 
+                                               and   q.ID_q_quiz_category = "'.$ID_q_quiz_category.'"
+          '
+      )->result_array();
+
+      $Quiz = $this->db->get_where(
+          'db_admission.q_quiz',
+          array('ID_q_quiz_schedule' => $ID_q_quiz_schedule,'ID_q_quiz_category' => $ID_q_quiz_category)
+      )->result_array();
+
+
+      $dataStd = $this->db->query('SELECT COUNT(*) AS TotalAnswer FROM db_admission.q_quiz_students qqs 
+                                              LEFT JOIN db_admission.q_quiz qq 
+                                              ON (qqs.QuizID = qq.ID)
+                                              WHERE qq.ID_q_quiz_schedule = "' . $ID_q_quiz_schedule . '" 
+                                              and qq.ID_q_quiz_category = "'.$ID_q_quiz_category.'"
+                                              ')->result_array();
+
+      $result = array(
+          'Quiz' => $Quiz,
+          'Details' => $data,
+          'TotalAnswer' => $dataStd[0]['TotalAnswer']
+      );
+
+      echo json_encode($result);
 
 
     }

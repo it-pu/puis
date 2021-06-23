@@ -132,7 +132,7 @@
 	    // var TQID = $('#formTQID').val();
 	    var hidePoint = (TQID==1) ? 'hide' : '';
 
-	    var formSummernoteID = sessionNIP+'_opt_1_'+NewQuestion;
+	    var formSummernoteID = sessionNIP+'_opt_admission_1_'+NewQuestion;
 
 	    var pageMultiple = (TQID==1 || TQID==2)
 	        ? '        <div style="text-align: right;margin-bottom: 10px;">' +
@@ -214,7 +214,6 @@
 	}
 
 	const load_default = async() => {
-		Global_CantAction('.btn-add');
 		await loadQuestionType();
 		$('#formSummernoteID').val(sessionNIP+'_question_admission_'+NewQuestion);
 		loadMultipleChoice(1);
@@ -267,7 +266,7 @@
 	    var totalOption = $('#totalOption').val();
 	    totalOption = parseInt(totalOption) + 1;
 
-	    var formSummernoteID = sessionNIP+'_opt_'+totalOption+'_'+NewQuestion;
+	    var formSummernoteID = sessionNIP+'_opt_admission_'+totalOption+'_'+NewQuestion;
 
 	    $('#totalOption').val(totalOption);
 	    $('#listOption').append('<tr class="tr_mtpc" id="tr_'+totalOption+'">' +

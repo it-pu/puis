@@ -225,11 +225,176 @@
 <script type="text/javascript">
 
     const module_url = "<?php echo $module_url ?>";
+    const module_url_question = "<?php echo $module_url_question ?>";
     
     const load_default = async() => {
         loadingStart();
+        loadQuestionType();
+        loadMyQuestion();
         ([ await LoadFilterTA(),await LoadFilterCategory(), await LoadFilterPublishOn()]);
+
         loadingEnd(500);
+    }
+
+    const loadMyQuestion = () => {
+        $('#divTableMyQuestion').html('<div class="table-responsive">' +
+            '            <table class="table table-centre table-striped" id="dataTable">' +
+            '                <thead>' +
+            '                <tr>' +
+            '                    <th style="width: 1%;">No</th>' +
+            '                    <th>Question</th>' +
+            '                    <th style="width: 5%;"><i class="fa fa-cog"></i></th>' +
+            '                </tr>' +
+            '                </thead>' +
+            '                <tbody></tbody>' +
+            '            </table>' +
+            '        </div>');
+
+        var url = module_url_question + 'getMyQuestion';
+
+        var dataTable = $('#dataTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "iDisplayLength": 10,
+            "ordering": false,
+            "language": {
+                "searchPlaceholder": "Topic . . ."
+            },
+            "responsive": true,
+            "ajax": {
+                url: url, // json datasource
+                ordering: false,
+                type: "post", // method  , by default get
+                error: function() { // error handling
+                    $(".employee-grid-error").html("");
+                    $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                    $("#employee-grid_processing").css("display", "none");
+                }
+            }
+        });
+    }
+
+    const loadQuestionType = () => {
+        var url = base_url_js + 'api4/__crudQuiz';
+        var token = jwt_encode({
+            action: 'getQuestionType'
+        }, 'UAP)(*');
+
+        $.post(url, {
+            token: token
+        }, function(jsonResult) {
+
+            $.each(jsonResult, function(i, v) {
+                $('#btnCreateQuestion')
+                    .append('<li><a href="javascript:void(0);" data-typeid="' + v.ID + '" class="add-new-question">' + v.Description + '</a></li>');
+            });
+
+            $('.add-new-question').click(function() {
+
+                var TypeID = $(this).attr('data-typeid');
+                updateQuestion(TypeID, '');
+
+            });
+
+            // console.log(jsonResult);
+        });
+    }
+
+
+    const updateQuestion = (TQID, QID) => {
+
+        var url = module_url_question + 'dataQuiz';
+
+        $.post(url, function(jsonResult) {
+
+            var newQuestion = parseInt(jsonResult.Total) + 1;
+
+            var txt = $('#btnCreateQuestion li a[data-typeid="' + TQID + '"]').text();
+
+            $('#globalModalLarge .modal-header').html('<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                '<h4 class="modal-title">Create / Edit Question - ' + txt + '</h4>');
+
+            var hidePoint = (TQID == 1) ? 'hide' : '';
+            var formSummernoteID = sessionNIP + '_opt_admission_1_' + newQuestion;
+
+            var pageMultiple = (TQID == 1 || TQID == 2) ?
+                '        <div style="text-align: right;margin-bottom: 10px;">' +
+                '            <button class="btn btn-sm btn-default" style="color: red;" id="btnRemoveOption"><i class="fa fa-minus-circle"></i> Option</button>' +
+                '            <button class="btn btn-sm btn-default" style="color: green;" id="btnAddOption"><i class="fa fa-plus-circle"></i> Option</button>' +
+                '             <input value="1" class="hide" id="totalOption" />' +
+                '        </div>' +
+                '<div class="alert alert-info ' + hidePoint + '" role="alert">' +
+                '<i class="fa fa-info-circle"></i> <b>Important to know</b>' +
+                '<ul>' +
+                '<li>If the answer is an <b>incorrect answer</b>, the points must be <b>less than 0</b></li>' +
+                '<li>If the answer is the <b>correct answer</b>, the points must be <b>more than 0</b></li>' +
+                '<li>The number of correct answer points <b>must equal 100</b></li>' +
+                '</ul></div>' +
+                '        <table class="table table-bordered table-striped table-centre">' +
+                '            <thead>' +
+                '            <tr style="background: #eceff1;">' +
+                '                <th style="width: 5%;">Option</th>' +
+                '                <th>Description</th>' +
+                '                <th style="width: 15%;">Set The Answer</th>' +
+                '                <th style="width: 15%;" class="' + hidePoint + '">Point</th>' +
+                '            </tr>' +
+                '            </thead>' +
+                '            <tbody id="listOption">' +
+                '               <tr>' +
+                '                   <td>1</td>' +
+                '                   <td><textarea id="desc_1" class="form-control form-question" rows="1"></textarea>' +
+                '                   <input class="hide" id="formSummernoteID_1" value="' + formSummernoteID + '" /></td>' +
+                '                   <td>' +
+                '                       <div class="checkbox checkbox-primary">' +
+                '                           <input id="opt_1" class="setAnswer" type="checkbox">' +
+                '                           <label for="opt_1">The Answer</label>' +
+                '                       </div>' +
+                '                   </td>' +
+                '                   <td class="' + hidePoint + '" style="text-align: left;">' +
+                '                       <input id="point_1"  data-opt="1" class="form-control form-point"  max="0" type="number"/>' +
+                '                       <p id="opt_1_help" class="help-block">*) Less than 0</p>' +
+                '                   </td>' +
+                '               </tr>' +
+                '            </tbody>' +
+                '        </table>' :
+                '';
+
+            var htmlss = '<div class="row">' +
+                '    <input class="hide" value="' + QID + '" id="formID" />' +
+                '    <input class="hide" value="' + TQID + '" id="formTQID" />' +
+                '    <input class="hide" value="' + sessionNIP + '_question_admission_' + newQuestion + '" id="formSummernoteID" />' +
+                '    <input class="hide" value="' + newQuestion + '" id="newQuestion" />' +
+                '    <div class="col-md-12">' +
+                '        <div class="form-group">' +
+                '            <label>Question</label>' +
+                '            <textarea class="form-control form-question" rows="5" id="formQuestion"></textarea>' +
+                '        </div>' + pageMultiple +
+                '        <div class="form-group">' +
+                '            <label>Note to this question (Optional)</label>' +
+                '            <textarea class="form-control form-question" id="formNote" rows="2"></textarea>' +
+                '        </div>' +
+                '    </div>' +
+                '</div>';
+
+            $('#globalModalLarge .modal-body').html(htmlss);
+
+            $('#globalModalLarge .modal-footer').html('' +
+                '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+                '<button type="button" id="btnSaveQuestion" class="btn btn-success">Save</button> | ' +
+                '<button type="button" id="btnSaveQuestion2" class="btn btn-success">Save & Add In Quiz</button>' +
+                '');
+
+            $('#globalModalLarge').on('shown.bs.modal', function() {
+                $('#formQuestion').focus();
+            });
+
+            $('#globalModalLarge').modal({
+                'show': true,
+                'backdrop': 'static'
+            });
+
+        });
+
     }
 
     const LoadFilterTA = async() => {
@@ -248,7 +413,7 @@
         $('#filterQuizCategory').empty();
         $('#filterQuizCategory').append('<option disabled value = "0" selected>'+'Choose Category'+'</option>');
         for (var i = 0; i < response.length; i++) {
-            $('#filterQuizCategory').append('<option value = "'+response[i].Type+'">'+response[i].Type+'</option>');
+            $('#filterQuizCategory').append('<option value = "'+response[i].ID+'">'+response[i].Type+'</option>');
         }
     }
 
@@ -353,6 +518,7 @@
 
     $(document).on('change','#filterTA',function(e){
         LoadFilterPublishOn();
+        LoadQuiz();
     })
 
     const timeConvert = (n) => {
@@ -375,15 +541,209 @@
     }
 
     const LoadQuiz = async() => {
-        $('#viewPublishOn').html($('#filterQuizPublishOn option:selected').text());
-        $('#panelPleaseChoose').addClass('hide');
-        $('#panel-quiz').removeClass('hide');
-        $('#formNotesForStudents').val('');
-        $('#formDuration').val(1);
-        $('#formDurationView').html('= ' + timeConvert(1));
+
+        if ($('#filterQuizPublishOn option:selected').val() != null && $('#filterQuizPublishOn option:selected').val() != 0 ) {
+            $('#viewPublishOn').html($('#filterQuizPublishOn option:selected').text());
+            $('#panelPleaseChoose').addClass('hide');
+            $('#panel-quiz').removeClass('hide');
+            $('#formNotesForStudents').val('');
+            $('#formDuration').val(1);
+            $('#formDurationView').html('= ' + timeConvert(1));
+
+            // load data quiz existing
+            loadingStart();
+
+            const url = module_url+'load_quiz';
+            const data = {
+                ID_q_quiz_schedule : $('#filterQuizPublishOn').val(),
+                ID_q_quiz_category : $('#filterQuizCategory').val(),
+            };
+
+            var token = jwt_encode(data, 'UAP)(*');
+
+            try{
+                const response = await AjaxSubmitFormPromises(url,token);
+                loadDomQuiz(response);
+            }
+            catch(err){
+                console.log(err);
+                toastr.info('something wrong');
+            }
+
+            loadingEnd(1000);
+        }
+        else
+        {
+            $('#viewPublishOn').html('');
+            $('#panelPleaseChoose').removeClass('hide');
+            $('#panel-quiz').addClass('hide');
+            $('#formNotesForStudents').val('');
+            $('#formDuration').val('');
+            $('#formDurationView').html('');
+
+            $('#btnStudentAnswer').addClass('hide');
+            $('#dataTempQuiz').val('');
+            $('#dataLoadQuiz').val('');
+
+            loadDataQuiz();
+        }
+
     }
 
-    $(document).on('change','#filterQuizPublishOn',function(e){
+    const loadDomQuiz = async(jsonResult) => {
+        var details = jsonResult.Details;
+        if (parseInt(jsonResult.TotalAnswer) > 0) {
+            $('#btnStudentAnswer').removeClass('hide');
+            $('#btnStudentAnswer .badge').html(jsonResult.TotalAnswer);
+        } else {
+            $('#btnStudentAnswer').addClass('hide');
+        }
+
+        var arrQID = [];
+        if (details.length > 0) {
+            $.each(details, function(i, v) {
+                arrQID.push(v.QID);
+            });
+        }
+
+        var va = (arrQID.length > 0) ? JSON.stringify(arrQID) : '';
+        $('#dataTempQuiz').val(va);
+
+        var vaLoad = (arrQID.length > 0) ? JSON.stringify(jsonResult) : '';
+        $('#dataLoadQuiz').val(vaLoad);
+
+        await timeout(2000);
+
+        loadDataQuiz();
+
+    }
+
+    const loadDataQuiz = async() => {
+       var dataTempQuiz = $('#dataTempQuiz').val();     
+       if (dataTempQuiz != '' && dataTempQuiz != null) {
+            var d = (dataTempQuiz != '') ? JSON.parse(dataTempQuiz) : [];
+
+            var dataLoadQuiz = $('#dataLoadQuiz').val();
+            var dataQ = (dataLoadQuiz != '' && dataLoadQuiz != null) ? JSON.parse(dataLoadQuiz) : [];
+            var TotalAnswer = 0;
+
+            if (dataLoadQuiz != '' && dataLoadQuiz != null && dataQ.Quiz.length > 0) {
+                TotalAnswer = parseInt(dataQ.TotalAnswer);
+                $('#formNotesForStudents').val(dataQ.Quiz[0].NotesForStudents);
+                $('#formDuration').val(dataQ.Quiz[0].Duration);
+                $('#formDurationView').html('= ' + timeConvert(dataQ.Quiz[0].Duration));
+                $('#viewPoint').html('100');
+                $('#btnSaveQuiz').prop('disabled', false);
+            }
+
+            var data = {
+                ArrQID: d
+            };
+
+            var token = jwt_encode(data, 'UAP)(*');
+            var url = module_url_question + 'getArrDataQuestion';
+
+            try{
+                const response = await AjaxSubmitFormPromises(url,token);
+                if (jsonResult.length > 0) {
+                    var listQuestoin = '';
+
+                    $.each(jsonResult, function(i, v) {
+
+                        var o = v.Option;
+                        var listOpt = '';
+                        if (o.length > 0) {
+                            $.each(o, function(i2, v2) {
+                                var isAns = (v2.IsTheAnswer == 1 || v2.IsTheAnswer == '1') ?
+                                    '<i class="fa fa-check-circle" style="color: green;margin-right:5px;"></i>' :
+                                    '';
+
+                                var pointBBG = (v2.Point != '' && v2.Point != null && parseFloat(v2.Point) > 0) ?
+                                    '#7CB342' : '#E57373';
+
+
+                                var viewPoint = (v2.Point != '' && v2.Point != null) ? '<span class="lbl-point" style="background: ' + pointBBG + '; ">' + v2.Point + '</span>' : '';
+                                listOpt = listOpt + '<li style="line-height: 1.428571;margin-bottom: 0px;">' + viewPoint + isAns + v2.Option + '</li>';
+                            });
+                        }
+
+                        var q = v.Question;
+                        var expandDetail = (q.QTID == 1 || q.QTID == 2) ?
+                            '                            <div class="collapse" id="collapseExample_' + i + '">' +
+                            '                                <hr/>' +
+                            '                                        <div class="well">' +
+                            '                                            <ul>' + listOpt + '</ul>' +
+                            '                                        </div>' +
+                            '                            </div>' :
+                            '';
+
+
+                        var alertManualCorrection = (q.QTID == 3) ?
+                            '<div class="alert alert-warning alert-essay" role="alert">' +
+                            '<i class="fa fa-exclamation-triangle margin-right"></i> Need manual correction</div>' : '';
+
+                        var valuePoint = '';
+                        var dataTempQuizPoint = $('#dataTempQuizPoint').val();
+                        if (dataTempQuizPoint != '') {
+                            valuePoint = searchPointTemporary(q.ID);
+                        } else if (dataLoadQuiz != '' && dataLoadQuiz != null && dataQ.Details.length > 0) {
+                            valuePoint = searchID(q.ID, dataQ.Details);
+                        }
+
+                        var viewQuestion = (v.Status == 1 || v.Status == '1') ?
+                            '<span class="lbl-' + q.QTID + '">' + q.Type + '</span> - ' + q.Question :
+                            '<div class="alert alert-danger" style="margin-bottom: 0px;">Question is outdated, please <b>delete</b> it immediately</div>';
+
+                        listQuestoin = listQuestoin + '<li class="item-quiz" data-id="' + q.ID + '">' +
+                            '                            <a role="button" data-toggle="collapse" href="#collapseExample_' + i + '" aria-expanded="true" aria-controls="collapseExample">' + viewQuestion + '</a>' +
+                            '                           <div class="panel-act-question-in-quiz">' +
+                            '                                   <input class="form-control form-quiz-point" value="' + valuePoint + '" id="point_quiz_' + q.ID + '" placeholder="Point..." type="number" ' + disabled + ' style="max-width: 100px;display: inline;" >' +
+                            '                                   <button class="btn btn-danger btn-sm btnRemoveQuestion" data-id="' + v.QID + '" ' + disabled + '><i class="fa fa-trash"></i></button>' +
+                            '                           </div>' + expandDetail + alertManualCorrection +
+                            '                        </li>';
+
+                    });
+                }
+
+                await timeout(500);
+
+                $('#loadQuestionListOnQuiz').html('<ol id="listQuiz">' + listQuestoin + '</ol>');
+                if (TotalAnswer <= 0) {
+                    $('#listQuiz').sortable({
+                        axis: 'y',
+                        update: function(event, ui) {
+                            var dataUpdate = [];
+                            $('#listQuiz li.item-quiz').each(function() {
+                                dataUpdate.push($(this).attr('data-id'));
+                            });
+
+                            $('#dataTempQuiz').val(JSON.stringify(dataUpdate));
+
+                        }
+                    });
+                }
+
+                $('#showNoteQuiz,.panel-footer').removeClass('hide');
+                var disabledForm = (TotalAnswer > 0) ? true : false;
+                $('#formNotesForStudents,#formDuration,#btnSaveQuiz').prop('disabled', disabledForm);
+
+            }
+            catch(err){
+                console.log(err);
+                toastr.info('something wrong');
+            }
+       }
+       else
+       {
+        $('#showNoteQuiz,.panel-footer').addClass('hide');
+        $('#loadQuestionListOnQuiz').html('<div style="text-align: center;">' +
+            '<img src="' + "<?php echo url_sign_in_lecturers ?>" + 'images/icon/empty.jpg" style="width: 100%;max-width: 200px;" />' +
+            '<h3 style="color: #9E9E9E;"><b>--- No question ---</b></h3>' +
+            '</div>');
+       } 
+    }
+
+    $(document).on('change','#filterQuizPublishOn,#filterQuizCategory',function(e){
         LoadQuiz();
     })
     
