@@ -463,13 +463,14 @@ class C_api_webdivisi extends CI_Controller {
         //                                     FROM  db_employees.employees em 
         //                                     LEFT JOIN db_webdivisi.divisi_sambutan ps ON em.DivisiID = ps.ID
         //                                     WHERE ps.ID = "'.$DivisiID.'" ')->result_array();
-        $data = $this->db->query('SELECT * FROM db_employees.employees em
+        $data = $this->db->query('SELECT ps.Photo as Pht, em.* FROM db_webdivisi.divisi_sambutan ps  
+                                    LEFT JOIN db_employees.employees em on ps.DivisiID="'.$DivisiID.'"
                                   WHERE (em.PositionMain like "'.$DivisiID.'.%" OR em.PositionOther1 like "'.$DivisiID.'.%" OR em.PositionOther2 like "'.$DivisiID.'.%" OR em.PositionOther3 like "'.$DivisiID.'.%") AND em.StatusEmployeeID not in("-1","-2") ORDER BY em.PositionMain ASC limit 1')->result_array();
 
         if(count($data)>0){
             $data[0]['ProdiName'] = ($LangCode=='Ind') ? $data[0]['Name'] : $data[0]['NameEng'];
             // $DefaultPhoto = base_url('images/Kaprodi/default.jpg');
-            $data[0]['Photo'] = ($data[0]['Photo']!='' && $data[0]['Photo']!=null) ? $data[0]['Photo'] :  'default.jpg';
+            $data[0]['Pht'] = ($data[0]['Pht']!='' && $data[0]['Pht']!=null) ? $data[0]['Pht'] :  'default.jpg';
         }
         
         return print_r(json_encode($data));
