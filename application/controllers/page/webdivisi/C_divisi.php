@@ -301,8 +301,8 @@ public function getAuthDataTables()
 {
   $requestData= $_REQUEST;
         // print_r($requestData);
-  $ProdiID = $this->session->userdata('IDdepartementNavigation');
-  $totalData = $this->m_master->getCountAllDataAuth($this->data['db_select'].'.previleges_guser',$ProdiID);
+  $DivisiID = $this->session->userdata('IDdepartementNavigation');
+  $totalData = $this->m_master->getCountAllDataAuth($this->data['db_select'].'.previleges_guser',$DivisiID);
 
         // get NIP
   $NIP = $this->session->userdata('NIP');
@@ -312,14 +312,14 @@ public function getAuthDataTables()
       $sql = 'SELECT a.NIP,b.Name,a.G_user FROM '.$this->data['db_select'].'.previleges_guser as a join db_employees.employees as b
       on a.NIP = b.NIP  left join '.$this->data['db_select'].'.cfg_group_user as cgu on a.G_user = cgu.ID';
 
-      $sql.= ' where (a.NIP LIKE "'.$requestData['search']['value'].'%" or b.Name LIKE "%'.$requestData['search']['value'].'%" or cgu.GroupAuth LIKE "%'.$requestData['search']['value'].'%") and a.ProdiID ='.$ProdiID;
+      $sql.= ' where (a.NIP LIKE "'.$requestData['search']['value'].'%" or b.Name LIKE "%'.$requestData['search']['value'].'%" or cgu.GroupAuth LIKE "%'.$requestData['search']['value'].'%") and a.DivisiID ='.$DivisiID;
       $sql.= ' ORDER BY a.NIP ASC LIMIT '.$requestData['start'].' ,'.$requestData['length'].' ';
 
     }
     else {
      $sql = 'SELECT a.NIP,b.Name,a.G_user FROM '.$this->data['db_select'].'.previleges_guser as a join db_employees.employees as b
      on a.NIP = b.NIP  left join '.$this->data['db_select'].'.cfg_group_user as cgu on a.G_user = cgu.ID
-     where a.ProdiID = '.$ProdiID.'
+     where a.DivisiID = '.$DivisiID.'
      ';
      $sql.= ' ORDER BY a.NIP ASC LIMIT '.$requestData['start'].' ,'.$requestData['length'].' ';
 
@@ -331,14 +331,14 @@ public function getAuthDataTables()
     $sql = 'SELECT a.NIP,b.Name,a.G_user FROM '.$this->data['db_select'].'.previleges_guser as a join db_employees.employees as b
     on a.NIP = b.NIP  left join '.$this->data['db_select'].'.cfg_group_user as cgu on a.G_user = cgu.ID';
 
-    $sql.= ' where (a.NIP LIKE "'.$requestData['search']['value'].'%" or b.Name LIKE "%'.$requestData['search']['value'].'%" and a.G_user != 1 or cgu.GroupAuth LIKE "%'.$requestData['search']['value'].'%") and a.ProdiID ='.$ProdiID;
+    $sql.= ' where (a.NIP LIKE "'.$requestData['search']['value'].'%" or b.Name LIKE "%'.$requestData['search']['value'].'%" and a.G_user != 1 or cgu.GroupAuth LIKE "%'.$requestData['search']['value'].'%") and a.DivisiID ='.$DivisiID;
     $sql.= ' ORDER BY a.NIP ASC LIMIT '.$requestData['start'].' ,'.$requestData['length'].' ';
 
   }
   else {
    $sql = 'SELECT a.NIP,b.Name,a.G_user FROM '.$this->data['db_select'].'.previleges_guser as a join db_employees.employees as b
    on a.NIP = b.NIP and a.G_user != 1 left join '.$this->data['db_select'].'.cfg_group_user as cgu on a.G_user = cgu.ID
-   where a.ProdiID = '.$ProdiID.'
+   where a.DivisiID = '.$DivisiID.'
    ';
    $sql.= ' ORDER BY a.NIP ASC LIMIT '.$requestData['start'].' ,'.$requestData['length'].' ';
 
@@ -399,22 +399,22 @@ public function authUser_cud()
 {
  $Input = $this->getInputToken();
  $action = $Input['action'];
- $ProdiID = $this->session->userdata('IDdepartementNavigation');
+ $DivisiID = $this->session->userdata('IDdepartementNavigation');
  switch ($action) {
   case 'add':
     			// check NIP existing
-  $sql = 'select * from '.$this->data['db_select'].'.previleges_guser where NIP = "'.$Input['NIP'].'" and ProdiID = '.$ProdiID.' ';
+  $sql = 'select * from '.$this->data['db_select'].'.previleges_guser where NIP = "'.$Input['NIP'].'" and DivisiID = '.$DivisiID.' ';
   $G_ = $this->db->query($sql,array())->result_array();
   if (count($G_) == 0) {
     $dataSave = array(
       'NIP' => $Input['NIP'],
       'G_user' => $Input['GroupUser'],
-      'ProdiID' => $ProdiID
+      'DivisiID' => $DivisiID
     );
     $this->db->insert($this->data['db_select'].'.previleges_guser', $dataSave);
 
                     // insert auth prodi
-    $this->m_prodi->__process_auth_prodi('add',$Input['NIP'],$ProdiID);
+    $this->m_webdivisi->__process_auth_divisi('add',$Input['NIP'],$DivisiID);
     echo json_encode(1);
   }
   else
@@ -427,22 +427,22 @@ public function authUser_cud()
   $input = $this->getInputToken();
   $dataSave = array(
    'G_user' => $input['valuee'],
-   'ProdiID' => $ProdiID,
+   'DivisiID' => $DivisiID,
  );
   $this->db->where('NIP', $input['NIP']);
-  $this->db->where('ProdiID', $ProdiID);
+  $this->db->where('DivisiID', $DivisiID);
   $this->db->update($this->data['db_select'].'.previleges_guser', $dataSave);
 
                 // insert auth prodi
-  $this->m_prodi->__process_auth_prodi('edit',$Input['NIP'],$ProdiID);
+  $this->m_prodi->__process_auth_prodi('edit',$Input['NIP'],$DivisiID);
   break;
   case 'delete':
   $input = $this->getInputToken();
-  $sql = "delete from ".$this->data['db_select'].".previleges_guser where NIP = '".$input['NIP']."'  and ProdiID = ".$ProdiID." ";
+  $sql = "delete from ".$this->data['db_select'].".previleges_guser where NIP = '".$input['NIP']."'  and DivisiID = ".$DivisiID." ";
   $query=$this->db->query($sql, array());
 
                 // insert auth prodi
-  $this->m_prodi->__process_auth_prodi('delete',$Input['NIP'],$ProdiID);
+  $this->m_prodi->__process_auth_prodi('delete',$Input['NIP'],$DivisiID);
   break;	
   default:
     			# code...
@@ -502,7 +502,7 @@ public function ajax_add()
   $this->_validate();
   $data = array(
                 // 'Type' => $this->input->post('type'),
-    'ProdiID' => $this->session->userdata('IDdepartementNavigation'),
+    'DivisiID' => $this->session->userdata('IDdepartementNavigation'),
     'LangID' =>$this->input->post('lang'),                
     'ID_CatBase' => $this->input->post('category'), 
     'Type' => "knowledge",
@@ -547,7 +547,7 @@ public function ajax_addCat()
 {
         // $this->_validate();
   $data = array(     
-    'ProdiID' => $this->session->userdata('IDdepartementNavigation'),           
+    'DivisiID' => $this->session->userdata('IDdepartementNavigation'),           
     'Name' => $this->input->post('category'),
     'Lang' => $this->input->post('lang'),
     'CreateAt' => date('Y-m-d H:i:s'),
@@ -569,7 +569,7 @@ public function ajax_updateCat()
 {
         // $this->_validate();
   $data = array(    
-    'ProdiID' => $this->session->userdata('IDdepartementNavigation'),            
+    'DivisiID' => $this->session->userdata('IDdepartementNavigation'),            
     'Name' => $this->input->post('category'),
     'Lang' => $this->input->post('lang'),
     'CreateAt' => date('Y-m-d H:i:s'),

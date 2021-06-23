@@ -11,8 +11,8 @@ class M_webdivisi extends CI_Model {
         parent::__construct();
     }
 
-    public function __process_auth_prodi($action,$NIP,$ProdiID){
-        $G_dt = $this->m_master->caribasedprimary('db_webdivisi.auth_prodi','NIP',$NIP);
+    public function __process_auth_divisi($action,$NIP,$ProdiID){
+        $G_dt = $this->m_master->caribasedprimary('db_webdivisi.auth_divisi','NIP',$NIP);
         switch ($action) {
             case 'add':
                 if (count($G_dt) == 0) {
@@ -23,7 +23,7 @@ class M_webdivisi extends CI_Model {
                        'ProdiAuth' => $ProdiID,
                    ];
 
-                   $this->db->insert('db_webdivisi.auth_prodi',$dataSave);
+                   $this->db->insert('db_webdivisi.auth_divisi',$dataSave);
                 }
                 else
                 {
@@ -45,7 +45,7 @@ class M_webdivisi extends CI_Model {
                        ];
 
                        $this->db->where('ID',$G_dt[0]['ID']);
-                       $this->db->update('db_webdivisi.auth_prodi',$dataSave);
+                       $this->db->update('db_webdivisi.auth_divisi',$dataSave);
                     }
                 }
 
@@ -73,7 +73,7 @@ class M_webdivisi extends CI_Model {
                        'ProdiAuth' => $ProdiID,
                    ];
 
-                   $this->db->insert('db_webdivisi.auth_prodi',$dataSave);
+                   $this->db->insert('db_webdivisi.auth_divisi',$dataSave);
                 }
                 else
                 {
@@ -95,7 +95,7 @@ class M_webdivisi extends CI_Model {
                        ];
 
                        $this->db->where('ID',$G_dt[0]['ID']);
-                       $this->db->update('db_webdivisi.auth_prodi',$dataSave);
+                       $this->db->update('db_webdivisi.auth_divisi',$dataSave);
                     }
                 }
                 break;
@@ -117,12 +117,12 @@ class M_webdivisi extends CI_Model {
                        ];
 
                        $this->db->where('NIP',$NIP);
-                       $this->db->update('db_webdivisi.auth_prodi',$dataSave);
+                       $this->db->update('db_webdivisi.auth_divisi',$dataSave);
                     }
                     else
                     {
                         $this->db->where('NIP',$NIP);
-                        $this->db->delete('db_webdivisi.auth_prodi');
+                        $this->db->delete('db_webdivisi.auth_divisi');
 
                         $IDDivision = $this->session->userdata('IDdepartementNavigation');
                         $this->db->where('NIP',$NIP);
@@ -140,7 +140,7 @@ class M_webdivisi extends CI_Model {
     }
 
     private function __join_prodi_auth($NIP,$GetProdi = []){
-        $G_data = $this->m_master->caribasedprimary('db_webdivisi.auth_prodi','NIP',$NIP);
+        $G_data = $this->m_master->caribasedprimary('db_webdivisi.auth_divisi','NIP',$NIP);
         if (count($G_data) > 0) {
             $ProdiAuth = $G_data[0]['ProdiAuth']; // NIP is UNIQUE
             $arr_ProdiAuth = json_decode($ProdiAuth,true);

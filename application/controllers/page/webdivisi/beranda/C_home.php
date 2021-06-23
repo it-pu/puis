@@ -89,52 +89,6 @@ class C_home extends Webdivisi_Controler {
         $pagevisimisi = $this->load->view('page/webdivisi/about/V_mission',$data,true);
         $this->menu_visimisi($pagevisimisi);
     }
-    public function knowledge(){
-        $data['department'] = parent::__getDepartement();
-        $data['category'] = $this->m_home->get_category();
-        $content = $this->load->view('page/webdivisi/about/V_knowledge',$data,true);
-        $this->index($content);
-    }
-// ===== Call to Action ======
-    function calltoaction()
-    {
-        
-        $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/webdivisi/beranda/V_call',$data,true);
-        $this->index($content);
-    }
-// ===== testimoni ======
-    function testimoni()
-    {
-        
-        $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/webdivisi/beranda/V_testimoni',$data,true);
-        $this->index($content);
-    }
-// ===== Cliens ======
-    function partner()
-    {
-        
-        $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/webdivisi/beranda/V_partner',$data,true);
-        $this->index($content);
-    }
-// ===== lecturer ======
-    function lecturer()
-    {
-        
-        $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/webdivisi/about/V_lecturer',$data,true);
-        $this->index($content);
-    }   
-// ===== facilities ======
-    function facilities()
-    {
-        
-        $data['department'] = parent::__getDepartement();
-        $content = $this->load->view('page/webdivisi/about/V_facilities',$data,true);
-        $this->index($content);
-    }  
     
     private function menu_contact($pagecontact){
             $data['department'] = parent::__getDepartement();
