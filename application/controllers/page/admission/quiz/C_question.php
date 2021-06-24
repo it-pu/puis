@@ -74,7 +74,6 @@ class C_question extends Admission_Controler {
     public function getArrDataQuestion(){
         $data_arr = $this->getInputToken();
         $ArrQID = (array) $data_arr['ArrQID'];
-
         $result = [];
 
         if (count($ArrQID) > 0) {

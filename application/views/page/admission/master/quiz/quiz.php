@@ -182,16 +182,43 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Quiz Duration</label>
+                            <label>DurationType</label>
+                            <div> 
+                                    <label class="radio-inline"><input type="radio" name="optradio" class="DurationType" value="Flexi">Flexi</label>
+                                    <label class="radio-inline"><input type="radio" name="optradio" class="DurationType" value="Fixed">Fixed</label>
+                            </div> 
+                        </div>
+
+                        <div class="form-group DurationFlexiDiv hide">
+                            <label>Quiz Duration Flexi</label>
                             <div class="input-group" style="max-width: 100px;">
                                 <input type="number" class="form-control" min="1" id="formDuration" aria-describedby="basic-formDuration" style="width: 100px;">
                                 <span class="input-group-addon" id="basic-addon2"><span id="formDurationView"></span></span>
                             </div>
                             <p class="help-block">Enter in minutes | maximum quiz time is 3 hours</p>
                         </div>
+                        <div class="form-group DurationFixedDiv hide">
+                            <label>Quiz Duration Fixed</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="div_formSesiAwal" data-no="1" class="input-group">
+                                        <input data-format="hh:mm" type="text" id="DurationFixedStart" class="form-control form-attd formtime" value="00:00" readonly />
+                                        <span class="add-on input-group-addon">
+                                            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="div_formSesiAkhir" data-no="1" class="input-group">
+                                        <input data-format="hh:mm" type="text" id="DurationFixedEnd" class="form-control form-attd formtime" value="00:00" readonly />
+                                        <span class="add-on input-group-addon">
+                                            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-
                 </div>
                 <div class="panel-footer hide" style="text-align: right;">
                     Total Point : <span id="viewPoint" style="margin-right: 7px;">0</span> <button class="btn btn-success" disabled id="btnSaveQuiz">Save</button>
@@ -232,6 +259,16 @@
         loadQuestionType();
         loadMyQuestion();
         ([ await LoadFilterTA(),await LoadFilterCategory(), await LoadFilterPublishOn()]);
+        
+        $('#div_formSesiAwal').datetimepicker({
+            pickDate: false,
+            pickSeconds : false
+        })
+
+        $('#div_formSesiAkhir').datetimepicker({
+            pickDate: false,
+            pickSeconds : false
+        })
 
         loadingEnd(500);
     }
@@ -701,7 +738,6 @@
        var dataTempQuiz = $('#dataTempQuiz').val();     
        if (dataTempQuiz != '' && dataTempQuiz != null) {
             var d = (dataTempQuiz != '') ? JSON.parse(dataTempQuiz) : [];
-
             var dataLoadQuiz = $('#dataLoadQuiz').val();
             var dataQ = (dataLoadQuiz != '' && dataLoadQuiz != null) ? JSON.parse(dataLoadQuiz) : [];
             var TotalAnswer = 0;
@@ -744,7 +780,7 @@
 
 
                                 var viewPoint = (v2.Point != '' && v2.Point != null) ? '<span class="lbl-point" style="background: ' + pointBBG + '; ">' + v2.Point + '</span>' : '';
-                                listOpt = listOpt + '<li style="line-height: 1.428571;margin-bottom: 0px;">' + viewPoint + isAns + v2.Option + '</li>';
+                                listOpt = listOpt + '<li style="line-height: 1.428571;margin-bottom: 0px;"><div style = "display: inline-flex!important;">' + viewPoint + isAns + v2.Option + '</div></li>';
                             });
                         }
 
@@ -995,7 +1031,7 @@
         saveQuestion('',itsme);
     });
 
-    const addToQuizFromMyQuestion = async() => {
+    const addToQuizFromMyQuestion = async(itsme) => {
         var filterQuizCategory = $('#filterQuizCategory').val();
         var filterQuizPublishOn = $('#filterQuizPublishOn').val();
 
@@ -1011,7 +1047,7 @@
                 toastr.warning('Quiz cannot be edited', 'Warning');
             } else {
 
-                var ID = $(this).attr('data-id');
+                var ID = itsme.attr('data-id');
 
                 // cek apakah ID sudah di add atau blm
                 var dataTempQuiz = $('#dataTempQuiz').val();
@@ -1044,6 +1080,69 @@
         } else {
             toastr.warning('Please, choose a TA , a Category and a publish on', 'Warning');
         }
+    }
+
+    $(document).on('click','.DurationType',function(e){
+        const itsme = $(this);
+        const v = itsme.val();
+
+        if (v == 'Flexi') {
+            $('.DurationFlexiDiv').removeClass('hide');
+            $('.DurationFixedDiv').addClass('hide');
+        }
+        else
+        {
+            $('.DurationFlexiDiv').addClass('hide');
+            $('.DurationFixedDiv').removeClass('hide');
+        }
+        
+    })
+
+    $(document).on('keyup', '.form-quiz-point', function() {
+
+        var va = $(this).val();
+        var d = parseFloat(va);
+
+        if (d <= 0) {
+            $(this).val(1);
+        } else if (d > 100) {
+            $(this).val(100);
+        } else {
+            $(this).val(d);
+        }
+
+        // Count point
+        countPointQuestion();
+
+    });
+
+    const countPointQuestion = () => {
+        var dataTempQuiz = $('#dataTempQuiz').val();
+        var totalPoint = 0;
+        if (dataTempQuiz != '') {
+            var d2 = (dataTempQuiz != '') ? JSON.parse(dataTempQuiz) : [];
+
+            if (d2.length > 0) {
+                var dataTempQuizPoint = [];
+                for (var i = 0; i < d2.length; i++) {
+                    var point_quiz = $('#point_quiz_' + d2[i]).val();
+                    var arrPoint = {
+                        ID: d2[i],
+                        Point: point_quiz
+                    };
+
+                    dataTempQuizPoint.push(arrPoint);
+
+                    point_quiz = (point_quiz != '' && point_quiz != null) ? point_quiz : 0;
+                    totalPoint = totalPoint + parseFloat(point_quiz);
+                }
+                $('#dataTempQuizPoint').val(JSON.stringify(dataTempQuizPoint));
+            }
+        }
+
+        $('#btnSaveQuiz').prop('disabled', (totalPoint != 100) ? true : false);
+
+        $('#viewPoint').html(totalPoint);
     }
 
     $(document).on('click', '.addToQuizFromMyQuestion', function() {
