@@ -1145,6 +1145,16 @@
         $('#viewPoint').html(totalPoint);
     }
 
+    $('#formDuration').keyup(function() {
+        var formDuration = $('#formDuration').val();
+        if (parseFloat(formDuration) <= 0) {
+            $('#formDuration').val(1);
+        }
+
+        var formDuration2 = $('#formDuration').val();
+        $('#formDurationView').html('= ' + timeConvert(formDuration2));
+    });
+
     $(document).on('click', '.addToQuizFromMyQuestion', function() {
 
         const itsme = $(this);
