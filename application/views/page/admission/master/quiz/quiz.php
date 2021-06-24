@@ -301,17 +301,17 @@
     }
 
 
-    const updateQuestion = (TQID, QID) => {
+    const updateQuestion = async(TQID, QID) => {
 
-        var url = module_url_question + 'dataQuiz';
+        var url = module_url_question + 'countTotalMyQuestion';
 
-        $.post(url, function(jsonResult) {
-
+        try{
+            const jsonResult = await AjaxSubmitFormPromises(url);
+            console.log(jsonResult)
             var newQuestion = parseInt(jsonResult.Total) + 1;
-
             var txt = $('#btnCreateQuestion li a[data-typeid="' + TQID + '"]').text();
 
-            $('#globalModalLarge .modal-header').html('<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+            $('#GlobalModalLarge .modal-header').html('<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
                 '<h4 class="modal-title">Create / Edit Question - ' + txt + '</h4>');
 
             var hidePoint = (TQID == 1) ? 'hide' : '';
@@ -376,26 +376,105 @@
                 '    </div>' +
                 '</div>';
 
-            $('#globalModalLarge .modal-body').html(htmlss);
+            $('#GlobalModalLarge .modal-body').html(htmlss);
 
-            $('#globalModalLarge .modal-footer').html('' +
+            $('#GlobalModalLarge .modal-footer').html('' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
                 '<button type="button" id="btnSaveQuestion" class="btn btn-success">Save</button> | ' +
                 '<button type="button" id="btnSaveQuestion2" class="btn btn-success">Save & Add In Quiz</button>' +
                 '');
 
-            $('#globalModalLarge').on('shown.bs.modal', function() {
+            $('#GlobalModalLarge').on('shown.bs.modal', function() {
                 $('#formQuestion').focus();
             });
 
-            $('#globalModalLarge').modal({
+            $('#GlobalModalLarge').modal({
                 'show': true,
                 'backdrop': 'static'
             });
-
-        });
-
+        }
+        catch(err){
+            console.log(err);
+            toastr.info('something wrong');
+        }
     }
+
+    $(document).on('click', '#btnAddOption', function() {
+        var formTQID = $('#formTQID').val();
+        var hidePoint = (parseInt(formTQID) == 1) ? 'hide' : '';
+        var totalOption = $('#totalOption').val();
+        totalOption = parseInt(totalOption) + 1;
+
+        var newQuestion = $('#newQuestion').val();
+        var formSummernoteID = sessionNIP + '_opt_admission_' + totalOption + '_' + newQuestion;
+
+        $('#totalOption').val(totalOption);
+        $('#listOption').append('<tr class="tr_mtpc" id="tr_' + totalOption + '">' +
+            '<td>' + totalOption + '</td>' +
+            '<td><textarea id="desc_' + totalOption + '" class="form-control form-question" rows="1"></textarea>' +
+            '<input class="hide" id="formSummernoteID_' + totalOption + '" value="' + formSummernoteID + '" /></td>' +
+            '<td>' +
+            '<div class="checkbox checkbox-primary">' +
+            '   <input id="opt_' + totalOption + '" class="setAnswer" type="checkbox">' +
+            '   <label for="opt_' + totalOption + '">The Answer</label>' +
+            '</div>' +
+            '</td>' +
+            '<td class="' + hidePoint + '" style="text-align: left;">' +
+            '<input id="point_' + totalOption + '" data-opt="' + totalOption + '" class="form-control form-point" type="number" />' +
+            '<p id="opt_' + totalOption + '_help" class="help-block">*) Less than 0</p>' +
+            '</td>' +
+            '</tr>');
+    });
+
+    $(document).on('click', '#btnRemoveOption', function() {
+        var totalOption = $('#totalOption').val();
+        totalOption = parseInt(totalOption);
+
+        if (totalOption > 1) {
+            $('#tr_' + totalOption).remove();
+            totalOption = totalOption - 1;
+            $('#totalOption').val(totalOption);
+        } else {
+            alert('Firs option can not remove');
+        }
+
+    });
+
+    $(document).on('change', '.setAnswer', function() {
+
+        var formTQID = $('#formTQID').val();
+        if (parseInt(formTQID) == 1) {
+            $('.setAnswer').prop('checked', false);
+            $(this).prop('checked', true);
+        } else if (parseInt(formTQID) == 2) {
+            var ID = $(this).attr('id');
+            var opt = ID.split('opt_');
+            var kethelp = ($(this).is(':checked')) ? '*) More than 0' : '*) Less than 0';
+            $('#' + ID + '_help').html(kethelp);
+            $('#point_' + opt[1]).val('');
+        }
+
+        $('.setAnswer').blur();
+
+    });
+
+    $(document).on('keyup', '.form-point', function() {
+
+        var opt = $(this).attr('data-opt');
+        var va = $(this).val();
+        // cek apakah point untuk jawaban benar / salah
+        if ($('#opt_' + opt).is(':checked')) {
+            if (parseFloat(va) <= 0) {
+                $(this).val(1);
+            }
+
+        } else {
+            if (parseFloat(va) >= 0) {
+                $(this).val(-1);
+            }
+        }
+
+    });
 
     const LoadFilterTA = async() => {
         const url = module_url+'filter_ta';
@@ -643,8 +722,10 @@
             var token = jwt_encode(data, 'UAP)(*');
             var url = module_url_question + 'getArrDataQuestion';
 
+            var disabled = (TotalAnswer > 0) ? 'disabled' : '';
+
             try{
-                const response = await AjaxSubmitFormPromises(url,token);
+                const jsonResult = await AjaxSubmitFormPromises(url,token);
                 if (jsonResult.length > 0) {
                     var listQuestoin = '';
 
@@ -742,6 +823,234 @@
             '</div>');
        } 
     }
+
+    const saveQuestion = async(action='',itsme) => {
+
+        if (confirm('Are you sure ?')) {
+            var formID = $('#formID').val();
+
+            var formTQID = $('#formTQID').val();
+            var formQuestion = $('#formQuestion').val();
+            var formNote = $('#formNote').val();
+
+            var submitQ = true;
+
+            var dataOption = [];
+
+            var errMsg = 'Please check the required form';
+
+            if(formTQID==3){
+                submitQ = (formQuestion!='' && formQuestion!=null) ? true : false;
+            }
+            else if(formTQID==1){
+                var totalOption = $('#totalOption').val();
+                for(var i=1;i<=totalOption;i++){
+                    var des = $('#desc_'+i).val();
+                    submitQ = (des!='' && des!=null) ? true : false;
+                    var IsTheAnswer = ($('#opt_'+i).is(':checked')) ? '1' : '0';
+                    var formSummernoteID = $('#formSummernoteID_'+i).val();
+                    var arrOpt = {
+                        SummernoteID : formSummernoteID,
+                        Option : des,
+                        IsTheAnswer : IsTheAnswer
+                    };
+
+                    dataOption.push(arrOpt);
+                }
+            }
+            else if(formTQID==2){
+                var totalOption = $('#totalOption').val();
+                var totalPointBenar = 0;
+                var totalPointSalah = 0;
+                for(var i=1;i<=totalOption;i++){
+                    var des = $('#desc_'+i).val();
+                    var Point = $('#point_'+i).val();
+                    submitQ = (des!='' && des!=null) ? true : false;
+                    var IsTheAnswer = ($('#opt_'+i).is(':checked')) ? '1' : '0';
+                    var formSummernoteID = $('#formSummernoteID_'+i).val();
+                    var arrOpt = {
+                        SummernoteID : formSummernoteID,
+                        Option : des,
+                        IsTheAnswer : IsTheAnswer,
+                        Point : (Point!='' && Point!=null) ? Point : 0
+                    };
+
+                    if($('#opt_'+i).is(':checked')){
+                        totalPointBenar = parseFloat(totalPointBenar) + parseFloat(Point);
+                    } else {
+                        totalPointSalah = parseFloat(totalPointSalah) + parseFloat(Point);
+                    }
+
+                    dataOption.push(arrOpt);
+                }
+
+                if(totalPointBenar==100 && totalPointSalah==-100){
+                    submitQ = true;
+                } else {
+                    errMsg = 'The number of points for correct answers must be equal to 100 ' +
+                        'and the number of points for correct answers must be equal to -100';
+                    submitQ = false;
+                }
+
+            }
+
+            var data = {
+                action : 'saveQuestion',
+                ID : (formID!='' && formID!=null) ? formID : '',
+                SummernoteID : $('#formSummernoteID').val(),
+                NIP : sessionNIP,
+                dataQustion : {
+                    QTID : formTQID,
+                    Question : formQuestion,
+                    Note : (formNote!='' && formNote!=null) ? formNote : ''
+                },
+                dataOption : dataOption
+            };
+
+            var token = jwt_encode(data,'UAP)(*');
+            var url = '<?php echo $module_url_question.'save' ?>';
+
+            loadingStart();
+            try{
+                const jsonResult = await AjaxSubmitFormPromises(url,token);
+                var dataLoadQuiz = $('#dataLoadQuiz').val();
+                var dataQ = (dataLoadQuiz != '' && dataLoadQuiz != null) ? JSON.parse(dataLoadQuiz) : [];
+                var TotalAnswer = (dataLoadQuiz != '' && dataLoadQuiz != null &&
+                    dataQ.Quiz.length > 0) ? parseInt(dataQ.TotalAnswer) : 0;
+
+                if (TotalAnswer > 0) {
+                    toastr.warning('Quiz cannot be edited', 'Warning');
+                } else {
+                    var dataTempQuiz = $('#dataTempQuiz').val();
+                    var d = (dataTempQuiz != '') ? JSON.parse(dataTempQuiz) : [];
+                    d.push(jsonResult.QID);
+                    $('#dataTempQuiz').val(JSON.stringify(d));
+
+                    loadDataQuiz();
+                }
+
+                loadMyQuestion();
+
+                if (formID != '' && formID != null) {
+
+                } else {
+                    setTimeout(function() {
+                        $('#GlobalModalLarge').modal('hide');
+                    }, 500);
+                }
+                
+            }
+            catch(err){
+                console.log(err)
+                toastr.info('error save data'); 
+            }
+
+            loadingEnd(500);
+        }
+
+    }
+
+    const removeQuestion = async(itsme) => {
+        if (confirm('Are you sure?')) {
+
+            loadingStart();
+
+            var QID = itsme.attr('data-id');
+
+            var data = {
+                QID: QID
+            };
+
+            var token = jwt_encode(data, 'UAP)(*');
+            var url = module_url_question + 'removeQuestion';
+
+            try{
+                const jsonResult =  await AjaxSubmitFormPromises(url,token);
+                if (parseInt(jsonResult.Usage) > 0) {
+                    toastr.warning('Questions have been registered in several quizzes', 'Cannot be deleted');
+                } else {
+                    toastr.success('Removed data', 'Success');
+                    loadDataQuiz();
+                    loadMyQuestion();
+                }
+            }
+            catch(err){
+                toastr.info('something wrong');
+                console.log(err);
+            }
+
+            loadingEnd(500);
+
+        }
+    }
+
+    $(document).on('click', '.removeQuestion', function() {
+        const itsme = $(this);
+        removeQuestion(itsme);
+    });
+
+    $(document).on('click','#btnSaveQuestion',function () {
+
+        const itsme =  $(this);
+        saveQuestion('',itsme);
+    });
+
+    const addToQuizFromMyQuestion = async() => {
+        var filterQuizCategory = $('#filterQuizCategory').val();
+        var filterQuizPublishOn = $('#filterQuizPublishOn').val();
+
+        if (filterQuizCategory != '' && filterQuizCategory != null &&
+            filterQuizPublishOn != '' && filterQuizPublishOn != null) {
+
+            var dataLoadQuiz = $('#dataLoadQuiz').val();
+            var dataQ = (dataLoadQuiz != '' && dataLoadQuiz != null) ? JSON.parse(dataLoadQuiz) : [];
+            var TotalAnswer = (dataLoadQuiz != '' && dataLoadQuiz != null &&
+                dataQ.Quiz.length > 0) ? parseInt(dataQ.TotalAnswer) : 0;
+
+            if (TotalAnswer > 0) {
+                toastr.warning('Quiz cannot be edited', 'Warning');
+            } else {
+
+                var ID = $(this).attr('data-id');
+
+                // cek apakah ID sudah di add atau blm
+                var dataTempQuiz = $('#dataTempQuiz').val();
+                var d = (dataTempQuiz != '' && dataTempQuiz != null) ? JSON.parse(dataTempQuiz) : [];
+
+                var pushID = true;
+
+                if (d.length > 0) {
+                    for (var i = 0; i < d.length; i++) {
+                        if (ID == d[i]) {
+                            toastr.warning('The question is already in the quiz', 'Warning');
+                            pushID = false;
+                            break;
+                        }
+                    }
+                } else {
+                    pushID = true;
+
+                }
+
+                if (pushID) {
+                    d.push(ID);
+                    var newVal = JSON.stringify(d);
+                    $('#dataTempQuiz').val(newVal);
+                    loadDataQuiz();
+                    toastr.success('Added to quiz', 'Success');
+                }
+            }
+
+        } else {
+            toastr.warning('Please, choose a TA , a Category and a publish on', 'Warning');
+        }
+    }
+
+    $(document).on('click', '.addToQuizFromMyQuestion', function() {
+
+        const itsme = $(this);
+        addToQuizFromMyQuestion(itsme);
+    });
 
     $(document).on('change','#filterQuizPublishOn,#filterQuizCategory',function(e){
         LoadQuiz();

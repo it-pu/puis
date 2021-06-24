@@ -489,18 +489,12 @@
 			loadingStart();
 			try{
 				const response = await AjaxSubmitFormPromises(url,token);
-				if (response == 1) {
-					// save & add to quiz
-					toastr.success('Data saved','Success');
+				// save & add to quiz
+				toastr.success('Data saved','Success');
 
-					setTimeout(function () {
-					    window.location.href='';
-					},500);
-				}
-				else
-				{
-					toastr.info('error save data'); 
-				}
+				setTimeout(function () {
+				    window.location.href='';
+				},500);
 				
 			}
 			catch(err){

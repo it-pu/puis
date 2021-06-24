@@ -67,10 +67,12 @@ class C_question extends Admission_Controler {
             }
         }
 
-        echo json_encode(1);
+       //echo json_encode(1);
+       echo json_encode(array('QID' => $QID));
     }
 
     public function getArrDataQuestion(){
+        $data_arr = $this->getInputToken();
         $ArrQID = (array) $data_arr['ArrQID'];
 
         $result = [];
@@ -98,7 +100,7 @@ class C_question extends Admission_Controler {
 
     public function countTotalMyQuestion(){
         $dataQuiz = $this->db->query('SELECT COUNT(*) Total FROM db_admission.q_question where active = 1')->result_array();
-        return print_r(json_encode(array('Total' => $dataQuiz[0]['Total'])));
+        echo json_encode(array('Total' => $dataQuiz[0]['Total']));
     }
 
     public function getMyQuestion(){
@@ -107,12 +109,12 @@ class C_question extends Admission_Controler {
         $dataSearch = '';
         if (!empty($requestData['search']['value'])) {
             $search = $requestData['search']['value'];
-            $dataSearch = 'WHERE ( q.Question LIKE "%' . $search . '%" )';
+            $dataSearch = 'AND ( q.Question LIKE "%' . $search . '%" )';
         }
 
         $queryDefault = 'SELECT q.*, qt.Description FROM db_admission.q_question q 
                                     LEFT JOIN db_academic.q_question_type qt ON (qt.ID = q.QTID)
-                                    ' . $dataSearch;
+                                    WHERE q.active = 1 ' . $dataSearch;
 
         $queryDefaultTotal = 'SELECT COUNT(*) AS Total FROM (' . $queryDefault . ') xx';
 
@@ -167,10 +169,117 @@ class C_question extends Admission_Controler {
         echo json_encode($json_data);
     }
 
-    public function dataQuiz(){
-        
+    public function removeQuestion_old(){
+        $data_arr =  $this->getInputToken();
+        // cek apakah question sudah masuk kedalam kuis atau blm
+        $data = $this->db->query('SELECT COUNT(*) AS Total 
+                                    FROM db_admission.q_quiz_details 
+                                    WHERE QID = "' . $data_arr['QID'] . '" ')
+            ->result_array();
+
+        if ($data[0]['Total'] <= 0) {
+            // get data summernoteid
+            $dataQuestion = $this->db->select('SummernoteID')->get_where(
+                'db_admission.q_question',
+                array('ID' => $data_arr['QID'])
+            )->result_array();
+
+            if (count($dataQuestion) > 0) {
+
+                if (
+                    $dataQuestion[0]['SummernoteID'] != ''
+                    && $dataQuestion[0]['SummernoteID'] != null
+                ) {
+                    $this->m_rest
+                        ->checkImageSummernote('delete', $dataQuestion[0]['SummernoteID'], '', '');
+
+                    $this->db->where('ID', $data_arr['QID']);
+                    $this->db->delete('db_admission.q_question');
+                    $this->db->reset_query();
+
+
+                    $dataOption = $this->db->select('SummernoteID')
+                        ->get_where(
+                            'db_admission.q_question_options',
+                            array('QID' => $data_arr['QID'])
+                        )->result_array();
+
+                    if (count($dataOption) > 0) {
+                        for ($opt = 0; $opt < count($dataOption); $opt++) {
+                            $this->m_rest
+                                ->checkImageSummernote('delete', $dataOption[$opt]['SummernoteID'], '', '');
+                        }
+                        $this->db->where('QID', $data_arr['QID']);
+                        $this->db->delete('db_admission.q_question_options');
+                        $this->db->reset_query();
+                    }
+                }
+            }
+        }
+
+        return print_r(json_encode(array('Usage' => $data[0]['Total'])));
     }
 
-    
+    public function removeQuestion(){
+        $data_arr =  $this->getInputToken();
+        // cek apakah question sudah masuk kedalam kuis atau blm
+        $data = $this->db->query('SELECT COUNT(*) AS Total 
+                                    FROM db_admission.q_quiz_details 
+                                    WHERE QID = "' . $data_arr['QID'] . '" ')
+            ->result_array();
+
+        if ($data[0]['Total'] <= 0) {
+            // get data summernoteid
+            $dataQuestion = $this->db->select('SummernoteID')->get_where(
+                'db_admission.q_question',
+                array('ID' => $data_arr['QID'])
+            )->result_array();
+
+            if (count($dataQuestion) > 0) {
+
+                // check id in use in quiz details
+                $d = $this->db->select('ID')->where('QID',$data_arr['QID'])->from('db_admission.q_quiz_details')->count_all_results();
+
+                if ($d > 0) {
+                    $this->db->where('ID',$data_arr['QID']);
+                    $this->db->update('db_admission.q_question',['active' => 0]);
+                }
+                else
+                {
+                    if (
+                        $dataQuestion[0]['SummernoteID'] != ''
+                        && $dataQuestion[0]['SummernoteID'] != null
+                    ) {
+                        $this->m_rest
+                            ->checkImageSummernote('delete', $dataQuestion[0]['SummernoteID'], '', '');
+
+                        $this->db->where('ID', $data_arr['QID']);
+                        $this->db->delete('db_admission.q_question');
+                        $this->db->reset_query();
+
+
+                        $dataOption = $this->db->select('SummernoteID')
+                            ->get_where(
+                                'db_admission.q_question_options',
+                                array('QID' => $data_arr['QID'])
+                            )->result_array();
+
+                        if (count($dataOption) > 0) {
+                            for ($opt = 0; $opt < count($dataOption); $opt++) {
+                                $this->m_rest
+                                    ->checkImageSummernote('delete', $dataOption[$opt]['SummernoteID'], '', '');
+                            }
+                            $this->db->where('QID', $data_arr['QID']);
+                            $this->db->delete('db_admission.q_question_options');
+                            $this->db->reset_query();
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return print_r(json_encode(array('Usage' => $data[0]['Total'])));
+    }
 
 }
