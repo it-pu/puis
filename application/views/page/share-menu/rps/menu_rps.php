@@ -4,7 +4,7 @@
         <div class="tabbable tabbable-custom tabbable-full-width">
             <?php $activeMenu = $this->uri->segment(1); ?>
             <ul class="nav nav-tabs">
-                <li class="<?= ($this->uri->segment(2) == 'data-curriculum' || $this->uri->segment(2) == 'manage-CPL' || $this->uri->segment(2) == 'list-CPMK' || $this->uri->segment(2) == 'desc-MK' || $this->uri->segment(2) == 'bahan-kajian' || $this->uri->segment(2) == 'list-rps') ? 'active' : '' ?>">
+                <li class="<?= ($this->uri->segment(2) == 'data-curriculum' || $this->uri->segment(2) == 'review-RPS' || $this->uri->segment(2) == 'manage-CPL' || $this->uri->segment(2) == 'list-CPMK' || $this->uri->segment(2) == 'desc-MK' || $this->uri->segment(2) == 'bahan-kajian' || $this->uri->segment(2) == 'list-rps') ? 'active' : '' ?>">
                     <a href="<?php echo base_url('rps/data-curriculum'); ?>">Data Curriculum</a>
                 </li>
                 <li class="hide <?= ($this->uri->segment(2) == 'list-rps') ? 'active' : '' ?>">

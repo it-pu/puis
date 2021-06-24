@@ -852,57 +852,6 @@ if(JSON.parse(jsonResult).length>0){
 });
 
 
-        // $('#loadTableRPS').html('<table id="tableDataRPS" class="table table-bordered table-striped table-centre" style="width:100%">' +
-        //     '               <thead>' +
-        //     '                <tr style="background: #eceff1;">' +
-        //     '                <th style="width: 1%;">Minggu Ke</th>' +
-        //     '                <th>Sub CPMK</th>' +
-        //     '                <th style="width: 10%;">Bahan Kajian</th>' +
-        //     '                <th style="width: 10%;">Penilaian Indikator</th>' +
-        //     '                <th style="width: 10%;">Penilaian Kriteria, Bentuk</th>' +
-        //     '                <th style="width: 10%;">Bentuk dan Metode Pembelajaran, Waktu, Penugasan</th>' +
-        //     '                <th style="width: 10%;">Nilai (%)</th>' +
-        //     '                <th style="width: 10%;">File</th>' +
-
-        //     '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
-        //     '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
-            
-        //     '                </tr>' +
-        //     '                </thead>' +
-        //     '           </table>');
-
-
-        // var data = {
-        //     action : 'getDataRPS',
-        //     CDID : '<?= $CDID; ?>',
-
-        // };
-
-        // var token = jwt_encode(data,'UAP)(*');
-       
-
-        // var dataTable = $('#tableDataRPS').DataTable( {
-        //     "processing": true,
-        //     "serverSide": true,
-        //     "iDisplayLength" : 50,
-        //     "ordering" : false,
-        //     "language": {
-        //         "searchPlaceholder": "Search..."
-        //     },
-        //     "ajax":{
-        //         url :url, // json datasource
-        //         data : {token:token},
-        //         ordering : false,
-        //         type: "post",  // method  , by default get
-        //         error: function(){  // error handling
-        //             loading_modal_hide();
-        //             $(".employee-grid-error").html("");
-        //             $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
-        //             $("#employee-grid_processing").css("display","none");
-        //         }
-        //     }
-        // } );
-
     }
 
     function loadDataDescMK() 

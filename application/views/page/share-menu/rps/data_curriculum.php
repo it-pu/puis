@@ -324,26 +324,7 @@
 
     });
 
-    $(document).on('click','.btnViewRPS',function () {
-        var CDID = $(this).attr('data-id');
-        var semester = $(this).attr('data-smt');
-        var MKCode = $(this).attr('data-mkcode');
-        var prodi = $(this).attr('data-prodi');
-        var course = $(this).attr('data-course');
-        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
-        var curriculumYear = curriculum[1];
-        var listdata = {
-            CDID : CDID,
-            MKCode : MKCode,
-            Prodi : prodi,
-            Course : course,
-            Semester : semester,
-            curriculumYear : curriculumYear
-        };
-
-        action_modal(listdata,'viewRPS',CDID);
-
-    });
+    
 
     $(document).on('click','.btnViewDescMK',function () {
         var CDID = $(this).attr('data-id');
@@ -383,8 +364,6 @@
         action_modal(listdata,'viewCPMK',CDID);
     });
 
-    
-    
 
     $(document).on('click','.detailMataKuliah',function () {
         var semester = $(this).attr('data-smt');
@@ -431,6 +410,37 @@
                 '</a></li>');
         }
     }
+
+    $(document).on('click','.btnViewAll',function () {
+        var CDID = $(this).attr('data-id');
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+        var token = jwt_encode(listdata,"UAP)(*");
+        window.open("<?php echo base_url('rps/review-RPS/'); ?>"+ token,"_blank");
+    });
+
+
+    // $(document).on('click','.btnDowloadRPS',function () {
+    //     var NPM = $(this).attr('data-npm');
+    //     var DBStudent = $(this).attr('data-db');
+
+    //     var token = jwt_encode({NPM:NPM,DBStudent:DBStudent},'UAP)(*');
+    //     $('#formGlobalToken').attr('action',base_url_js+'save2pdf/rps');
+    //     $('#dataToken').val(token);
+    //     $('#formGlobalToken').submit();
+    // });
     // function modal_add_kurikulum(year) {
     //     var url = base_url_js+"academic/kurikulum/add-kurikulum";
     //     var data = {
