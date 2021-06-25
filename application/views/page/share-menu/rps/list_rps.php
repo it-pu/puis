@@ -149,6 +149,8 @@
         var data = {
             action : 'getDataRPS',
             CDID : '<?= $CDID; ?>',
+            viewData: 'viewData',
+
         };
 
         var token = jwt_encode(data,'UAP)(*');

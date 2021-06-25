@@ -6,246 +6,246 @@
 </style>
 
 <div class="col-md-12" id="modalAdd">
-    <form class="form-horizontal">
-        <div class="form-group">
-            <label class="col-sm-4 control-label">Jenis Kurikulum</label>
-            <div class="col-sm-8">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <select class="form-control curriculum" id="ModalJenisKurikulum">
-                        </select>
-                    </div>
+    <?php if ($action=='viewMaterial' || $action=='viewRPS' || $action=='viewDescMK' || $action=='viewCPMK' ): ?>
+        <form class="form-horizontal">
+            <?php if ($action=='viewMaterial' ): ?>
+                <div class="table-responsive" style="margin-bottom: 10px;">
+                    <div id="loadTableMaterial"></div>
                 </div>
-            </div>
+            <?php elseif ($action=='viewRPS'): ?>
+                <div class="table-responsive" style="margin-bottom: 10px;">
+                    <div id="loadTableRPS"></div>
+                </div>
+            <?php elseif ($action=='viewDescMK'): ?>
+                <div class="table-responsive" style="margin-bottom: 10px;">
+                    <div id="loadTableDescMK"></div>
+                </div>
+            <?php else: ?>
+                <div class="table-responsive" style="margin-bottom: 10px;">     
+                    <div id="loadTableCPMK"></div>
+                </div>
+            <?php endif ?>
 
-        </div>
-        <div class="form-group">
-            <label class="col-sm-4 control-label">Base Prodi</label>
-            <div class="col-sm-8">
-                <select class="form-control curriculum" id="ModalSelectProdi">
-                    <option value=""></option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-4 control-label">Mata Kuliah</label>
-            <div class="col-sm-8">
-                <span id="ModalSelectMKView" style="line-height: 2.3;font-weight: bold;" class="hide"></span>
-                <select class="select2-select-00 full-width-fix"
-                        size="5" id="ModalSelectMK">
-                    <option value=""></option>
-                </select>
-                <input type="hide" id="ModalSelectMKVal" class="hide">
-            </div>
-        </div>
+            <div class="form-group" style="border-top: 1px solid #d3d3d3;padding-top: 10px;text-align: right;">
+                <div class="col-sm-12" id="BtnFooter">
+                    <button type="button" id="ModalbtnCancleForm" data-dismiss="modal" class="btn btn-default">Close</button>
+                    <button type="button" id="ModalbtnEditForm" class="btn btn-default btn-default-success">Edit Data</button>
+                </div>
+            </div>                
+        </form>
 
-        <?php if ($action=='addRPS'): ?>
+    <?php else: ?>
+        <form class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-4 control-label">Minggu Ke- 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
+                <label class="col-sm-4 control-label">Jenis Kurikulum</label>
                 <div class="col-sm-8">
                     <div class="row">
-                        <div class="col-sm-3">
-                            <select class="form-control" id="modalRpsMinggu">
-                                <option value="" selected="selected" disabled></option>
-                                <?php for ($i=1; $i <17 ; $i++) { 
-                                    echo "<option value='$i'>$i</option>";
-                                } ?>
+                        <div class="col-sm-12">
+                            <select class="form-control curriculum" id="ModalJenisKurikulum">
                             </select>
                         </div>
-                        <span class="help-block spanSelectRpsMinggu" style="display: none;"></span>
                     </div>
-                    
                 </div>
+
             </div>
             <div class="form-group">
-                <label class="col-sm-4 control-label">Sub CPMK 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
+                <label class="col-sm-4 control-label">Base Prodi</label>
                 <div class="col-sm-8">
-                    <textarea class="form-control" id="modalRpsSubCPMK" rows="2"></textarea>
-                    <span class="help-block spanInputSubCPMK" style="display: none;"></span>    
-
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Bahan Kajian 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <textarea class="form-control" id="modalRpsBahanKajian" rows="2"></textarea>
-                    <span class="help-block spanInputBahanKajian" style="display: none;"></span>    
-
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Penilaian Indikator 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <textarea class="form-control" id="modalRpsPenilaianIndikator" rows="2"></textarea>
-                    <span class="help-block spanInputPenilaianIndikator" style="display: none;"></span>    
-
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Penilaian Kriteria, Bentuk 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <textarea class="form-control" id="modalRpsPenilaianKriteria" rows="2"></textarea>
-                    <span class="help-block spanInputPenilaianKriteria" style="display: none;"></span>    
-
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Bentuk dan Metode Pembelajaran, Waktu, Penugasan 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <textarea class="form-control" id="modalRpsMetodePembelajaran" rows="2"></textarea>
-                    <span class="help-block spanInputMetodePembelajaran" style="display: none;"></span>    
-
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Nilai (%) 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <input id="modalRpsNilai" class="form-control" type="number" min="0" max="100">
-                    <span class="help-block spanInputNilai" style="display: none;"></span>    
-
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Deskripsi Nilai 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                
-                </label>
-                <div class="col-sm-8">
-                    <!-- <input id="modalRpsNilai" class="form-control" type="number" min="1" max="100">     -->
-                    <textarea class="form-control" id="modalRpsDescNilai" rows="2"></textarea>
-                    <span class="help-block spanInputDescNilai" style="display: none;"></span>    
-
-                </div>
-            </div>
-
-            
-             <div class="form-group">
-                <label class="col-sm-4 control-label">Upload File <span>
-                   <strong style='color: #fc4b6c;'>*</strong></span>
-                   <br> (pdf - Maksimal 8MB)
-                </label>
-                <div class="col-sm-8">
-                    <input class="actUpload" type="file" name="userfile" value="" accept="application/pdf">
-                    <span class="help-block spanInputUpload" style="display: none;"></span>    
-
-                </div>
-            </div>
-        <?php elseif ($action=='addCPMK'): ?>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Type
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <select class="form-control" id="ModalSelectTypeCPMK">
-                        <option value="" selected="selected" disabled></option>
-                        <option value="sub">sub</option>
-                        <option value="non-sub">non-sub</option>
+                    <select class="form-control curriculum" id="ModalSelectProdi">
+                        <option value=""></option>
                     </select>
-                    <span class="help-block spanSelectTypeCPMK" style="display: none;"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-4 control-label">CPMK Code 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
+                <label class="col-sm-4 control-label">Mata Kuliah</label>
                 <div class="col-sm-8">
-                    <input id="modalCPMKCode" type="text" class="form-control">
-                    <span class="help-block spanInputCPMKCode" style="display: none;"></span>    
-                    <!-- <textarea class="form-control" id="modalCPMKDescNilai" rows="2"></textarea> -->
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Deskripsi 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <!-- <input id="modalRpsNilai" class="form-control" type="number" min="1" max="100">     -->
-                    <textarea class="form-control" id="modalCPMKDesc" rows="2"></textarea>
-                    <span class="help-block spanInputCPMKDesc" style="display: none;"></span>    
-
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Order 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <input id="modalCPMKOrder" class="form-control" type="number" min="0">    
-                    <span class="help-block spanInputCPMKOrder" style="display: none;"></span>    
-
-                    <!-- <textarea class="form-control" id="modalCPMKDesc" rows="2"></textarea> -->
-                </div>
-            </div>
-            
-        <?php elseif ($action=='addDescMK'): ?>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Deskripsi 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <!-- <input id="modalRpsNilai" class="form-control" type="number" min="1" max="100">     -->
-                    <textarea class="form-control" id="modalDescMK" rows="2"></textarea>
-                    <span class="help-block spanInputDescMK" style="display: none;"></span>    
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Order 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <input id="modalDescMKOrder" class="form-control" type="number" type="number" min="0">    
-                    <span class="help-block spanInputDescMKOrder" style="display: none;"></span>    
-                    <!-- <textarea class="form-control" id="modalCPMKDesc" rows="2"></textarea> -->
+                    <span id="ModalSelectMKView" style="line-height: 2.3;font-weight: bold;" class="hide"></span>
+                    <select class="select2-select-00 full-width-fix"
+                            size="5" id="ModalSelectMK">
+                        <option value=""></option>
+                    </select>
+                    <input type="hide" id="ModalSelectMKVal" class="hide">
                 </div>
             </div>
 
-        <?php else: ?>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Deskripsi 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <!-- <input id="modalRpsNilai" class="form-control" type="number" min="1" max="100">     -->
-                    <textarea class="form-control" id="modalMaterialDesc" rows="2"></textarea>
-                    <span class="help-block spanInputMaterialDesc" style="display: none;"></span>    
+            <?php if ($action=='addRPS'): ?>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Minggu Ke- 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <select class="form-control" id="modalRpsMinggu">
+                                    <option value="" selected="selected" disabled></option>
+                                    <?php for ($i=1; $i <17 ; $i++) { 
+                                        echo "<option value='$i'>$i</option>";
+                                    } ?>
+                                </select>
+                            </div>
+                            <span class="help-block spanSelectRpsMinggu" style="display: none;"></span>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Sub CPMK 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="modalRpsSubCPMK" rows="2"></textarea>
+                        <span class="help-block spanInputSubCPMK" style="display: none;"></span>    
 
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Bahan Kajian 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="modalRpsBahanKajian" rows="2"></textarea>
+                        <span class="help-block spanInputBahanKajian" style="display: none;"></span>    
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Penilaian Indikator 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="modalRpsPenilaianIndikator" rows="2"></textarea>
+                        <span class="help-block spanInputPenilaianIndikator" style="display: none;"></span>    
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Penilaian Kriteria, Bentuk 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="modalRpsPenilaianKriteria" rows="2"></textarea>
+                        <span class="help-block spanInputPenilaianKriteria" style="display: none;"></span>    
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Bentuk dan Metode Pembelajaran, Waktu, Penugasan 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="modalRpsMetodePembelajaran" rows="2"></textarea>
+                        <span class="help-block spanInputMetodePembelajaran" style="display: none;"></span>    
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Nilai (%) 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <input id="modalRpsNilai" class="form-control" type="number" min="0" max="100">
+                        <span class="help-block spanInputNilai" style="display: none;"></span>    
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Deskripsi Nilai 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    
+                    </label>
+                    <div class="col-sm-8">
+                        <!-- <input id="modalRpsNilai" class="form-control" type="number" min="1" max="100">     -->
+                        <textarea class="form-control" id="modalRpsDescNilai" rows="2"></textarea>
+                        <span class="help-block spanInputDescNilai" style="display: none;"></span>    
+
+                    </div>
+                </div>
+
+                
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Upload File <span>
+                    <strong style='color: #fc4b6c;'>*</strong></span>
+                    <br> (pdf - Maksimal 8MB)
+                    </label>
+                    <div class="col-sm-8">
+                        <input class="actUpload" type="file" name="userfile" value="" accept="application/pdf">
+                        <span class="help-block spanInputUpload" style="display: none;"></span>    
+
+                    </div>
+                </div>
+            <?php elseif ($action=='addCPMK'): ?>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Type
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="ModalSelectTypeCPMK">
+                            <option value="" selected="selected" disabled></option>
+                            <option value="sub">sub</option>
+                            <option value="non-sub">non-sub</option>
+                        </select>
+                        <span class="help-block spanSelectTypeCPMK" style="display: none;"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">CPMK Code 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <input id="modalCPMKCode" type="text" class="form-control">
+                        <span class="help-block spanInputCPMKCode" style="display: none;"></span>    
+                        <!-- <textarea class="form-control" id="modalCPMKDescNilai" rows="2"></textarea> -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Deskripsi 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <!-- <input id="modalRpsNilai" class="form-control" type="number" min="1" max="100">     -->
+                        <textarea class="form-control" id="modalCPMKDesc" rows="2"></textarea>
+                        <span class="help-block spanInputCPMKDesc" style="display: none;"></span>    
+
+                    </div>
+                </div>
+               
+                
+            <?php elseif ($action=='addDescMK'): ?>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Deskripsi 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <!-- <input id="modalRpsNilai" class="form-control" type="number" min="1" max="100">     -->
+                        <textarea class="form-control" id="modalDescMK" rows="2"></textarea>
+                        <span class="help-block spanInputDescMK" style="display: none;"></span>    
+                    </div>
+                </div>
+
+            <?php else: ?>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Deskripsi 
+                    <span><strong style='color: #fc4b6c;'>*</strong></span>
+                    </label>
+                    <div class="col-sm-8">
+                        <!-- <input id="modalRpsNilai" class="form-control" type="number" min="1" max="100">     -->
+                        <textarea class="form-control" id="modalMaterialDesc" rows="2"></textarea>
+                        <span class="help-block spanInputMaterialDesc" style="display: none;"></span>    
+
+                    </div>
+                </div>
+
+            <?php endif ?>
+
+            <div class="form-group" style="border-top: 1px solid #d3d3d3;padding-top: 10px;text-align: right;">
+                <div class="col-sm-12" id="BtnFooter">
+                    <button type="button" id="ModalbtnCancleForm" data-dismiss="modal" class="btn btn-default">Close</button>
+                    <button type="button" id="ModalbtnAddForm" class="btn btn-default btn-default-success">Add Data</button>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">Order 
-                <span><strong style='color: #fc4b6c;'>*</strong></span>
-                </label>
-                <div class="col-sm-8">
-                    <input id="modalMaterialOrder" class="form-control" type="number" min="0">    
-                    <span class="help-block spanInputMaterialOrder" style="display: none;"></span>    
 
-                </div>
-            </div>
-
-        <?php endif ?>
-
-        <div class="form-group" style="border-top: 1px solid #d3d3d3;padding-top: 10px;text-align: right;">
-            <div class="col-sm-12" id="BtnFooter">
-                <button type="button" id="ModalbtnCancleForm" data-dismiss="modal" class="btn btn-default">Close</button>
-                <button type="button" id="ModalbtnAddForm" class="btn btn-default btn-default-success hide">Add Data</button>
-            </div>
-        </div>
-
-    </form>
+        </form>
+    <?php endif ?>
 </div>
 
 
@@ -273,7 +273,7 @@
                 .prop('disabled',true);
 
             // $('#ModalbtnSaveForm').addClass('hide');
-            $('#ModalbtnAddForm').removeClass('hide');
+
 
             var CDID = '<?php echo $CDID; ?>';
             var data = {
@@ -304,13 +304,22 @@
 
             });
        
-
+            if (action=='viewMaterial') {
+                loadDataMaterial();
+            } 
+            else if (action=='viewRPS') {
+                loadDataRPS();
+            } 
+            else if (action=='viewDescMK') {
+                loadDataDescMK();
+            } 
+            else if (action=='viewCPMK') {
+                loadDataCPMK();
+            }
+            
 
 
     });
-
-    
-    
 
     $('#ModalbtnAddForm').click(function () {
         if(action=='addRPS'){
@@ -459,7 +468,8 @@
                     toastr.success('Data capaian pembelajaran mata kuliah tersimpan','Success');
                     $('#GlobalModal').modal('hide');
                     setTimeout(function () {
-                        window.location = '';
+                        pageKurikulum();
+
                     },1000);
                         
                 } else {
@@ -470,7 +480,7 @@
         }
         else if(action=='addCPMK'){
 
-            if( $("#ModalSelectTypeCPMK").val() == null || $("#modalCPMKCode").val() == "" || $("#modalCPMKDesc").val() == "" || $("#modalCPMKOrder").val() == "" )
+            if( $("#ModalSelectTypeCPMK").val() == null || $("#modalCPMKCode").val() == "" || $("#modalCPMKDesc").val() == "" )
             {
                 if($("#ModalSelectTypeCPMK").val() == null )
                 {
@@ -499,15 +509,6 @@
                         $(".spanInputCPMKDesc").html("");
                     },3000);
                 }
-                else 
-                {
-                    $(".spanInputCPMKOrder").css("display", "");
-                    $(".spanInputCPMKOrder").html("<strong style='color: #fc4b6c;'>Order must not be empty !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputCPMKOrder").css("display", "none");
-                        $(".spanInputCPMKOrder").html("");
-                    },3000);
-                }
                   
             }else{
                 var CDID = '<?php echo $CDID; ?>';
@@ -518,7 +519,6 @@
                     subCPMK : $("#ModalSelectTypeCPMK").val(),
                     codeCPMK : $("#modalCPMKCode").val(),
                     descCPMK : $("#modalCPMKDesc").val(),
-                    orderCPMK : $("#modalCPMKOrder").val(),
                 };
 
                 var dataToken = {
@@ -533,15 +533,9 @@
                         toastr.success('Data capaian pembelajaran mata kuliah tersimpan','Success');
                         $('#GlobalModal').modal('hide');
                         setTimeout(function () {
-                            window.location = '';
+                            pageKurikulum();
+                            
                         },1000);
-                    } else {
-                        $(".spanInputCPMKOrder").css("display", "");
-                        $(".spanInputCPMKOrder").html("<strong style='color: #fc4b6c;'>Order sudah ada !</strong>");
-                        setTimeout(function () {
-                            $(".spanInputCPMKOrder").css("display", "none");
-                            $(".spanInputCPMKOrder").html("");
-                        },3000);
                     }
                     
                 });
@@ -550,7 +544,7 @@
         }
         else if(action=='addDescMK'){
 
-            if ($("#modalDescMK").val() == "" || $("#modalDescMKOrder").val() == "") {
+            if ($("#modalDescMK").val() == "") {
                 if($("#modalDescMK").val() == "" )
                 {
                     $(".spanInputDescMK").css("display", "");
@@ -561,15 +555,7 @@
                     },3000);
                     
                 } 
-                else if($("#modalDescMKOrder").val() == "")
-                {
-                    $(".spanInputDescMKOrder").css("display", "");
-                    $(".spanInputDescMKOrder").html("<strong style='color: #fc4b6c;'>Order must not be empty !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputDescMKOrder").css("display", "none");
-                        $(".spanInputDescMKOrder").html("");
-                    },3000);
-                }
+               
             } else {
                 var CDID = '<?php echo $CDID; ?>';
                 var url = base_url_js+'rps/crud-desc-MK';
@@ -577,7 +563,6 @@
                 var dataaddDescMK = {
                     CDID : CDID,
                     descMK : $("#modalDescMK").val(),
-                    orderMK : $("#modalDescMKOrder").val(),
                 };
 
                 var dataToken = {
@@ -592,22 +577,15 @@
                         toastr.success('Data deskripsi mata kuliah tersimpan','Success');
                         $('#GlobalModal').modal('hide');
                         setTimeout(function () {
-                            window.location = '';
+                            pageKurikulum();
                         },1000);
-                    } else {
-                        $(".spanInputDescMKOrder").css("display", "");
-                        $(".spanInputDescMKOrder").html("<strong style='color: #fc4b6c;'>Order sudah ada !</strong>");
-                        setTimeout(function () {
-                            $(".spanInputDescMKOrder").css("display", "none");
-                            $(".spanInputDescMKOrder").html("");
-                        },3000);
                     }
                     
                 });
             }
         }
         else {
-            if ($("#modalMaterialDesc").val() == "" || $("#modalMaterialOrder").val() == "") {
+            if ($("#modalMaterialDesc").val() == "") {
                 if($("#modalMaterialDesc").val() == "" )
                 {
                     $(".spanInputMaterialDesc").css("display", "");
@@ -617,15 +595,7 @@
                         $(".spanInputMaterialDesc").html("");
                     },3000);
                 } 
-                else if($("#modalMaterialOrder").val() == "")
-                {
-                    $(".spanInputMaterialOrder").css("display", "");
-                    $(".spanInputMaterialOrder").html("<strong style='color: #fc4b6c;'>Order must not be empty !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputMaterialOrder").css("display", "none");
-                        $(".spanInputMaterialOrder").html("");
-                    },3000);
-                }
+               
             } else {
                 var CDID = '<?php echo $CDID; ?>';
                 var url = base_url_js+'rps/crud-bahan-kajian';
@@ -633,7 +603,6 @@
                 var dataaddMaterial = {
                     CDID : CDID,
                     descMaterial : $("#modalMaterialDesc").val(),
-                    orderMaterial : $("#modalMaterialOrder").val(),
                 };
 
                 var dataToken = {
@@ -647,15 +616,8 @@
                         toastr.success('Data bahan kajian tersimpan','Success');
                         $('#GlobalModal').modal('hide');
                         setTimeout(function () {
-                            window.location = '';
+                            pageKurikulum();
                         },1000);
-                    } else {
-                        $(".spanInputMaterialOrder").css("display", "");
-                        $(".spanInputMaterialOrder").html("<strong style='color: #fc4b6c;'>Order sudah ada !</strong>");
-                        setTimeout(function () {
-                            $(".spanInputMaterialOrder").css("display", "none");
-                            $(".spanInputMaterialOrder").html("");
-                        },3000);
                     }
                     
                     
@@ -695,5 +657,494 @@
          })
          return def.promise();
     }
+
+    function loadDataMaterial() 
+    {
+        var data = {
+            action : 'showModalMaterial',
+            CDID : '<?= $CDID; ?>',
+        };
+        var token = jwt_encode(data,'UAP)(*');
+        var url = base_url_js+'rps/crud-bahan-kajian';
+
+        $.post(url,{token:token},function (jsonResult) {
+if(JSON.parse(jsonResult).length>0){
+
+    var tr = '';
+        if(JSON.parse(jsonResult).length>0){
+            $.each(JSON.parse(jsonResult),function (i,v) {
+
+                tr = tr+'<tr class="item-question" data-id="'+v.ID+'">' +
+                    '<td><div style="text-align: left;">'+v.Description+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.EntredAt+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.EntredBy+'</div></td>' +
+
+
+                    '</tr>';
+            });
+        }
+
+        setTimeout(function () {
+
+if(JSON.parse(jsonResult).length>0){
+    $('#loadTableMaterial').html('<div class="table-responsive">' +
+'    <table class="table table-bordered table-centre">' +
+'        <thead>' +
+    '                <tr style="background: #eceff1;">' +
+'                    <th style="text-align: center;">Description</th>'+
+'                    <th style="width: 10%;text-align: center;">Entered At</th>'+
+'                    <th style="width: 15%;text-align: center;">Entered By</th>'+
+'                </tr>' +
+'        </thead>' +
+'        <tbody id="listQuestion">'+tr+'</tbody>' +
+'    </table>' +
+'</div>');
+
+  
+        $('#listQuestion').sortable({
+            axis: 'y',
+            update: function (event, ui) {
+                var No = 1;
+                $('#listQuestion tr.item-question').each(function () {
+                    var ID = $(this).attr('data-id');
+                    updateQueue(ID,No,'material');
+                    No += 1;
+                });
+
+                // $('#dataTempQuiz').val(JSON.stringify(dataUpdate));
+
+            }
+        });
+
+    } 
+
+            },500);
+
+    }else {
+                    $('#loadTableMaterial').html('<div class="table-responsive">' +
+                '    <table class="table table-bordered table-centre">' +
+                '        <thead>' +
+                    '                <tr style="background: #eceff1;">' +
+            '                    <th style="text-align: center;">Description</th>'+
+            //'                    <th style="width: 5%;text-align: left;">Order</th>'+ 
+
+            '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
+            '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
+            '                </tr>' +
+                '        </thead>' +
+                '    </table>' +
+                '</div>');
+                }
+
+});
+
+     
+    }
+
+    function loadDataRPS() 
+    {
+        var data = {
+            action : 'showModalRPS',
+            CDID : '<?= $CDID; ?>',
+        };
+        var token = jwt_encode(data,'UAP)(*');
+        var url = base_url_js+'rps/crud-RPS';
+
+        $.post(url,{token:token},function (jsonResult) {
+            console.log(JSON.parse(jsonResult).length);
+
+if(JSON.parse(jsonResult).length>0){
+
+    var tr = '';
+    var nilai = '';
+        if(JSON.parse(jsonResult).length>0){
+            $.each(JSON.parse(jsonResult),function (i,v) {
+                if (v.ValueDesc=="") {
+                    nilai = '<div style="text-align: left;">'+v.Value+'</div>';
+                } else {
+                    nilai = '<div style="text-align: left;">'+v.Value+'% ('+v.ValueDesc+')</div>';
+                }
+                tr = tr+'<tr class="item-question" data-id="'+v.ID+'">' +
+                    '<td><div style="text-align: left;">'+v.Week+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.SubCPMK+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.Material+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.Indikator+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.Kriteria+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.Description+'</div></td>' +
+                    '<td>'+nilai+'</td>'+
+                    '<td><div style="text-align: left;"><a href ="'+base_url_js+'fileGetAny/document-RPS_'+v.CDID+'_'+v.Week+'-'+v.File+'" target="_blank">'+v.File+'</a></div></td>' +
+                    '<td><div style="text-align: left;">'+v.EntredAt+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.EntredBy+'</div></td>' +
+
+
+                    '</tr>';
+            });
+        }
+
+        setTimeout(function () {
+
+if(JSON.parse(jsonResult).length>0){
+    $('#loadTableRPS').html('<div class="table-responsive">' +
+'    <table class="table table-bordered table-centre">' +
+'        <thead>' +
+'                <tr style="background: #eceff1;">' +
+            '                <th style="width: 1%;">Minggu Ke</th>' +
+            '                <th>Sub CPMK</th>' +
+            '                <th style="width: 10%;">Bahan Kajian</th>' +
+            '                <th style="width: 10%;">Penilaian Indikator</th>' +
+            '                <th style="width: 10%;">Penilaian Kriteria, Bentuk</th>' +
+            '                <th style="width: 10%;">Bentuk dan Metode Pembelajaran, Waktu, Penugasan</th>' +
+            '                <th style="width: 10%;">Nilai (%)</th>' +
+            '                <th style="width: 10%;">File</th>' +
+
+            '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
+            '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
+            
+            '                </tr>' +
+'        </thead>' +
+'        <tbody id="listQuestion">'+tr+'</tbody>' +
+'    </table>' +
+'</div>');
+
+  
+        // $('#listQuestion').sortable({
+        //     axis: 'y',
+        //     update: function (event, ui) {
+        //         var No = 1;
+        //         $('#listQuestion tr.item-question').each(function () {
+        //             var ID = $(this).attr('data-id');
+        //             updateQueue(ID,No,'rps');
+        //             No += 1;
+        //         });
+
+        //         // $('#dataTempQuiz').val(JSON.stringify(dataUpdate));
+
+        //     }
+        // });
+
+    }
+
+            },500);
+
+    }else {
+                    $('#loadTableRPS').html('<div class="table-responsive">' +
+                '    <table class="table table-bordered table-centre">' +
+                '        <thead>' +
+                '                <tr style="background: #eceff1;">' +
+            '                <th style="width: 1%;">Minggu Ke</th>' +
+            '                <th>Sub CPMK</th>' +
+            '                <th style="width: 10%;">Bahan Kajian</th>' +
+            '                <th style="width: 10%;">Penilaian Indikator</th>' +
+            '                <th style="width: 10%;">Penilaian Kriteria, Bentuk</th>' +
+            '                <th style="width: 10%;">Bentuk dan Metode Pembelajaran, Waktu, Penugasan</th>' +
+            '                <th style="width: 10%;">Nilai (%)</th>' +
+            '                <th style="width: 10%;">File</th>' +
+
+            '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
+            '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
+            
+            '                </tr>' +
+                '        </thead>' +
+                '    </table>' +
+                '</div>');
+                }
+
+});
+
+
+    }
+
+    function loadDataDescMK() 
+    {
+        var data = {
+            action : 'showModalDescMK',
+            CDID : '<?= $CDID; ?>',
+        };
+        var token = jwt_encode(data,'UAP)(*');
+        var url = base_url_js+'rps/crud-desc-MK';
+
+        $.post(url,{token:token},function (jsonResult) {
+
+if(JSON.parse(jsonResult).length>0){
+
+    var tr = '';
+        if(JSON.parse(jsonResult).length>0){
+            $.each(JSON.parse(jsonResult),function (i,v) {
+
+                tr = tr+'<tr class="item-question" data-id="'+v.ID+'">' +
+                    '<td><div style="text-align: left;">'+v.Description+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.EntredAt+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.EntredBy+'</div></td>' +
+
+
+                    '</tr>';
+            });
+        }
+
+        setTimeout(function () {
+
+if(JSON.parse(jsonResult).length>0){
+    $('#loadTableDescMK').html('<div class="table-responsive">' +
+'    <table class="table table-bordered table-centre">' +
+'        <thead>' +
+    '                <tr style="background: #eceff1;">' +
+'                    <th style="text-align: center;">Description</th>'+
+'                    <th style="width: 10%;text-align: center;">Entered At</th>'+
+'                    <th style="width: 15%;text-align: center;">Entered By</th>'+
+'                </tr>' +
+'        </thead>' +
+'        <tbody id="listQuestion">'+tr+'</tbody>' +
+'    </table>' +
+'</div>');
+
+  
+        $('#listQuestion').sortable({
+            axis: 'y',
+            update: function (event, ui) {
+                var No = 1;
+                $('#listQuestion tr.item-question').each(function () {
+                    var ID = $(this).attr('data-id');
+                    updateQueue(ID,No,'descmk');
+                    No += 1;
+                });
+
+                // $('#dataTempQuiz').val(JSON.stringify(dataUpdate));
+
+            }
+        });
+
+    }
+
+            },500);
+
+    }else {
+                    $('#loadTableDescMK').html('<div class="table-responsive">' +
+                '    <table class="table table-bordered table-centre">' +
+                '        <thead>' +
+                    '                <tr style="background: #eceff1;">' +
+            '                    <th style="text-align: center;">Description</th>'+
+            //'                    <th style="width: 5%;text-align: left;">Order</th>'+ 
+
+            '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
+            '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
+            '                </tr>' +
+                '        </thead>' +
+                '    </table>' +
+                '</div>');
+                }
+
+});
+
+    }
+
+    function loadDataCPMK() 
+    {
+        var data = {
+            action : 'showModalCPMK',
+            CDID : '<?= $CDID; ?>',
+        };
+        var token = jwt_encode(data,'UAP)(*');
+        var url = base_url_js+'rps/crud-CPMK';
+
+        $.post(url,{token:token},function (jsonResult) {
+
+if(JSON.parse(jsonResult).length>0){
+
+    var tr = '';
+        if(JSON.parse(jsonResult).length>0){
+            $.each(JSON.parse(jsonResult),function (i,v) {
+
+                tr = tr+'<tr class="item-question" data-id="'+v.ID+'">' +
+                    '<td><div style="text-align: left;">'+v.Type+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.Code+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.Description+'</div></td>' +
+
+                    '<td><div style="text-align: left;">'+v.EntredAt+'</div></td>' +
+                    '<td><div style="text-align: left;">'+v.EntredBy+'</div></td>' +
+
+                    '</tr>';
+            });
+        }
+
+        setTimeout(function () {
+
+if(JSON.parse(jsonResult).length>0){
+    $('#loadTableCPMK').html('<div class="table-responsive">' +
+'    <table class="table table-bordered table-centre">' +
+'        <thead>' +
+    '                <tr style="background: #eceff1;">' +
+            '                    <th style="width: 10%; text-align: center;">Type</th>'+
+            '                    <th style="width: 10%; text-align: center;">Code</th>'+
+            '                    <th style="text-align: center;">Description</th>'+
+            //'                    <th style="width: 5%;text-align: left;">Order</th>'+ 
+
+            '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
+            '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
+            '                </tr>' +
+'        </thead>' +
+'        <tbody id="listQuestion">'+tr+'</tbody>' +
+'    </table>' +
+'</div>');
+
+  
+        $('#listQuestion').sortable({
+            axis: 'y',
+            update: function (event, ui) {
+                var No = 1;
+                $('#listQuestion tr.item-question').each(function () {
+                    var ID = $(this).attr('data-id');
+                    updateQueue(ID,No,'cpmk');
+                    No += 1;
+                });
+
+                // $('#dataTempQuiz').val(JSON.stringify(dataUpdate));
+
+            }
+        });
+
+    } 
+
+            },500);
+
+    }else {
+                    $('#loadTableCPMK').html('<div class="table-responsive">' +
+                '    <table class="table table-bordered table-centre">' +
+                '        <thead>' +
+                '                <tr style="background: #eceff1;">' +
+            '                    <th style="width: 10%; text-align: center;">Type</th>'+
+            '                    <th style="width: 10%; text-align: center;">Code</th>'+
+            '                    <th style="text-align: center;">Description</th>'+
+            //'                    <th style="width: 5%;text-align: left;">Order</th>'+ 
+
+            '                    <th style="width: 10%;text-align: center;">Entered At</th>'+
+            '                    <th style="width: 10%;text-align: center;">Entered By</th>'+
+            '                </tr>' +
+                '        </thead>' +
+                '    </table>' +
+                '</div>');
+                }
+
+});
+
+
+    }
+
+    $('#ModalbtnEditForm').click(function () {
+        if(action=='viewMaterial'){
+            var data = {
+                CDID : '<?= $CDID; ?>',
+                Semester : '<?= $semester; ?>',
+                Prodi : '<?= $Prodi; ?>',
+                MKCode : '<?= $MKCode; ?>',
+                Course : '<?= $Course; ?>',
+                curriculumYear : '<?= $curriculumYear;?>'
+            };
+            var token = jwt_encode(data,"UAP)(*");
+            window.open("<?php echo base_url('rps/bahan-kajian/'); ?>"+ token,"_blank");
+            $('#GlobalModalLarge').modal('hide');
+        }
+        else if(action=='viewRPS'){
+            var data = {
+                CDID : '<?= $CDID; ?>',
+                Semester : '<?= $semester; ?>',
+                Prodi : '<?= $Prodi; ?>',
+                MKCode : '<?= $MKCode; ?>',
+                Course : '<?= $Course; ?>',
+                curriculumYear : '<?= $curriculumYear;?>'
+            };
+            var token = jwt_encode(data,"UAP)(*");
+            window.open("<?php echo base_url('rps/list-rps/'); ?>"+ token,"_blank");
+            $('#GlobalModalLarge').modal('hide');
+           
+        }
+        else if(action=='viewDescMK'){
+            var data = {
+                CDID : '<?= $CDID; ?>',
+                Semester : '<?= $semester; ?>',
+                Prodi : '<?= $Prodi; ?>',
+                MKCode : '<?= $MKCode; ?>',
+                Course : '<?= $Course; ?>',
+                curriculumYear : '<?= $curriculumYear;?>'
+            };
+            var token = jwt_encode(data,"UAP)(*");
+            window.open("<?php echo base_url('rps/desc-MK/'); ?>"+ token,"_blank");
+            $('#GlobalModalLarge').modal('hide');
+        }
+        else if(action=='viewCPMK'){
+            var data = {
+                CDID : '<?= $CDID; ?>',
+                Semester : '<?= $semester; ?>',
+                Prodi : '<?= $Prodi; ?>',
+                MKCode : '<?= $MKCode; ?>',
+                Course : '<?= $Course; ?>',
+                curriculumYear : '<?= $curriculumYear;?>'
+            };
+            var token = jwt_encode(data,"UAP)(*");
+            window.open("<?php echo base_url('rps/list-CPMK/'); ?>"+ token,"_blank");
+            $('#GlobalModalLarge').modal('hide');
+        }
+    });
+
+function updateQueue(ID,Queue,actions) {
+    if (actions=='material') {
+        var data = {
+        action : 'updateQueueMaterial',
+        ID : ID,
+        Queue : Queue
+    };
+
+    var token = jwt_encode(data,'UAP)(*');
+    var url = base_url_js+'rps/crud-bahan-kajian';
+
+    $.post(url,{token:token},function (result) {
+        // toastr.success('Question removed from survey','Success');
+    });
+    } else if(actions=='cpmk'){
+        var data = {
+        action : 'updateQueueCPMK',
+        ID : ID,
+        Queue : Queue
+    };
+
+    var token = jwt_encode(data,'UAP)(*');
+    var url = base_url_js+'rps/crud-CPMK';
+
+    $.post(url,{token:token},function (result) {
+        // toastr.success('Question removed from survey','Success');
+    });
+    } else if(actions=='descmk'){
+        var data = {
+        action : 'updateQueueDescMK',
+        ID : ID,
+        Queue : Queue
+    };
+
+    var token = jwt_encode(data,'UAP)(*');
+    var url = base_url_js+'rps/crud-desc-MK';
+
+    $.post(url,{token:token},function (result) {
+        // toastr.success('Question removed from survey','Success');
+    });
+    }
+
+    else if(actions=='rps'){
+        var data = {
+        action : 'updateQueueRPS',
+        ID : ID,
+        Queue : Queue
+    };
+
+    var token = jwt_encode(data,'UAP)(*');
+    var url = base_url_js+'rps/crud-RPS';
+
+    $.post(url,{token:token},function (result) {
+        // toastr.success('Question removed from survey','Success');
+    });
+    }
+    
+
+}
+
+
 
 </script>

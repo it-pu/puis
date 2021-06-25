@@ -181,7 +181,8 @@
                             update: function (event, ui) {
                                 var No = 1;
                                 $('#listQuestion li.item-question').each(function () {
-                                    var ID = $(this).attr('data-id');
+                                    var ID = $(this).attr('data-idList');
+                                    updateQueue(ID,No);
                                     No += 1;
                                 });
                             }
@@ -201,8 +202,8 @@
 
         if(confirm('Are you sure?')){
 
-            var ID = $(this).attr('data-idList');
-
+            var ID = $(this).attr('data-id');
+console.log(ID);
             var data = {
                 action : 'removeFromListCPL',
                 ID : ID
@@ -260,6 +261,23 @@
                 }
             }
         } );
+
+    }
+
+    function updateQueue(ID,Queue) {
+
+        var data = {
+            action : 'updateQueueCPL',
+            ID : ID,
+            Queue : Queue
+        };
+        
+        var token = jwt_encode(data,'UAP)(*');
+        var url = base_url_js+'rps/crud-CPL';
+
+        $.post(url,{token:token},function (result) {
+            // toastr.success('Question removed from survey','Success');
+        });
 
     }
 </script>

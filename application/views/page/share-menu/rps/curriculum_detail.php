@@ -101,7 +101,7 @@
                 '                                <th style="width: 8%;">Action</th>' +
                 '                                <th style="width: 14%;">Status</th>' +
                 // '                                <th style="width: 9%;">Syllabus</th>' +
-                // '                                <th style="width: 9%;">SAP</th>' +
+                '                                <th style="width: 9%;">Review RPS</th>' +
                 '                            </tr>' +
                 // '                            <tr>' +
                 // '                                <th style="width:80px;">T</th>' +
@@ -163,10 +163,10 @@
                     // '            <li role="separator" class="divider"></li>' +
                     
                     '            <li><a href="javascript:void(0);" class="btnManageCPL" data-smt="'+MataKuliah[i].Semester+'" data-mkcode="'+detailSemester[s].MKCode +'" data-id="'+detailSemester[s].CDID+'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">1. CPL (Capaian Pembelajaran Lulusan)</a></li>' +
-                    '            <li><a href="javascript:void(0);" class="btnAddCPMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'">2. CPMK (Capaian Pembelajaran Mata Kuliah)</a></li>' +
-                    '            <li><a href="javascript:void(0);" class="btnAddDescMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'">3. Deskripsi MK</a></li>' +
-                    '            <li><a href="javascript:void(0);" class="btnAddMaterial" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'">4. Bahan Kajian    </a></li>' +
-                    '            <li><a href="javascript:void(0);" class="btnAddRPS" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'">5. RPS (Rencana Pembelajaran Semester)</a></li>' +
+                    '            <li><a href="javascript:void(0);" class="btnAddCPMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">2. CPMK (Capaian Pembelajaran Mata Kuliah)</a></li>' +
+                    '            <li><a href="javascript:void(0);" class="btnAddDescMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">3. Deskripsi MK</a></li>' +
+                    '            <li><a href="javascript:void(0);" class="btnAddMaterial" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">4. Bahan Kajian    </a></li>' +
+                    '            <li><a href="javascript:void(0);" class="btnAddRPS" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'">5. RPS (Rencana Pembelajaran Semester)</a></li>' +
                     // '            <li role="separator" class="divider"></li>' +
                     // '            <li><a href="javascript:void(0);" class="btnShareToPublic">Share to the public</a></li>' +
                     // '            <li class="'.$btnRemove.'"><a href="javascript:void(0);">Remove</a></li>' +
@@ -180,6 +180,11 @@
                     
                     '           <a href="javascript:void(0);" class="btnViewRPS" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanRPS">RPS : '+detailSemester[s].RPS+'</span></a>'+
                     '       </div></td>' +
+                    '<td class="td-center"><div style="text-align:center;">'+
+                    '          <button type="button" class="btn btn-sm btn-default btn-default-primary btnViewAll" data-smt="'+MataKuliah[i].Semester+'" data-mkcode="'+detailSemester[s].MKCode +'" data-id="'+detailSemester[s].CDID+'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'" >'+
+                    '          <i class="fa fa-eye margin-right"></i> Review RPS</button>'+
+                    '        </div></td>'+
+
                     // '<td class="td-center"><div>'+silabus+'</div></td>' +
                     // '<td class="td-center"><div>'+syllabus+'</div></td>' +
                     // '<td class="td-center"><div>'+sap+'</div></td>' +

@@ -36,8 +36,46 @@
 }
 </style>
 
+<div class="row">
+<div class="col-md-10 col-md-offset-1">
+    <!-- <h1
+        style="text-align: center;margin-top: 0px;
+        margin-bottom: 30px;"><b>List Capaian Pembelajaran Mata Kuliah (CPMK)</b></h1> -->
+    <table class="table table-striped">
+    <tbody>
+        <tr>
+            <td style="width: 15%;">Curriculum Code</td>
+            <td style="width: 1%;">:</td>
+            <td><?= $MKCode; ?></td>
+        </tr>
+        <tr>
+            <td>Course</td>
+            <td>:</td>
+            <td><?= $Course; ?></td>
+        </tr>
+        <tr>
+            <td>Base Prodi</td>
+            <td>:</td>
+            <td><?= $Prodi; ?></td>
+        </tr>
+        <tr>
+            <td>Semester</td>
+            <td>:</td>
+            <td><?= $Semester; ?></td>
+        </tr>
+        <tr>
+            <td>Curriculum Year</td>
+            <td>:</td>
+            <td><?= $curriculumYear; ?></td>
+        </tr>
+        </tbody>
+    </table>
 
-<div id="generate-edom">
+
+</div>
+</div>
+
+<div id="generate-edom" style="margin-top: 20px;">
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -94,6 +132,7 @@
 
         var data = {
             action : 'getDataMaterial',
+            viewData: 'viewData',
             CDID : '<?= $CDID; ?>',
         };
 
@@ -130,7 +169,6 @@
     $(document).on('click','.btnEditMaterial',function () {
         var MaterialID = $(this).attr('data-id');
         var MaterialMKCode = $(this).attr('data-mkscode');
-        var MaterialOrder = $(this).attr('data-order');
         var MaterialDesc = $(this).attr('data-description');
         var html = '<div class="col-md-12" id="modalEdit">'+
             '<form class="form-horizontal">'+
@@ -148,16 +186,6 @@
             '            <div class="col-sm-8">'+
             '                <textarea class="form-control" id="modalMaterialDesc" rows="2" value="'+MaterialDesc+'">'+MaterialDesc+'</textarea>'+
             '       <span class="help-block spanInputMaterialDesc" style="display: none;"></span>'+ 
-
-            '            </div>'+
-            '        </div>'+
-            '        <div class="form-group">'+
-            '            <label class="col-sm-4 control-label">Order '+
-            '    <span><strong style="color: #fc4b6c;">*</strong></span>'+
-            '</label>'+
-            '            <div class="col-sm-8">'+
-            '                <input id="modalMaterialOrder" type="number" class="form-control" value="'+MaterialOrder+'">'+
-            '       <span class="help-block spanInputMaterialOrder" style="display: none;"></span>'+ 
 
             '            </div>'+
             '        </div>'+
@@ -183,7 +211,7 @@
     });
 
     $(document).on('click','#ModalbtnMaterial',function () {
-        if( $("#modalMaterialDesc").val() == "" ||   $("#modalMaterialOrder").val() == "" )
+        if( $("#modalMaterialDesc").val() == "" )
         {
             if($("#modalMaterialDesc").val() == "" )
                 {
@@ -194,15 +222,6 @@
                         $(".spanInputMaterialDesc").html("");
                     },3000);
                 } 
-            else if($("#modalMaterialOrder").val() == "" )
-                {
-                    $(".spanInputMaterialOrder").css("display", "");
-                    $(".spanInputMaterialOrder").html("<strong style='color: #fc4b6c;'>Order tidak boleh kosong !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputMaterialOrder").css("display", "none");
-                        $(".spanInputMaterialOrder").html("");
-                    },3000);
-                } 
         }
         else{
             var url = base_url_js+'rps/crud-bahan-kajian';
@@ -211,8 +230,6 @@
                 MaterialID: $("#modalIDMaterial").val(),
                 MaterialCode : $("#modalCodeMaterial").val(),
                 MaterialDesc : $("#modalMaterialDesc").val(),
-                MaterialOrder : $("#modalMaterialOrder").val(),
-
             };
 
             var dataToken = {
@@ -229,14 +246,7 @@
                     setTimeout(function () {
                         window.location = '';
                     },1000);
-                } else {
-                    $(".spanInputMaterialOrder").css("display", "");
-                    $(".spanInputMaterialOrder").html("<strong style='color: #fc4b6c;'>Order sudah ada !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputMaterialOrder").css("display", "none");
-                        $(".spanInputMaterialOrder").html("");
-                    },3000);
-                }
+                } 
             });
         }
 

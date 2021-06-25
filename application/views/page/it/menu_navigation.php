@@ -288,6 +288,12 @@
                     Request Change Password
                 </a>
             </li>
+            <li class="<?php if($this->uri->segment(2)=='data-curriculum'){echo"current";}?>">
+                <a href="<?php echo base_url('rps/data-curriculum');?>">
+                   <i class="fa fa-file-text-o"></i>
+                   Rencana Pembelajaran Semester
+                </a>
+            </li>
             <!-- <li class="<?php if($this->uri->segment(2)=='summary_knowledgebase'){echo"current";}?>">
                 <a href="<?php echo base_url('it/summary_knowledgebase');?>">
                    <i class="fa fa-area-chart"><span class="badge" style="background-color: red;"></span></i>
