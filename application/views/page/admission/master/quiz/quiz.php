@@ -165,7 +165,7 @@
                 <div class="panel-heading clearfix">
                     <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Create / Edit Quiz</h4>
                     <div class="pull-right">
-                        <a href="javascript:void(0);" class="btn btn-default btn-sm" id="btnAddQuestionFromMaster"><i class="fa fa-database margin-right"></i> Add Question</a>
+                        <!-- <a href="javascript:void(0);" class="btn btn-default btn-sm" id="btnAddQuestionFromMaster"><i class="fa fa-database margin-right"></i> Add Question</a> -->
                         <a href="javascript:void(0);" class="btn btn-success btn-sm hide" id="btnStudentAnswer">Student Answers <span class="badge">0</span></a>
                     </div>
                 </div>
@@ -253,6 +253,10 @@
 
     const module_url = "<?php echo $module_url ?>";
     const module_url_question = "<?php echo $module_url_question ?>";
+
+    $(document).on('click','#btnReloadMyQuestion',function(e){
+        loadMyQuestion();
+    })
     
     const load_default = async() => {
         loadingStart();
@@ -418,7 +422,7 @@
             $('#GlobalModalLarge .modal-footer').html('' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
                 '<button type="button" id="btnSaveQuestion" class="btn btn-success">Save</button> | ' +
-                '<button type="button" id="btnSaveQuestion2" class="btn btn-success">Save & Add In Quiz</button>' +
+                //'<button type="button" id="btnSaveQuestion2" class="btn btn-success">Save & Add In Quiz</button>' +
                 '');
 
             $('#GlobalModalLarge').on('shown.bs.modal', function() {
@@ -685,8 +689,7 @@
                 console.log(err);
                 toastr.info('something wrong');
             }
-
-            loadingEnd(1000);
+            loadingEnd(3500);
         }
         else
         {
@@ -744,9 +747,17 @@
 
             if (dataLoadQuiz != '' && dataLoadQuiz != null && dataQ.Quiz.length > 0) {
                 TotalAnswer = parseInt(dataQ.TotalAnswer);
+                $('.DurationType[value="'+dataQ.Quiz[0].DurationType+'"]').prop('checked', true);
+
+                const itsDurationType = $('.DurationType[value="'+dataQ.Quiz[0].DurationType+'"]');
+                onClickDurationType(itsDurationType);
+
+                $('#DurationFixedStart').val(dataQ.Quiz[0].DurationFixedStart);
+                $('#DurationFixedEnd').val(dataQ.Quiz[0].DurationFixedEnd);
+
                 $('#formNotesForStudents').val(dataQ.Quiz[0].NotesForStudents);
-                $('#formDuration').val(dataQ.Quiz[0].Duration);
-                $('#formDurationView').html('= ' + timeConvert(dataQ.Quiz[0].Duration));
+                $('#formDuration').val(dataQ.Quiz[0].DurationFlexi);
+                $('#formDurationView').html('= ' + timeConvert(dataQ.Quiz[0].DurationFlexi));
                 $('#viewPoint').html('100');
                 $('#btnSaveQuiz').prop('disabled', false);
             }
@@ -1082,20 +1093,23 @@
         }
     }
 
+    const onClickDurationType = (itsme) => {
+         const v = itsme.val();
+         if (v == 'Flexi') {
+             $('.DurationFlexiDiv').removeClass('hide');
+             $('.DurationFixedDiv').addClass('hide');
+         }
+         else
+         {
+             $('.DurationFlexiDiv').addClass('hide');
+             $('.DurationFixedDiv').removeClass('hide');
+         }
+    }
+
     $(document).on('click','.DurationType',function(e){
         const itsme = $(this);
-        const v = itsme.val();
-
-        if (v == 'Flexi') {
-            $('.DurationFlexiDiv').removeClass('hide');
-            $('.DurationFixedDiv').addClass('hide');
-        }
-        else
-        {
-            $('.DurationFlexiDiv').addClass('hide');
-            $('.DurationFixedDiv').removeClass('hide');
-        }
-        
+       
+        onClickDurationType(itsme);
     })
 
     $(document).on('keyup', '.form-quiz-point', function() {
@@ -1159,6 +1173,184 @@
 
         const itsme = $(this);
         addToQuizFromMyQuestion(itsme);
+    });
+
+    $(document).on('click', '.btnRemoveQuestion', function() {
+
+        var dataLoadQuiz = $('#dataLoadQuiz').val();
+        var dataQ = (dataLoadQuiz != '' && dataLoadQuiz != null) ? JSON.parse(dataLoadQuiz) : [];
+        var TotalAnswer = (dataLoadQuiz != '' && dataLoadQuiz != null &&
+            dataQ.Quiz.length > 0) ? parseInt(dataQ.TotalAnswer) : 0;
+
+        if (TotalAnswer > 0) {
+            toastr.warning('Quiz cannot be edited', 'Warning');
+        } else {
+            if (confirm('Are you sure?')) {
+
+                var ID = $(this).attr('data-id');
+                var dataTempQuiz = $('#dataTempQuiz').val();
+                var d = JSON.parse(dataTempQuiz);
+
+                var newArr = [];
+                if (d.length > 0) {
+                    for (var i = 0; i < d.length; i++) {
+                        if (d[i] != ID) {
+                            newArr.push(d[i]);
+                        }
+
+                    }
+                }
+
+                if (newArr.length > 0) {
+                    $('#dataTempQuiz').val(JSON.stringify(newArr));
+                } else {
+                    $('#dataTempQuiz').val('');
+                }
+
+                // Point
+                countPointQuestion();
+
+                loadDataQuiz();
+
+            }
+        }
+
+    });
+
+    function searchPointTemporary(ID) {
+        var dataTempQuizPoint = $('#dataTempQuizPoint').val();
+        var point = 0;
+        if (dataTempQuizPoint != '' && dataTempQuizPoint != null) {
+            var d = JSON.parse(dataTempQuizPoint);
+            if (d.length > 0) {
+                $.each(d, function(i, v) {
+                    if (v.ID == ID) {
+                        point = v.Point
+                    }
+                })
+            }
+        }
+        return point;
+
+    }
+
+    const saveQuiz = async(itsme) => {
+
+        var ID_q_quiz_category = $('#filterQuizCategory option:selected').val();
+        var ID_q_quiz_schedule = $('#filterQuizPublishOn option:selected').val();
+
+        var dataTempQuiz = $('#dataTempQuiz').val();
+        var formNotesForStudents = $('#formNotesForStudents').val();
+        var formDuration = $('#formDuration').val();
+
+        if (dataTempQuiz != '' &&
+            ID_q_quiz_category != '' && ID_q_quiz_category != null &&
+            ID_q_quiz_schedule != '' && ID_q_quiz_schedule != null) {
+            var d = (dataTempQuiz != '') ? JSON.parse(dataTempQuiz) : [];
+
+            var totalPoint = 0;
+            var dataForm = [];
+
+            if (d.length > 0) {
+                for (var i = 0; i < d.length; i++) {
+                    var point_quiz = $('#point_quiz_' + d[i]).val();
+                    point_quiz = (point_quiz != '' && point_quiz != null) ? point_quiz : 0;
+                    totalPoint = totalPoint + parseFloat(point_quiz);
+
+                    var arr = {
+                        QID: d[i],
+                        Point: point_quiz
+                    };
+                    dataForm.push(arr);
+
+                }
+            }
+
+            if (totalPoint != 100) {
+
+                toastr.warning('The total points must be equal to 100', 'Warning');
+
+            } else {
+
+                // cek maksimal duration
+                // if (parseFloat(formDuration) <= (3 * 60)) {
+                if (true) {
+                   // loading_page_modal();
+                   loadingStart();
+
+                   var DurationType = $('.DurationType:checked').val();
+                   var DurationFixedStart = $('#DurationFixedStart').val();
+                   var DurationFixedEnd = $('#DurationFixedEnd').val();
+                   console.log(DurationType);
+
+                    var data = {
+                        NIP: sessionNIP,
+                        ID_q_quiz_category : ID_q_quiz_category,
+                        ID_q_quiz_schedule : ID_q_quiz_schedule,
+                        NotesForStudents: formNotesForStudents,
+                        DurationType : DurationType,
+                        DurationFixedStart : DurationFixedStart,
+                        DurationFixedEnd : DurationFixedEnd,
+                        DurationFlexi: formDuration,
+                        dataForm: dataForm
+                    };
+
+                    var token = jwt_encode(data, 'UAP)(*');
+                    var url = module_url + 'saveDataQuiz';
+
+                    try{
+                        const jsonResult =  await AjaxSubmitFormPromises(url,token);
+                        if (jsonResult.Status == 1 || jsonResult.Status == '1') {
+                            toastr.success('Saved quiz', 'Success');
+                            // setTimeout(function() {
+                            //     window.location.href = '';
+                            // }, 500);
+                            LoadQuiz();
+                        } else if (jsonResult.Status == -1 || jsonResult.Status == '-1') {
+                            toastr.warning(jsonResult.Message, 'Warning');
+                            alert(jsonResult.Message);
+                            // setTimeout(function() {
+                            //     window.location.href = '';
+                            // }, 500);
+                            LoadQuiz();
+
+                        } else if (jsonResult.Status == -2 || jsonResult.Status == '-2') {
+                            toastr.warning(jsonResult.Message, 'Warning');
+                            loadDataQuiz();
+                        } else if (jsonResult.Status == -3 || jsonResult.Status == '-3') {
+                            toastr.error(jsonResult.Message, 'error');
+                            loadDataQuiz();
+                        }
+                    }
+                    catch(err){
+                        console.log(err);
+                        toastr.info('something wrong');
+                    }
+                    loadingEnd(500);
+                } else {
+                    toastr.warning('Maximum quiz time is 3 hours', 'Warning');
+                }
+
+            }
+
+        } else {
+            toastr.warning('Please, fill out the required forms', 'Warning');
+        }
+    }
+
+    function searchID(nameKey, myArray) {
+        for (var i = 0; i < myArray.length; i++) {
+            if (myArray[i].QID === nameKey) {
+                return myArray[i].Point;
+            }
+        }
+    }
+
+    $(document).on('click', '#btnSaveQuiz', function() {
+
+        const itsme =  $(this);
+        saveQuiz(itsme);
+
     });
 
     $(document).on('change','#filterQuizPublishOn,#filterQuizCategory',function(e){
