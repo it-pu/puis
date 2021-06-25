@@ -2626,8 +2626,10 @@ class C_api2 extends CI_Controller
                     $d = $data[$i];
 
                     $dataStd = $this->db->query('SELECT ssd.NPM, ats.Name FROM db_academic.sa_student_details ssd
-                                                              LEFT JOIN db_academic.auth_students ats ON (ats.NPM = ssd.NPM)
-                                                              WHERE ssd.CDID = "' . $d['CDID'] . '" AND ssd.Status = "3" ORDER BY ssd.NPM ASC')->result_array();
+                                                            LEFT JOIN  db_academic.sa_student ss ON (ss.ID = ssd.IDSAStudent)
+                                                            LEFT JOIN db_academic.auth_students ats ON (ats.NPM = ssd.NPM)
+                                                            WHERE 
+                                                            ss.SASemesterID = "' . $SASemesterID . '" AND ssd.CDID = "' . $d['CDID'] . '" AND ssd.Status = "3" ORDER BY ssd.NPM ASC')->result_array();
 
                     $data[$i]['Students'] = $dataStd;
                 }
@@ -3098,8 +3100,8 @@ class C_api2 extends CI_Controller
             $dataStd = $this->db->query('SELECT ss.NPM, ss.Mentor, sa.Name, ss.ID AS IDSAStudent, sa.*, p1.Status AS StatusBPP, p2.Status AS StatusCredit
                                                     FROM db_academic.sa_student ss
                                                     LEFT JOIN db_academic.semester_antara sa ON (sa.ID = ss.SASemesterID)
-                                                    LEFT JOIN db_finance.payment p1 ON (p1.NPM = ss.NPM AND p1.PTID = "5")
-                                                    LEFT JOIN db_finance.payment p2 ON (p2.NPM = ss.NPM AND p2.PTID = "6")
+                                                    LEFT JOIN db_finance.payment p1 ON (p1.NPM = ss.NPM AND p1.PTID = "5" AND p1.SemesterID = sa.SemesterID)
+                                                    LEFT JOIN db_finance.payment p2 ON (p2.NPM = ss.NPM AND p2.PTID = "6" AND p2.SemesterID = sa.SemesterID)
                                                     WHERE ss.NPM = "' . $NPM . '" ORDER BY ss.SASemesterID ASC ')->result_array();
 
 
@@ -3470,9 +3472,11 @@ class C_api2 extends CI_Controller
                             // Student
                             $dataStd = $this->db->query('SELECT ssd.NPM, ats.Name, p1.Status AS StatusBPP, p2.Status AS StatusCredit FROM db_academic.sa_student_details ssd
                                                               LEFT JOIN db_academic.auth_students ats ON (ats.NPM = ssd.NPM)
-                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5")
-                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6")
-                                                              WHERE ssd.CDID = "' . $item['CDID'] . '" AND ssd.Status = "3" AND p1.Status = "1" AND p2.Status = "1"
+                                                              LEFT JOIN  db_academic.sa_student ss ON (ss.ID = ssd.IDSAStudent)
+                                                              LEFT JOIN db_academic.semester_antara sa ON (sa.ID = ss.SASemesterID)
+                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5" AND p1.SemesterID = sa.SemesterID)
+                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6" AND p2.SemesterID = sa.SemesterID)
+                                                              WHERE  ss.SASemesterID = "' . $SASemesterID . '" AND ssd.CDID = "' . $item['CDID'] . '" AND ssd.Status = "3" AND p1.Status = "1" AND p2.Status = "1"
                                                               ORDER BY ssd.NPM ASC')->result_array();
 
                             if (count($dataStd) > 0) {
@@ -3652,11 +3656,14 @@ class C_api2 extends CI_Controller
                 if (count($dataCD) > 0) {
                     foreach ($dataCD as $item) {
                         $dataStd = $this->db->query('SELECT ssd.ID AS IDSSD, ssd.NPM, ats.Name, ssd.Evaluasi, ssd.UTS, ssd.UAS, ssd.ScoreNew, ssd.GradeNew, ssd.GradeValueNew
-                                                               FROM db_academic.sa_student_details ssd
+                                                              FROM db_academic.sa_student_details ssd
                                                               LEFT JOIN db_academic.auth_students ats ON (ats.NPM = ssd.NPM)
-                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5")
-                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6")
-                                                              WHERE ssd.CDID = "' . $item['CDID'] . '" AND ssd.Status = "3" AND p1.Status = "1" AND p2.Status = "1"
+                                                              LEFT JOIN  db_academic.sa_student ss ON (ss.ID = ssd.IDSAStudent)
+                                                              LEFT JOIN db_academic.sa_schedule sc ON (sc.SASemesterID = ss.SASemesterID)
+                                                              LEFT JOIN db_academic.semester_antara sa ON (sa.ID = ss.SASemesterID)
+                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5" AND p1.SemesterID = sa.SemesterID)
+                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6" AND p2.SemesterID = sa.SemesterID)
+                                                              WHERE sc.ID = "' . $ScheduleIDSA . '" AND ssd.CDID = "' . $item['CDID'] . '" AND ssd.Status = "3" AND p1.Status = "1" AND p2.Status = "1"
                                                               ORDER BY ssd.NPM ASC')->result_array();
 
                         if (count($dataStd) > 0) {
@@ -3899,10 +3906,12 @@ class C_api2 extends CI_Controller
                 foreach ($Course as $item) {
                     // Student
                     $dataStd = $this->db->query('SELECT ssd.NPM, ats.Name, p1.Status AS StatusBPP, p2.Status AS StatusCredit FROM db_academic.sa_student_details ssd
+                                                              LEFT JOIN  db_academic.sa_student ss ON (ss.ID = ssd.IDSAStudent)
+                                                              LEFT JOIN db_academic.semester_antara sa ON (ss.SASemesterID = sa.ID)
                                                               LEFT JOIN db_academic.auth_students ats ON (ats.NPM = ssd.NPM)
-                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5")
-                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6")
-                                                              WHERE ssd.CDID = "' . $item['CDID'] . '" AND ssd.Status = "3"
+                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5"  AND p1.SemesterID = sa.SemesterID)
+                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6"  AND p2.SemesterID = sa.SemesterID)
+                                                              WHERE ss.SASemesterID = "' . $SASemesterID . '" AND ssd.CDID = "' . $item['CDID'] . '" AND ssd.Status = "3"
                                                               ORDER BY ssd.NPM ASC')->result_array();
 
                     if (count($dataStd) > 0) {
