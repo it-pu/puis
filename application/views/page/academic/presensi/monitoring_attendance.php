@@ -1,10 +1,10 @@
-
 <style>
     #tableAttendance tr th {
         text-align: center;
         background: #607d8b;
         color: #FFFFFF;
     }
+
     .td-center {
         text-align: center;
     }
@@ -14,7 +14,8 @@
         min-height: 16px !important;
         display: inline-block !important;
     }
-    #tableAttendance .label-success{
+
+    #tableAttendance .label-success {
         background-color: #47824a;
     }
 
@@ -79,36 +80,38 @@
 <div class="row">
     <div class="col-md-12">
         <div id="loadTable"></div>
-        <table id="example" class="table table-bordered" width="100%">
-        </table>
+        <!-- <table id="example" class="table table-bordered" width="100%">
+        </table> -->
     </div>
 </div>
 
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        loadSelectOptionProgramCampus('#filterProgramCampus','');
-        loSelectOptionSemester('#filterSemester','');
-        loadSelectOptionBaseProdi('#filterBaseProdi','');
-        fillDays('#filterDay','Eng','');
+        setLoadFullPage();
 
-        var loadFirst = setInterval(function () {
+        loadSelectOptionProgramCampus('#filterProgramCampus', '');
+        loSelectOptionSemester('#filterSemester', '');
+        loadSelectOptionBaseProdi('#filterBaseProdi', '');
+        fillDays('#filterDay', 'Eng', '');
+
+        var loadFirst = setInterval(function() {
 
             var filterProgramCampus = $('#filterProgramCampus').val();
             var filterSemester = $('#filterSemester').val();
 
-            if(filterProgramCampus!='' && filterProgramCampus!=null
-                && filterSemester!='' && filterSemester!=null){
+            if (filterProgramCampus != '' && filterProgramCampus != null &&
+                filterSemester != '' && filterSemester != null) {
                 loadAttendance();
                 clearInterval(loadFirst);
             }
 
-        },1000);
+        }, 1000);
 
     });
 
-    $('.filterAttd').change(function () {
+    $('.filterAttd').change(function() {
         loadAttendance();
     });
 
@@ -120,8 +123,8 @@
         var filterSemester = $('#filterSemester').val();
 
 
-        if(filterProgramCampus!='' && filterProgramCampus!=null &&
-            filterSemester!='' && filterSemester!=null){
+        if (filterProgramCampus != '' && filterProgramCampus != null &&
+            filterSemester != '' && filterSemester != null) {
 
             var ProgramsCampusID = filterProgramCampus;
             var SemesterID = filterSemester.split('.')[0];
@@ -129,61 +132,58 @@
             var filterBaseProdi = $('#filterBaseProdi').val();
             var DayID = $('#filterDay').val();
 
-            var ProdiID = (filterBaseProdi!='' && filterBaseProdi!=null) ? filterBaseProdi.split('.')[0] : '';
-
-
+            var ProdiID = (filterBaseProdi != '' && filterBaseProdi != null) ? filterBaseProdi.split('.')[0] : '';
 
             var data = {
-                ProgramsCampusID : ProgramsCampusID,
-                SemesterID : SemesterID,
-                ProdiID : ProdiID,
-                DayID : DayID
+                ProgramsCampusID: ProgramsCampusID,
+                SemesterID: SemesterID,
+                ProdiID: ProdiID,
+                DayID: DayID
             };
 
-            var token = jwt_encode(data,'UAP)(*');
+            var token = jwt_encode(data, 'UAP)(*');
 
-            var dataTable = $('#tableAttendance').DataTable( {
+            var dataTable = $('#tableAttendance').DataTable({
                 "processing": true,
                 "serverSide": true,
-                "iDisplayLength" : 25,
-                "ordering" : false,
+                "iDisplayLength": 25,
+                "ordering": false,
                 "language": {
                     "searchPlaceholder": "Group, Code, Course"
                 },
-                columns: [
-                    {
+                columns: [{
                         name: 'no',
                         title: 'No',
-                        width : '3%'
+                        width: '3%'
                     },
                     {
                         name: 'course',
                         title: 'Course',
-                        width : '30%'
+                        width: '30%'
                     },
                     {
                         name: 'group',
                         title: 'Group',
-                        width : '6%'
+                        width: '6%'
 
                     },
                     {
-                        name : 'credit',
+                        name: 'credit',
                         title: 'Crdt',
-                        width : '1%'
+                        width: '1%'
                     },
                     {
-                        name : 'std',
+                        name: 'std',
                         title: 'Std',
-                        width : '3%'
+                        width: '3%'
                     },
                     {
                         title: 'Lecturer',
-                        width : '20%'
+                        width: '20%'
                     },
                     {
                         title: 'Schedule',
-                        width : '11%'
+                        width: '11%'
                     },
                     {
                         title: '1'
@@ -228,27 +228,29 @@
                         title: '14'
                     },
                     {
-                        title: 'UTS'
+                        title: '15'
                     },
                     {
-                        title: 'UAS'
+                        title: '16'
                     }
                 ],
 
-                rowsGroup: ['no:name','course:name','group:name','credit:name','std:name'],
+                rowsGroup: ['no:name', 'course:name', 'group:name', 'credit:name', 'std:name'],
 
-                "responsive" : true,
-                "ajax":{
-                    url : base_url_js+'api2/__getMonitoringAttendance', // json datasource
-                    ordering : false,
-                    data : {token:token},
-                    type: "post",  // method  , by default get
-                    error: function(){  // error handling
+                "responsive": true,
+                "ajax": {
+                    url: base_url_js + 'api2/__getMonitoringAttendance', // json datasource
+                    ordering: false,
+                    data: {
+                        token: token
+                    },
+                    type: "post", // method  , by default get
+                    error: function() { // error handling
                         $(".employee-grid-error").html("");
                         $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
-                        $("#employee-grid_processing").css("display","none");
+                        $("#employee-grid_processing").css("display", "none");
                     },
-                    complete : function () {
+                    complete: function() {
                         $('.img-fitter').imgFitter({
 
                             // CSS background position
@@ -261,12 +263,11 @@
                         });
                     }
                 }
-            } );
+            });
 
         }
 
 
 
     }
-
 </script>

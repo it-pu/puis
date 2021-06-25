@@ -141,7 +141,10 @@ class M_rest extends CI_Model
 
     public function __getKSM($db, $ProdiID, $NPM, $ClassOf)
     {
-        $dataSemester = $this->db->query('SELECT s.* FROM db_academic.semester s WHERE s.Year >= ' . $ClassOf . ' ORDER BY s.ID ASC')->result_array();
+        $dataSemester = $this->db->query('SELECT s.*, ay.totalSession 
+        FROM db_academic.semester s 
+        LEFT JOIN db_academic.academic_years ay ON (s.ID = ay.SemesterID)
+        WHERE s.Year >= ' . $ClassOf . ' ORDER BY s.ID ASC')->result_array();
 
         //        print_r($dataSemester);
 
@@ -226,7 +229,7 @@ class M_rest extends CI_Model
                                                             WHERE gc.ScheduleID = "' . $data[$sc]['ScheduleID'] . '"
                                                              ')->result_array();
 
-                        $meeting = 0;
+                        $meeting = $dataSemester[$i]['totalSession'];
                         $Totalpresen = 0;
                         // Get Attendance
                         if (count($dataSchedule) > 0) {
@@ -243,8 +246,8 @@ class M_rest extends CI_Model
                                 if (count($dataAttd) > 0) {
                                     $presen = 0;
                                     $ArrPresensi = [];
-                                    for ($m = 1; $m <= 14; $m++) {
-                                        $meeting += 1;
+                                    for ($m = 1; $m <= 16; $m++) {
+                                        // $meeting += 1;
                                         if ($dataAttd[0]['M' . $m] == '1') {
                                             $presen += 1;
                                             $Totalpresen += 1;
@@ -282,6 +285,7 @@ class M_rest extends CI_Model
                 }
 
                 $dataArr = array(
+                    'totalSession' => $dataSemester[$i]['totalSession'],
                     'SemesterID' => $dataSemester[$i]['ID'],
                     'Semester' => $smt,
                     'SemesterName' => $dataSemester[$i]['Name'],
@@ -1032,7 +1036,8 @@ class M_rest extends CI_Model
 
         $WhereSmt = ($SemesterID != '') ? ' WHERE s.ID = "' . $SemesterID . '" ' : '';
 
-        $dataSemester = $this->db->query('SELECT s.* FROM db_academic.semester s ' . $WhereSmt . ' ORDER BY s.ID ASC')->result_array();
+        $dataSemester = $this->db->query('SELECT s.*, ay.totalSession FROM db_academic.semester s 
+                                LEFT JOIN db_academic.academic_years ay ON (s.ID = ay.SemesterID) ' . $WhereSmt . ' ORDER BY s.ID ASC')->result_array();
 
 
         $result = [];
@@ -1086,6 +1091,7 @@ class M_rest extends CI_Model
                     'SemesterID' => $dataSemester[$i]['ID'],
                     'Semester' => $dataSemester[$i]['Name'],
                     'Status' => $dataSemester[$i]['Status'],
+                    'totalSession' => $dataSemester[$i]['totalSession'],
                     'DetailsCoordinator' => $Coordinator,
                     'DetailsTeamTeaching' => $TeamTeaching
                 );
@@ -1117,6 +1123,7 @@ class M_rest extends CI_Model
                     'SemesterID' => $dataSemester[$i]['ID'],
                     'Semester' => $dataSemester[$i]['Name'],
                     'Status' => $dataSemester[$i]['Status'],
+                    'totalSession' => $dataSemester[$i]['totalSession'],
                     'DetailsCoordinator' => $this->getDetailTimeTable($Coordinator, 'Coordinator'),
                     'DetailsTeamTeaching' => $this->getDetailTimeTable($TeamTheaching, '')
                 );
@@ -1308,7 +1315,8 @@ class M_rest extends CI_Model
                                                       LEFT JOIN db_academic.mata_kuliah mk ON (mk.ID = sdc.MKID)
                                                         WHERE s.SemesterID ="' . $SemesterID . '"
                                                         AND stt.NIP = "' . $NIP . '"
-                                                        AND s.IsSemesterAntara = "0" ')->result_array();
+                                                        AND s.IsSemesterAntara = "0" 
+                                                        GROUP BY s.ID')->result_array();
 
                 $dataCourse = $Coordinator;
                 if (count($TeamTheaching) > 0) {
@@ -2283,7 +2291,7 @@ class M_rest extends CI_Model
     public function getRangeDateLearningOnline($ScheduleID)
     {
 
-        $dataSch = $this->db->query('SELECT d.NumberOfDay, ay.kuliahStart , ay.utsEnd FROM db_academic.schedule_details sd
+        $dataSch = $this->db->query('SELECT d.NumberOfDay, ay.kuliahStart , ay.utsEnd, s.SemesterID FROM db_academic.schedule_details sd
                                         LEFT JOIN db_academic.days d ON (d.ID = sd.DayID)
                                         LEFT JOIN db_academic.schedule s ON (s.ID = sd.ScheduleID)
                                         LEFT JOIN db_academic.academic_years ay ON (ay.SemesterID = s.SemesterID)
@@ -2300,16 +2308,29 @@ class M_rest extends CI_Model
 
 
         $dateStart = $this->getFirstDatelearningOnline($dateRangeStart, $Day);
-        $f = $this->getRangeDateMidSemester($dateStart);
+        $f = $this->getRangeDateMidSemester(0, $dateStart, $dataSch[0]['SemesterID']);
+        $nextSesi = count($f) + 1;
+
+
+
 
         $dateStart_AfterUTS = $this->getFirstDatelearningOnline($dateRangeStart_AfterUTS, $Day);
-        $f2 = $this->getRangeDateMidSemester($dateStart_AfterUTS);
+        $f2 = $this->getRangeDateMidSemester(1, $dateStart_AfterUTS, $dataSch[0]['SemesterID']);
+
+
         if (count($f2) > 0) {
+
             for ($i = 0; $i < count($f2); $i++) {
-                $f2[$i]['Session'] = $i + 8;
+
+                $f2[$i]['Session'] = $i + ($nextSesi);
                 array_push($f, $f2[$i]);
             }
         }
+
+        // print_r($f2);
+        // exit();
+
+
 
 
         $dateNow = date('Y-m-d');
@@ -2339,10 +2360,12 @@ class M_rest extends CI_Model
             $f[$c]['ManualSet'] = (count($dataManual) > 0) ? 1 : 0;
         }
 
+
+
         return $f;
     }
 
-    public function getRangeDateMidSemester($dateStart)
+    public function getRangeDateMidSemester($afterUTS, $dateStart, $SemesterID)
     {
 
         // Cek apakah sedang dalam Ujian Atau tidak
@@ -2353,10 +2376,21 @@ class M_rest extends CI_Model
                                                             (CURDATE() BETWEEN ay.utsStart AND ay.utsEnd)')
             ->result_array()[0]['Total'];
 
+        // Get setting total session
+        $totalSession = $this->db->query('SELECT ay.totalSession FROM db_academic.academic_years ay 
+                                                WHERE ay.SemesterID = "' . $SemesterID . '"')->result_array()[0]['totalSession'];
+
         $dateNow = date('Y-m-d');
         $newStartDate = $dateStart;
         $arrResult = [];
-        for ($s = 0; $s < 7; $s++) {
+
+        $forLoop = ($afterUTS == 1) ? floor((int) $totalSession / 2) : ceil((int) $totalSession / 2);
+
+        // print_r(floor(16 / 2));
+        //         print_r(ceil(16 / 2));
+        //         exit();
+
+        for ($s = 0; $s < $forLoop; $s++) {
             $RangeEnd = date("Y-m-d", strtotime($newStartDate . " +6 days"));
 
             $Status = 0;

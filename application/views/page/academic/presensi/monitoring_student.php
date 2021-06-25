@@ -1,10 +1,10 @@
-
 <style>
     #tableMonAttdStd tr th {
         text-align: center;
         background-color: #436888;
         color: #ffffff;
     }
+
     #tableMonAttdStd tr td {
         text-align: center;
     }
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <hr/>
+        <hr />
     </div>
 </div>
 
@@ -41,32 +41,34 @@
         <div class="table-responsive">
             <table class="table table-bordered table-striped" id="tableMonAttdStd">
                 <thead>
-                <tr>
-                    <th rowspan="2" style="width: 2%;">No</th>
-                    <th rowspan="2" style="width: 5%;">NIM</th>
-                    <th rowspan="2">Name</th>
-                    <th rowspan="2" style="width: 10%;">Day</th>
-                    <th colspan="14">Session</th>
-                    <th rowspan="2" style="width: 5%;">Target</th>
-                    <th rowspan="2" style="width: 5%;">Real</th>
-                    <th rowspan="2" style="width: 7%;">%</th>
-                </tr>
-                <tr>
-                    <th style="width: 3%;">1</th>
-                    <th style="width: 3%;">2</th>
-                    <th style="width: 3%;">3</th>
-                    <th style="width: 3%;">4</th>
-                    <th style="width: 3%;">5</th>
-                    <th style="width: 3%;">6</th>
-                    <th style="width: 3%;">7</th>
-                    <th style="width: 3%;">8</th>
-                    <th style="width: 3%;">9</th>
-                    <th style="width: 3%;">10</th>
-                    <th style="width: 3%;">11</th>
-                    <th style="width: 3%;">12</th>
-                    <th style="width: 3%;">13</th>
-                    <th style="width: 3%;">14</th>
-                </tr>
+                    <tr>
+                        <th rowspan="2" style="width: 2%;">No</th>
+                        <th rowspan="2" style="width: 5%;">NIM</th>
+                        <th rowspan="2">Name</th>
+                        <th rowspan="2" style="width: 10%;">Day</th>
+                        <th colspan="16">Session</th>
+                        <th rowspan="2" style="width: 5%;">Target</th>
+                        <th rowspan="2" style="width: 5%;">Real</th>
+                        <th rowspan="2" style="width: 7%;">%</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 3%;">1</th>
+                        <th style="width: 3%;">2</th>
+                        <th style="width: 3%;">3</th>
+                        <th style="width: 3%;">4</th>
+                        <th style="width: 3%;">5</th>
+                        <th style="width: 3%;">6</th>
+                        <th style="width: 3%;">7</th>
+                        <th style="width: 3%;">8</th>
+                        <th style="width: 3%;">9</th>
+                        <th style="width: 3%;">10</th>
+                        <th style="width: 3%;">11</th>
+                        <th style="width: 3%;">12</th>
+                        <th style="width: 3%;">13</th>
+                        <th style="width: 3%;">14</th>
+                        <th style="width: 3%;">15</th>
+                        <th style="width: 3%;">16</th>
+                    </tr>
                 </thead>
                 <tbody id="rowAttdStd"></tbody>
             </table>
@@ -75,29 +77,30 @@
 </div>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
+        setLoadFullPage();
         $('#filterSemester').empty();
-        loSelectOptionSemester('#filterSemester','');
+        loSelectOptionSemester('#filterSemester', '');
 
 
-       window.loadFirstTime = setInterval(function () {
-                loadGroupDiv();
-        },1000);
+        window.loadFirstTime = setInterval(function() {
+            loadGroupDiv();
+        }, 1000);
 
     });
 
     // Change Smester ID
-    $(document).on('change','#filterSemester',function () {
+    $(document).on('change', '#filterSemester', function() {
         // checkPage();
         loadGroupDiv();
         $('#divpagePresensi').html('<div style="text-align:center;"><h3 style="color: #ccc;font-weight: bold;">-- Select Class Group --</h3></div>');
     });
 
-    $(document).on('change','#filterClassGroup',function () {
+    $(document).on('change', '#filterClassGroup', function() {
         loadPageAttdStudent();
     });
 
-    $('#btnSavePDFAttdStd').click(function () {
+    $('#btnSavePDFAttdStd').click(function() {
         $('#FormHide2PDF').submit();
     });
 
@@ -106,10 +109,12 @@
         $('#viewGroup').html('<select class="select2-select-00 full-width-fix"' +
             '                                size="5" id="filterClassGroup"><option></option></select>');
         var filterSemester = $('#filterSemester').val();
-        if(filterSemester!='' && filterSemester!=null){
+        if (filterSemester != '' && filterSemester != null) {
             var SemesterID = filterSemester.split('.')[0];
-            loadSelectOptionClassGroupAttendance(SemesterID,'#filterClassGroup','');
-            $('#filterClassGroup').select2({allowClear: true});
+            loadSelectOptionClassGroupAttendance(SemesterID, '#filterClassGroup', '');
+            $('#filterClassGroup').select2({
+                allowClear: true
+            });
 
             clearInterval(loadFirstTime);
         }
@@ -121,20 +126,21 @@
         var filterSemester = $('#filterSemester').val();
         var filterClassGroup = $('#filterClassGroup').val();
 
-        if(filterSemester!='' && filterSemester!=null && filterClassGroup!='' && filterClassGroup!=null){
+        if (filterSemester != '' && filterSemester != null && filterClassGroup != '' && filterClassGroup != null) {
 
             var SemesterID = filterSemester.split('.')[0];
             var ScheduleID = filterClassGroup.split('.')[0];
 
-            var url = base_url_js+'api/__crudAttendance';
-            var token = jwt_encode(
-                {
-                    action : 'getStdAttendance',
-                    SemesterID : SemesterID ,
-                    ScheduleID : ScheduleID
-                },'UAP)(*');
+            var url = base_url_js + 'api/__crudAttendance';
+            var token = jwt_encode({
+                action: 'getStdAttendance',
+                SemesterID: SemesterID,
+                ScheduleID: ScheduleID
+            }, 'UAP)(*');
 
-            $.post(url,{token:token},function (jsonResult) {
+            $.post(url, {
+                token: token
+            }, function(jsonResult) {
 
                 var tr = $('#rowAttdStd');
 
@@ -145,66 +151,68 @@
                 $('#viewCourse').html(course.NameEng);
 
                 var student = jsonResult.Student;
-                if(student.length>0){
+                if (student.length > 0) {
                     var no = 1;
-                    for(var i=0;i<student.length;i++){
+                    for (var i = 0; i < student.length; i++) {
                         var d = student[i];
 
-                        if(d.Attendance.length>0){
+                        if (d.Attendance.length > 0) {
                             var rwSpan = 1 + d.Attendance.length;
 
                             tr.append('<tr>' +
-                                '<td rowspan="'+rwSpan+'">'+(no++)+'</td>' +
-                                '<td style="text-align: left;" rowspan="'+rwSpan+'">'+d.NPM+'</td>' +
-                                '<td style="text-align: left;" rowspan="'+rwSpan+'"><b>'+d.Name+'</b></td>' +
+                                '<td rowspan="' + rwSpan + '">' + (no++) + '</td>' +
+                                '<td style="text-align: left;" rowspan="' + rwSpan + '">' + d.NPM + '</td>' +
+                                '<td style="text-align: left;" rowspan="' + rwSpan + '"><b>' + d.Name + '</b></td>' +
                                 '</tr>');
 
                             var attCount = 0;
-                            var target = 14 * d.Attendance.length;
-                            for(var a=0;a<d.Attendance.length;a++){
+                            var target = d.totalSession * d.Attendance.length;
+                            for (var a = 0; a < d.Attendance.length; a++) {
                                 var da = d.Attendance[a];
 
                                 var trEnd = '</tr>';
 
-                                if(a==0){
-                                    trEnd = '<td rowspan="'+rwSpan+'">'+target+'</td>' +
-                                        '<td rowspan="'+rwSpan+'" id="real'+i+'">7</td>' +
-                                        '<td rowspan="'+rwSpan+'" id="percent'+i+'">7</td>' +
+                                if (a == 0) {
+                                    trEnd = '<td rowspan="' + rwSpan + '">' + target + '</td>' +
+                                        '<td rowspan="' + rwSpan + '" id="real' + i + '">7</td>' +
+                                        '<td rowspan="' + rwSpan + '" id="percent' + i + '">7</td>' +
                                         '</tr>';
                                 }
 
                                 // Count Sesi
-                                for(var t=1;t<=14;t++){
-                                    if(da['M'+t]==1 || da['M'+t]=='1'){
+                                for (var t = 1; t <= 16; t++) {
+                                    if (da['M' + t] == 1 || da['M' + t] == '1') {
                                         attCount += 1;
                                     }
                                 }
 
                                 tr.append('<tr>' +
-                                    '<td style="text-align: left;">'+da.DayEng+'</td>' +
-                                    '<td>'+checkSesi(da.M1)+'</td>' +
-                                    '<td>'+checkSesi(da.M2)+'</td>' +
-                                    '<td>'+checkSesi(da.M3)+'</td>' +
-                                    '<td>'+checkSesi(da.M4)+'</td>' +
-                                    '<td>'+checkSesi(da.M5)+'</td>' +
-                                    '<td>'+checkSesi(da.M6)+'</td>' +
-                                    '<td>'+checkSesi(da.M7)+'</td>' +
-                                    '<td>'+checkSesi(da.M8)+'</td>' +
-                                    '<td>'+checkSesi(da.M9)+'</td>' +
-                                    '<td>'+checkSesi(da.M10)+'</td>' +
-                                    '<td>'+checkSesi(da.M11)+'</td>' +
-                                    '<td>'+checkSesi(da.M12)+'</td>' +
-                                    '<td>'+checkSesi(da.M13)+'</td>' +
-                                    '<td>'+checkSesi(da.M14)+'</td>' +
-                                    ''+trEnd);
+                                    '<td style="text-align: left;">' + da.DayEng + '</td>' +
+                                    '<td>' + checkSesi(da.M1) + '</td>' +
+                                    '<td>' + checkSesi(da.M2) + '</td>' +
+                                    '<td>' + checkSesi(da.M3) + '</td>' +
+                                    '<td>' + checkSesi(da.M4) + '</td>' +
+                                    '<td>' + checkSesi(da.M5) + '</td>' +
+                                    '<td>' + checkSesi(da.M6) + '</td>' +
+                                    '<td>' + checkSesi(da.M7) + '</td>' +
+                                    '<td>' + checkSesi(da.M8) + '</td>' +
+                                    '<td>' + checkSesi(da.M9) + '</td>' +
+                                    '<td>' + checkSesi(da.M10) + '</td>' +
+                                    '<td>' + checkSesi(da.M11) + '</td>' +
+                                    '<td>' + checkSesi(da.M12) + '</td>' +
+                                    '<td>' + checkSesi(da.M13) + '</td>' +
+                                    '<td>' + checkSesi(da.M14) + '</td>' +
+                                    '<td>' + checkSesi(da.M15) + '</td>' +
+                                    '<td>' + checkSesi(da.M16) + '</td>' +
+                                    '' + trEnd);
                             }
 
-                            $('#real'+i).html(attCount);
-                            var percent = (attCount!=0) ? ((attCount/target) * 100).toFixed(0) : 0;
-                            $('#percent'+i).html(percent+' %');
+                            $('#real' + i).html(attCount);
+                            var percent = (attCount != 0) ? ((attCount / target) * 100).toFixed(0) : 0;
+                            $('#percent' + i).html(percent + ' %');
                             student[i].Target = target;
                             student[i].Total_Attd = attCount;
-                            student[i].Percent = percent+' %';
+                            student[i].Percent = percent + ' %';
                         }
 
 
@@ -216,7 +224,7 @@
                 }
 
                 console.log(jsonResult);
-                var token = jwt_encode(jsonResult,'UAP)(*');
+                var token = jwt_encode(jsonResult, 'UAP)(*');
 
                 $('#textToPDF').val(token);
 
@@ -229,13 +237,12 @@
 
     function checkSesi(Meet) {
         var res = '-';
-        if(Meet==1 || Meet=='1'){
+        if (Meet == 1 || Meet == '1') {
             res = '<i class="fa fa-check-circle" style="color: green;"></i>';
-        } else if (Meet=='2' || Meet==2) {
+        } else if (Meet == '2' || Meet == 2) {
             res = '<i class="fa fa-times-circle" style="color: red;"></i>';
         }
 
         return res;
     }
-
 </script>

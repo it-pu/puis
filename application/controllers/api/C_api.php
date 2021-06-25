@@ -11264,6 +11264,9 @@ class C_api extends CI_Controller
         $w_year = ($data_arr['Year'] != '' && $data_arr['Year'] != null) ? ' AND auts.Year = "' . $data_arr['Year'] . '" ' : '';
         $w_prodi = ($data_arr['ProdiID'] != '' && $data_arr['ProdiID'] != null) ? ' AND auts.ProdiID = "' . $data_arr['ProdiID'] . '" ' : '';
 
+        // get total session
+        $totalSession = $this->db->select('totalSession')->get_where('academic_years', array('SemesterID' => $data_arr['SemesterID']))->result_array()[0]['totalSession'];
+
         $dataSearch = '';
         if (!empty($requestData['search']['value'])) {
             $search = $requestData['search']['value'];
@@ -11272,15 +11275,16 @@ class C_api extends CI_Controller
                                     OR auts.Name ' . $wl . ')';
         }
 
-        $queryDefault = 'SELECT auts.NPM, auts.Name, auts.Year
-                                          FROM db_academic.auth_students auts
-                                          WHERE ( auts.StatusStudentID = "3" ' . $w_year . ' ' . $w_prodi . ' ) ' . $dataSearch . '
-                                          ORDER BY NPM ASC';
+        $queryDefault = 'SELECT auts.NPM, auts.Name, auts.Year FROM db_academic.auth_students auts 
+        WHERE ( auts.StatusStudentID = "3" ' . $w_year . ' ' . $w_prodi . ' ) ' . $dataSearch;
 
-        $sql = $queryDefault . ' LIMIT ' . $requestData['start'] . ',' . $requestData['length'] . ' ';
+        $queryDefaultTotal = 'SELECT COUNT(*) AS Total FROM (' . $queryDefault . ') xx';
+
+        $sql = $queryDefault . ' ORDER BY NPM ASC LIMIT ' . $requestData['start'] . ',' . $requestData['length'] . ' ';
+
 
         $query = $this->db->query($sql)->result_array();
-        $queryDefaultRow = $this->db->query($queryDefault)->result_array();
+        $queryDefaultRow = $this->db->query($queryDefaultTotal)->result_array()[0]['Total'];
 
         $no = $requestData['start'] + 1;
         $data = array();
@@ -11305,14 +11309,14 @@ class C_api extends CI_Controller
 
                     // Get Attendance
                     $dataAttd = $this->db->query('SELECT attd_s.M1, attd_s.M2, attd_s.M3, attd_s.M4, attd_s.M5, attd_s.M6, attd_s.M7, attd_s.M8, attd_s.M9,
-                                                            attd_s.M10, attd_s.M11, attd_s.M12, attd_s.M13, attd_s.M14
+                                                            attd_s.M10, attd_s.M11, attd_s.M12, attd_s.M13, attd_s.M14, attd_s.M15, attd_s.M16
                                                             FROM  db_academic.attendance_students attd_s
                                                             LEFT JOIN db_academic.attendance attd ON (attd_s.ID_Attd = attd.ID)
                                                             WHERE attd_s.NPM = "' . $row['NPM'] . '" AND attd.ScheduleID = "' . $d['ScheduleID'] . '" ')->result_array();
 
                     $dataCourse[$c]['Details'] = $dataAttd;
 
-                    $MaxMeet = 14 * count($dataAttd);
+                    $MaxMeet = $totalSession * count($dataAttd);
                     $TotalMeet = 0;
                     foreach ($dataAttd as $item) {
 
@@ -11330,12 +11334,14 @@ class C_api extends CI_Controller
                         $TotalMeet =  ($item['M12'] == '1' || $item['M12'] == 1) ? $TotalMeet + 1 : $TotalMeet + 0;
                         $TotalMeet =  ($item['M13'] == '1' || $item['M13'] == 1) ? $TotalMeet + 1 : $TotalMeet + 0;
                         $TotalMeet =  ($item['M14'] == '1' || $item['M14'] == 1) ? $TotalMeet + 1 : $TotalMeet + 0;
+                        $TotalMeet =  ($item['M15'] == '1' || $item['M15'] == 1) ? $TotalMeet + 1 : $TotalMeet + 0;
+                        $TotalMeet =  ($item['M16'] == '1' || $item['M16'] == 1) ? $TotalMeet + 1 : $TotalMeet + 0;
                     }
 
                     $PersenHadir = ($TotalMeet != 0) ? round($TotalMeet / $MaxMeet, 2) * 100 : 0;
 
                     if ($PersenHadir <= $data_arr['Percentage']) {
-                        $course = $course . '<div> - ' . $d['ClassGroup'] . ' | <span style="color:#03a9f4;">' . $d['MKCode'] . ' - ' . $d['NameEng'] . '</span> | <span style="color:#009688;"><i class="fa fa-user margin-right"></i> ' . $d['Lecturer'] . ' </span>| Attendance : <b>' . $PersenHadir . ' %</b></div>';
+                        $course = $course . '<div> - ' . $d['ClassGroup'] . ' | <span style="color:#03a9f4;">' . $d['MKCode'] . ' - ' . $d['NameEng'] . '</span> | <span style="color:#009688;"><i class="fa fa-user margin-right"></i> ' . $d['Lecturer'] . ' </span>| Attendance : <b>' . $PersenHadir . ' %</b> | Total Sesi : ' . $totalSession . '</div>';
                     } else if ($PersenHadir > $data_arr['Percentage']) {
                         $course = $course . ' <div style="color:#ccc;">- ' . $d['ClassGroup'] . ' | ' . $d['MKCode'] . ' - ' . $d['NameEng'] . ' | <i class="fa fa-user margin-right"></i> ' . $d['Lecturer'] . ' | Attendance : <b>' . $PersenHadir . ' %</b></div>';
                     }
@@ -11356,8 +11362,8 @@ class C_api extends CI_Controller
 
         $json_data = array(
             "draw"            => intval($requestData['draw']),
-            "recordsTotal"    => intval(count($queryDefaultRow)),
-            "recordsFiltered" => intval(count($queryDefaultRow)),
+            "recordsTotal"    => intval($queryDefaultRow),
+            "recordsFiltered" => intval($queryDefaultRow),
             "data"            => $data
         );
 
