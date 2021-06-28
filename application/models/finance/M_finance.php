@@ -1681,7 +1681,7 @@ class M_finance extends CI_Model {
         }
 
       $IPS = $GradeValueCredit / $Credit;
-      $IPS = (is_nan($IPS)) ? 0 : $IPS
+      $IPS = (is_nan($IPS)) ? 0 : $IPS;
       return $IPS;
    }
 
