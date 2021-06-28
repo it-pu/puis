@@ -1592,6 +1592,7 @@ class M_finance extends CI_Model {
         }
 
       $IPK = $GradeValueCredit / $Credit;
+      $IPK = (is_nan($IPK)) ? 0 : $IPK;
       return $IPK;
   }
 
@@ -1615,6 +1616,7 @@ class M_finance extends CI_Model {
         }
 
       $IPK = $GradeValueCredit / $Credit;
+      $IPK = (is_nan($IPK)) ? 0 : $IPK;
       return $IPK;
   }
 
@@ -1649,6 +1651,7 @@ class M_finance extends CI_Model {
         }
 
       $IPS = $GradeValueCredit / $Credit;
+      $IPS = (is_nan($IPS)) ? 0 : $IPS;
       return $IPS;
    }
 
@@ -1678,6 +1681,7 @@ class M_finance extends CI_Model {
         }
 
       $IPS = $GradeValueCredit / $Credit;
+      $IPS = (is_nan($IPS)) ? 0 : $IPS
       return $IPS;
    }
 
