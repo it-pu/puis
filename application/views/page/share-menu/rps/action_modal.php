@@ -164,12 +164,12 @@
                 
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Upload File <span>
-                    <strong style='color: #fc4b6c;'>*</strong></span>
+                    <!-- <strong style='color: #fc4b6c;'>*</strong></span> -->
                     <br> (pdf - Maksimal 8MB)
                     </label>
                     <div class="col-sm-8">
                         <input class="actUpload" type="file" name="userfile" value="" accept="application/pdf">
-                        <span class="help-block spanInputUpload" style="display: none;"></span>    
+                        <!-- <span class="help-block spanInputUpload" style="display: none;"></span>     -->
 
                     </div>
                 </div>
@@ -323,7 +323,9 @@
 
     $('#ModalbtnAddForm').click(function () {
         if(action=='addRPS'){
-            if( $("#modalRpsMinggu").val() == null || $(".actUpload").val() == "" ||  $("#modalRpsSubCPMK").val() == "" || $("#modalRpsBahanKajian").val() == "" || $("#modalRpsPenilaianIndikator").val() == "" || $("#modalRpsPenilaianKriteria").val() == "" || $("#modalRpsMetodePembelajaran").val() == "" || $("#modalRpsNilai").val() == "" || $("#modalRpsNilai").val() > 100 || $("#modalRpsDescNilai").val() == "")
+            if( $("#modalRpsMinggu").val() == null || 
+            //$(".actUpload").val() == "" ||  
+            $("#modalRpsSubCPMK").val() == "" || $("#modalRpsBahanKajian").val() == "" || $("#modalRpsPenilaianIndikator").val() == "" || $("#modalRpsPenilaianKriteria").val() == "" || $("#modalRpsMetodePembelajaran").val() == "" || $("#modalRpsNilai").val() == "" || $("#modalRpsNilai").val() > 100 || $("#modalRpsDescNilai").val() == "")
             {
                 if($("#modalRpsMinggu").val() == null )
                 {
@@ -407,27 +409,59 @@
                         $(".spanInputDescNilai").html("");
                     },3000);
                 }
-                else if($(".actUpload").val() == "" )
-                {
-                    $(".spanInputUpload").css("display", "");
-                    $(".spanInputUpload").html("<strong style='color: #fc4b6c;'>file harus diisi !</strong>");
-                    setTimeout(function () {
-                        $(".spanInputUpload").css("display", "none");
-                        $(".spanInputUpload").html("");
-                    },3000);
-                } 
+                // else if($(".actUpload").val() == "" )
+                // {
+                //     $(".spanInputUpload").css("display", "");
+                //     $(".spanInputUpload").html("<strong style='color: #fc4b6c;'>file harus diisi !</strong>");
+                //     setTimeout(function () {
+                //         $(".spanInputUpload").css("display", "none");
+                //         $(".spanInputUpload").html("");
+                //     },3000);
+                // } 
                   
             }
             else{
                 var CDID = '<?php echo $CDID; ?>';
                 var url = base_url_js+'rps/crud-RPS';
-                var input = $('.actUpload');
+                
+
+     if ($(".actUpload").val()=="") {
+       
+        var dataaddRPS = {
+            CDID : CDID,
+            RPSSubCPMK : $("#modalRpsSubCPMK").val(),
+            RPSMinggu : $("#modalRpsMinggu").val(),
+            RPSBahanKajian : $("#modalRpsBahanKajian").val(),
+            RPSPenilaianIndikator : $("#modalRpsPenilaianIndikator").val(),
+            RPSPenilaianKriteria : $("#modalRpsPenilaianKriteria").val(),
+            RPSPenilaianMetodePembelajaran : $("#modalRpsMetodePembelajaran").val(),
+            RPSNilai : $("#modalRpsNilai").val(),
+            RPSDescNilai : $("#modalRpsDescNilai").val(),
+            filesname: ""
+        };
+
+        var dataToken = {
+            action : 'AddRPS',
+            dataAdd : dataaddRPS,
+        }
+
+        var token = jwt_encode(dataToken,'UAP)(*');
+        $.post(url,{token:token},function (jsonResult) {
+
+        toastr.success('Data rencana pembelajaran semester','Success');
+        $('#GlobalModal').modal('hide');
+        setTimeout(function () {
+            pageKurikulum();
+        
+        },1000);
+
+        });
+     } else{ 
+        var input = $('.actUpload');
                 var files = input[0].files[0];
 
                 var sz = parseFloat(files.size) / 1000000; // ukuran MB
                 var ext = files.type.split('/');
-
-     
                 if (Math.floor(sz) <= 8) {
 
                     var filesname = 'RPS_' + CDID + '_' + $("#modalRpsMinggu").val();
@@ -465,7 +499,7 @@
                     }
 
                     tambujin(url,token,ArrUploadFilesSelector);
-                    toastr.success('Data capaian pembelajaran mata kuliah tersimpan','Success');
+                    toastr.success('Data rencana pembelajaran semester','Success');
                     $('#GlobalModal').modal('hide');
                     setTimeout(function () {
                         pageKurikulum();
@@ -476,6 +510,7 @@
                     toastr.warning('Maximum file size 8 mb', 'Warning');
                     alert('Maximum file size 8 mb');
                 }
+     }
             }
         }
         else if(action=='addCPMK'){
