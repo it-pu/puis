@@ -448,7 +448,7 @@
         var token = jwt_encode(dataToken,'UAP)(*');
         $.post(url,{token:token},function (jsonResult) {
 
-        toastr.success('Data rencana pembelajaran semester','Success');
+        toastr.success('Data rencana pembelajaran semester tersimpan','Success');
         $('#GlobalModal').modal('hide');
         setTimeout(function () {
             pageKurikulum();
@@ -499,7 +499,7 @@
                     }
 
                     tambujin(url,token,ArrUploadFilesSelector);
-                    toastr.success('Data rencana pembelajaran semester','Success');
+                    toastr.success('Data rencana pembelajaran semester tersimpan','Success');
                     $('#GlobalModal').modal('hide');
                     setTimeout(function () {
                         pageKurikulum();
