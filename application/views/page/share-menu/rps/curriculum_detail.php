@@ -117,8 +117,7 @@
             var detailSemester = MataKuliah[i].DetailSemester;
             var no=1;
             for(var s=0;s<detailSemester.length;s++){
-
-
+              
                 var StatusPrecondition = (detailSemester[s].StatusPrecondition==1) ? '<i class="fa fa-check-circle" style="color: green;"></i>' : '<i class="fa fa-minus-circle" style="color: red;"></i>';
 
                 var silabus = (detailSemester[s].StatusSilabus==1) ? '<button class="btn btn-sm btn-default btn-default-danger btn-silabus hide"><i class="fa fa-download" aria-hidden="true"></i></button> ' +
@@ -173,12 +172,12 @@
                     '          </ul>' +
                     '        </div></td>' +
                     '       <td class="td-center"><div>'+
-                    '       <span class="label label-danger" id="spanCPL">CPL : '+detailSemester[s].CPL+'</span>'+
-                    '           <a href="javascript:void(0);" class="btnViewCPMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanCPMK">CPMK : '+detailSemester[s].CPMK+'</span></a>'+
-                    '           <a href="javascript:void(0);" class="btnViewDescMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanDESCMK">Deskripsi MK : '+detailSemester[s].DESCMK+'</span></a>'+
-                    '           <a href="javascript:void(0);" class="btnViewMaterial" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanmaterial">Bahan Kajian : '+detailSemester[s].material+'</span></a>'+
+                    '       <span class="label label-danger" id="spanCPL'+detailSemester[s].CDID+'">CPL : '+detailSemester[s].CPL+'</span>'+
+                    '           <a href="javascript:void(0);" class="btnViewCPMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanCPMK'+detailSemester[s].CDID+'">CPMK : '+detailSemester[s].CPMK+'</span></a>'+
+                    '           <a href="javascript:void(0);" class="btnViewDescMK" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanDESCMK'+detailSemester[s].CDID+'">Deskripsi MK : '+detailSemester[s].DESCMK+'</span></a>'+
+                    '           <a href="javascript:void(0);" class="btnViewMaterial" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanmaterial'+detailSemester[s].CDID+'">Bahan Kajian : '+detailSemester[s].material+'</span></a>'+
                     
-                    '           <a href="javascript:void(0);" class="btnViewRPS" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanRPS">RPS : '+detailSemester[s].RPS+'</span></a>'+
+                    '           <a href="javascript:void(0);" class="btnViewRPS" data-smt="'+MataKuliah[i].Semester+'" data-id="'+detailSemester[s].CDID+'" data-mkcode="'+detailSemester[s].MKCode +'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'"><span class="label label-danger" id="spanRPS'+detailSemester[s].CDID+'">RPS : '+detailSemester[s].RPS+'</span></a>'+
                     '       </div></td>' +
                     '<td class="td-center"><div style="text-align:center;">'+
                     '          <button type="button" class="btn btn-sm btn-default btn-default-primary btnViewAll" data-smt="'+MataKuliah[i].Semester+'" data-mkcode="'+detailSemester[s].MKCode +'" data-id="'+detailSemester[s].CDID+'" data-prodi="'+detailSemester[s].ProdiNameEng+'" data-course="'+detailSemester[s].NameMKEng+'" >'+
@@ -192,19 +191,19 @@
                     '</tr>');
 
                     if (detailSemester[s].CPL!=0) {
-                        $("#spanCPL").removeClass("label-danger").addClass("label-success");
+                        $("#spanCPL"+detailSemester[s].CDID+"").removeClass("label-danger").addClass("label-success");
                     } 
                     if (detailSemester[s].CPMK!=0){
-                        $("#spanCPMK").removeClass("label-danger").addClass("label-success");
+                        $("#spanCPMK"+detailSemester[s].CDID+"").removeClass("label-danger").addClass("label-success");
                     }
                     if (detailSemester[s].DESCMK!=0){
-                        $("#spanDESCMK").removeClass("label-danger").addClass("label-success");
+                        $("#spanDESCMK"+detailSemester[s].CDID+"").removeClass("label-danger").addClass("label-success");
                     }
                     if (detailSemester[s].material!=0){
-                        $("#spanmaterial").removeClass("label-danger").addClass("label-success");
+                        $("#spanmaterial"+detailSemester[s].CDID+"").removeClass("label-danger").addClass("label-success");
                     }
                     if (detailSemester[s].RPS!=0){
-                        $("#spanRPS").removeClass("label-danger").addClass("label-success");
+                        $("#spanRPS"+detailSemester[s].CDID+"").removeClass("label-danger").addClass("label-success");
                     }
             }
    

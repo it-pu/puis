@@ -43,7 +43,8 @@
                                 <div class="panel-body">
                                 <div class="row" style="margin-bottom: 15px;">
                                         <div class="col-md-12">
-                                            <button class="hide btn btn-success pull-right btnDowloadRPS"><i class="fa fa-download margin-right"></i> View PDF</button>
+                                        <button type="button" class="hide btn btn-sm btn-default btn-default-primary btnDowloadRPS" data-smt="<?= $Semester; ?>" data-id=" <?= $CDID; ?>" data-mkcode="<?= $MKCode; ?>">
+                              <i class="fa fa-download margin-right"></i> View PDF</button>
                                         </div>
                                     </div>
                                     <div class="table-responsive">
@@ -72,6 +73,18 @@
 
 
 <script>
+
+    $(document).on('click','.btnDowloadRPS',function () {
+        var CDID = $(this).attr('data-id');
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+
+        var token = jwt_encode({CDID:CDID,MKCode : MKCode, Semester : semester},'UAP)(*');
+        $('#formGlobalToken').attr('action',base_url_js+'save2pdf/rps');
+        $('#dataToken').val(token);
+        $('#formGlobalToken').submit();
+    });
+
     $(document).ready(function(){
         loadDataCPL();
         loadDataSubCPMK();
@@ -209,68 +222,8 @@ if(JSON.parse(jsonResult).length>0){
 
     }
 
-    function loadDataCPMK() 
-    {
-        var data = {
-            action : 'showNonSubCPMK',
-            CDID : '<?= $CDID; ?>',
-        };
-        var token = jwt_encode(data,'UAP)(*');
-        var url = base_url_js+'rps/crud-CPMK';
+   
 
-        $.post(url,{token:token},function (jsonResult) {
-
-if(JSON.parse(jsonResult).length>0){
-
-    var tr = '';
-        if(JSON.parse(jsonResult).length>0){
-            $.each(JSON.parse(jsonResult),function (i,v) {
-
-                tr = tr+'<tr class="item-question" data-id="'+v.ID+'">' +
-                    '<td><div style="text-align: left;">'+v.Code+'</div></td>' +
-                    '<td><div style="text-align: left;">'+v.Description+'</div></td>' +
-
-                    '</tr>';
-            });
-        }
-
-        setTimeout(function () {
-
-if(JSON.parse(jsonResult).length>0){
-    $('#loadTableMaterial').html('<div class="table-responsive">' +
-'    <table class="table table-bordered table-centre" style="margin-bottom: 0px !important">' +
-'        <thead>' +
-    '                <tr style="background: #eceff1;">' +
-            '                    <th style=" text-align: left;" colspan="2">Bahan Kajian</th>'+
-            '                </tr>' +
-'        </thead>' +
-'        <tbody id="listQuestion">'+tr+'</tbody>' +
-'    </table>' +
-'</div>');
-
-  
-      
-
-    } 
-
-            },500);
-
-    }else {
-                    $('#loadTableMaterial').html('<div class="table-responsive">' +
-                '    <table class="table table-bordered table-centre" style="margin-bottom: 0px !important">' +
-                '        <thead>' +
-                '                <tr style="background: #eceff1;">' +
-            '                    <th style="text-align: left;" colspan="2">Bahan Kajian</th>'+
-            '                </tr>' +
-                '        </thead>' +
-                '    </table>' +
-                '</div>');
-                }
-
-});
-
-
-    }
 
     function loadDataSubCPMK() 
     {

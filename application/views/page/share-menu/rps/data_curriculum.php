@@ -323,7 +323,26 @@
         action_modal(listdata,'viewMaterial',CDID);
 
     });
+    $(document).on('click','.btnViewRPS',function () {
+        var CDID = $(this).attr('data-id');
+        var semester = $(this).attr('data-smt');
+        var MKCode = $(this).attr('data-mkcode');
+        var prodi = $(this).attr('data-prodi');
+        var course = $(this).attr('data-course');
+        var curriculum = $('#selectKurikulum').find(':selected').val().split('.');
+        var curriculumYear = curriculum[1];
+        var listdata = {
+            CDID : CDID,
+            MKCode : MKCode,
+            Prodi : prodi,
+            Course : course,
+            Semester : semester,
+            curriculumYear : curriculumYear
+        };
+ 
+        action_modal(listdata,'viewRPS',CDID);
 
+    });
     
 
     $(document).on('click','.btnViewDescMK',function () {
