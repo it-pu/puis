@@ -584,7 +584,7 @@
                 });
             }
         }
-        else {
+        else if(action=='addMaterial'){
             if ($("#modalMaterialDesc").val() == "") {
                 if($("#modalMaterialDesc").val() == "" )
                 {

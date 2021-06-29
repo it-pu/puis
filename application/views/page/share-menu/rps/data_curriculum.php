@@ -134,7 +134,7 @@
             curriculumYear : curriculumYear
         };
 
-        action_modal(listdata,'addMaterial',CDID);
+        action_modal(listdata,'addCPMK',CDID);
     
     });
 
