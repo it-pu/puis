@@ -989,7 +989,6 @@ class C_rps extends Globalclass {
 
             $addCDID = $formData['CDID'];
             $addDescMaterial = $formData['descMaterial'];
-            $addOrderMaterial = $formData['orderMaterial'];
             $ActionBy = $this->session->userdata('Name');
           
             $inserts = array(
@@ -1367,6 +1366,79 @@ class C_rps extends Globalclass {
 
     }
 
+    private function header_transcript_table($pdf){
+
+
+        //$this->spasi_transcript_table($pdf,'T');
+
+
+        $h = 3;
+
+        $pdf->Image(base_url('images/logo.png'),10,10,60);
+        
+        $pdf->Line(15,35,205,35);
+
+        $pdf->Ln(1);
+
+        $pdf->SetFont('Times','B',20);
+        $pdf->Cell(195,$h,'Rencana Pembelajaran Semester',0,3,'L');
+
+        $pdf->Line(15,50,205,50);
+
+        $pdf->Ln(5);
+
+        //$this->spasi_transcript_table($pdf,'B');
+    }
+
+    private function spasi_transcript_table($pdf,$desc){
+
+        $w_no = 13;
+        $w_course = 105;
+        $w_credit = 15;
+        $w_grade = 15;
+        $w_score = 15;
+        $w_point = 23;
+
+        $border_fill_t = 'LRT';
+        $border_fill_b = 'LRB';
+
+        if(strtolower($desc)=='t'){
+            $h = 0.6;
+
+            $pdf->Cell($w_no,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_course,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_credit,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_grade,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_score,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_point,$h,'',$border_fill_t,1,'C');
+        } else if(strtolower($desc)=='b') {
+            $h = 0.6;
+
+            $pdf->Cell($w_no,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_course,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_credit,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_grade,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_score,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_point,$h,'',$border_fill_b,1,'C');
+        } else if(strtolower($desc)=='tr'){
+            $h = 1.3;
+
+            $pdf->Cell($w_course+$w_no,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_credit,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_grade,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_score,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_point,$h,'',$border_fill_t,1,'C');
+        } else if(strtolower($desc)=='br') {
+            $h = 1.3;
+
+            $pdf->Cell($w_course+$w_no,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_credit,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_grade,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_score,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell($w_point,$h,'',$border_fill_b,1,'C');
+        }
+    }
+
     public function reviewRPS($token){
         $key = "UAP)(*";
         $data_arr = (array) $this->jwt->decode($token,$key);
@@ -1381,27 +1453,30 @@ class C_rps extends Globalclass {
         $page = $this->load->view('page/share-menu/rps/review_rps',$data,true);
         $this->menu_rps($page);
     }
-
+    
     
     // ====== Transcript =======
 
     public function transcript(){
 
+        
+        $this->load->library('pdf');
+        $this->load->library('pdf_mc_table');
         $this->load->model('report/m_save_to_pdf');
         $token = $this->input->post('token');
         $data_arr = $this->getInputToken($token);
+        $allData = $this->m_rps->getTranscript($data_arr['CDID']);
+     
+        $CPL = $allData['CPL'];
+        $NonSubCPMK = $allData['NonSubCPMK'];
+        $SubCPMK = $allData['SubCPMK'];
+        $DescMK = $allData['DescMK'];
+        $BahanKajian = $allData['BahanKajian'];
+        $RPS = $allData['RPS'];
 
-        $dataStudent = $this->m_save_to_pdf->getTranscript($data_arr['DBStudent'],$data_arr['NPM']);
 
 
-
-        $dataStudent['DetailCourse'] = $this->m_rest->getTranscript(substr($data_arr['DBStudent'],3,4),$data_arr['NPM'],'ASC');
-
-
-        $dataTranscript = $this->db->get('db_academic.setting_transcript')->result_array();
-
-        $Student = $dataStudent['Student'][0];
-        $Transcript = $dataStudent['Transcript'][0];
+        // $Transcript = $dataStudent['Transcript'][0];
 
         $pdf = new FPDF('P','mm','legal');
         //$pdf = new FPDF('P','mm',array(215,330));  // novie
@@ -1412,401 +1487,755 @@ class C_rps extends Globalclass {
         $margin_left = 15.315;
         $pdf->SetMargins($margin_left,40.5,10);
         $pdf->AddPage();
-
-        $pdf->SetFont('dinpromedium','',7);
-        $pdf->SetXY(10,3);
-        $pdf->Cell(115,7,'',0,0,'L');
-        $pdf->Cell(27,7,'Nomor Ijazah Nasional / ',0,0,'L');
-        $pdf->SetFont('dinlightitalic','',7);
-        $pdf->Cell(25,7,'National Certificate Number',0,0,'L');
-        $pdf->SetFont('dinpromedium','',7);
-        $pdf->Cell(15,7,' : ',0,0,'C');
-        $pdf->Cell(15,7,$Student['CNN'],0,1,'R');
-
-        $pdf->SetFont('dinpromedium','',7);
-        $pdf->SetXY(10,7);
-        $pdf->Cell(120,7,'',0,0,'L');
-        $pdf->Cell(32,7,'Nomor Transkrip Akademik / ',0,0,'L');
-        $pdf->SetFont('dinlightitalic','',7);
-        $pdf->Cell(20,7,' Transcript Number',0,0,'L');
-        $pdf->SetFont('dinpromedium','',7);
-        $pdf->Cell(5,7,' : ',0,0,'C');
-        $pdf->Cell(20,7,$Student['CSN'],0,1,'R');
-
-        $pdf->SetXY($margin_left,40); // novie
-
-        $label_l = 35;
-        $sparator_l = 1;
-        $fill_l = 61;
-
-        $label_r = 38;
-        $sparator_r = 1;
-        $fill_r = 55;
-        $h=3.3;
-        $ln = 1;
-        $border = 0;
-
-        $f_title = 8;
-        $f_title_i = 7;
-        $pdf->SetFont('dinpromedium','',$f_title);
-        $pdf->Cell($label_l,$h,'Nama',$border,0,'L');
-        $pdf->Cell($sparator_l,$h,':',$border,0,'C');
-        $pdf->Cell($fill_l,$h,($Student['Name']),$border,0,'L');
-        $pdf->Cell($label_r,$h,'Program Pendidikan',$border,0,'L');
-        $pdf->Cell($sparator_r,$h,':',$border,0,'C');
-        $pdf->Cell($fill_r,$h,$Student['GradeDesc'],$border,1,'L');
-
-        $pdf->SetFont('dinlightitalic','',$f_title_i);
-        $pdf->Cell($label_l,$h,'Name',$border,0,'L');
-        $pdf->Cell($sparator_l,$h,'',$border,0,'C');
-        $pdf->Cell($fill_l,$h,'',$border,0,'L');
-        $pdf->Cell($label_r,$h,'Educational Program',$border,0,'L');
-        $pdf->Cell($sparator_r,$h,':',$border,0,'C');
-        $pdf->Cell($fill_r,$h,$Student['GradeDescEng'],$border,1,'L');
-
-        $pdf->Ln($ln);
-
-        $pdf->SetFont('dinpromedium','',$f_title);
-        $pdf->Cell($label_l,$h,'Tempat dan Tanggal Lahir',$border,0,'L');
-        $pdf->Cell($sparator_l,$h,':',$border,0,'C');
-        $pdf->Cell($fill_l,$h,ucwords(strtolower($Student['PlaceOfBirth'])).', '.$this->getDateIndonesian($Student['DateOfBirth']),$border,0,'L');
-        $pdf->Cell($label_r,$h,'Program Studi',$border,0,'L');
-        $pdf->Cell($sparator_r,$h,':',$border,0,'C');
-        $pdf->Cell($fill_r,$h,$Student['Prodi'],$border,1,'L');
-
-        $pdf->SetFont('dinlightitalic','',$f_title_i);
-        $pdf->Cell($label_l,$h,'Place and Date of Birth',$border,0,'L');
-        $pdf->Cell($sparator_l,$h,':',$border,0,'C');
-        $pdf->Cell($fill_l,$h,ucwords(strtolower($Student['PlaceOfBirth'])).', '.date('F j, Y',strtotime($Student['DateOfBirth'])),$border,0,'L');
-        $pdf->Cell($label_r,$h,'Study Program',$border,0,'L');
-        $pdf->Cell($sparator_r,$h,':',$border,0,'C');
-        $pdf->Cell($fill_r,$h,$Student['ProdiEng'],$border,1,'L');
-
-        $pdf->Ln($ln);
-
-        $pdf->SetFont('dinpromedium','',$f_title);
-        $pdf->Cell($label_l,$h,'Nomor Induk Mahasiswa',$border,0,'L');
-        $pdf->Cell($sparator_l,$h,':',$border,0,'C');
-        $pdf->Cell($fill_l,$h,$Student['NPM'],$border,0,'L');
-        $pdf->Cell($label_r,$h,'Tanggal Yudisium',$border,0,'L');
-        $pdf->Cell($sparator_r,$h,':',$border,0,'C');
-        $pdf->Cell($fill_r,$h,$this->getDateIndonesian($dataTranscript[0]['DateOfYudisium']),$border,1,'L');
-
-
-
-        $pdf->SetFont('dinlightitalic','',$f_title_i);
-        $pdf->Cell($label_l,$h,'Student Identification Number',$border,0,'L');
-        $pdf->Cell($sparator_l,$h,'',$border,0,'C');
-        $pdf->Cell($fill_l,$h,'',$border,0,'L');
-
-
-        //$pdf->SetFont('dinpromedium','',$f_title);
-        // $pdf->Cell($label_r,$h,'Perguruan Tinggi',$border,0,'L');
-        //$pdf->Cell($sparator_r,$h,'',$border,0,'C');
-        //$pdf->Cell($fill_r,$h,'',$border,1,'L');
-        //$pdf->Cell($label_l+$sparator_l+$fill_l,$h,'',0,0,'L');
-
-        $pdf->SetFont('dinlightitalic','',$f_title_i);
-        $pdf->Cell($label_r,$h,'Date of Yudisium',$border,0,'L');
-        $pdf->Cell($sparator_r,$h,':',$border,0,'C');
-        //$pdf->Cell($fill_r,$h,$this->getDateIndonesian($dataTranscript[0]['DateOfYudisium']),$border,1,'L');
-        $pdf->Cell($fill_r,$h,date('F j, Y',strtotime($dataTranscript[0]['DateOfYudisium'])),$border,1,'L');
-
+        
+        $this->header_transcript_table($pdf);
 
         // Table
-        $pdf->Ln(3);
 
-        $w_no = 13;
-        $w_course = 105;
+        $w_no = 15;
+        $w_course = 100;
         $w_credit = 15;
         $w_grade = 15;
         $w_score = 15;
-        $w_point = 23;
+        $w_point = 40;
 
-        $font_medium = 8;
+        $font_medium = 9;
         $font_medium_i = 7;
 
 
         $border_fill = 'LR';
+        $border_fill_t = 'LRT';
+        $border_fill_b = 'LRB';
 
-        $this->header_transcript_table($pdf);
 
-        $DetailStudent = $dataStudent['DetailCourse']['dataCourse'];
-        $no=1;
-        for($i=0;$i<count($DetailStudent);$i++){
+//         $this->header_transcript_table($pdf);
 
-            $ds = $DetailStudent[$i];
 
-            $this->spasi_transcript_table($pdf,'T');
+//             // $ds = $DetailStudent[$i];
 
-            $h = 3;
+           // $this->spasi_transcript_table($pdf,'T');
+           $pdf->Ln(5);
+
+            $h = 5;
             $pdf->SetFont('dinproExpBold','',$font_medium);
-            $ytext = $pdf->GetY()+3.5;
-            $x_ = ($i<9) ? 21 : 20;
-            $pdf->Text($x_,$ytext,($no++));
-            $pdf->Cell($w_no,$h,'',$border_fill,0,'C');
-            $pdf->Cell($w_course,$h,$ds['Course'],$border_fill,0,'L');
+           
+            //$pdf->Text($x_,$ytext,($no++));
+            //$pdf->Cell(94,$h,'',$border_fill,0,'C');
+            $pdf->Cell($w_course-5,$h,'Fakultas',$border_fill_t,0,'C');
+            $pdf->Cell($w_course-5,$h,'Program Studi',$border_fill_t,0,'C');
 
-            $ytext = $pdf->GetY()+3.5;
-            $xtext = $pdf->GetX()+7;
-            $pdf->Text($xtext,$ytext,$ds['Credit']);
-            $pdf->Cell($w_credit,$h,'',$border_fill,0,'C');
+            $pdf->Ln(5);
 
-            $ytext = $pdf->GetY()+3.5;
-            $xtext = $pdf->GetX()+6.5;
-            $pdf->Text($xtext,$ytext,$ds['Grade']);
-            $pdf->Cell($w_grade,$h,'',$border_fill,0,'C');
+            $pdf->Cell($w_course-5,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell($w_course-5,$h,'',$border_fill_t,0,'C');
 
-            $ytext = $pdf->GetY()+3.5;
-            $xtext = $pdf->GetX()+6.3;
-            $pdf->Text($xtext,$ytext,str_replace(',','.',$ds['GradeValue']));
-            $pdf->Cell($w_score,$h,'',$border_fill,0,'C');
+            $pdf->Ln(5);
 
-            $ytext = $pdf->GetY()+3.5;
-            $xtext = $pdf->GetX()+9.5;
-            $pdf->Text($xtext,$ytext,str_replace(',','.',$ds['Point']));
-            $pdf->Cell($w_point,$h,'',$border_fill,1,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Mata Kuliah (MK)',$border_fill_t,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Kode MK',$border_fill_t,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Bobot (SKS)',$border_fill_t,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'Semester',$border_fill_t,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'Tanggal',$border_fill_t,0,'C');
 
-            $pdf->SetFont('dinlightitalic','',$font_medium_i);
-            $pdf->Cell($w_no,$h,'',$border_fill,0,'C');
-            $pdf->Cell($w_course,$h,$ds['CourseEng'],$border_fill,0,'L');
-            $pdf->Cell($w_credit,$h,'',$border_fill,0,'C');
-            $pdf->Cell($w_grade,$h,'',$border_fill,0,'C');
-            $pdf->Cell($w_score,$h,'',$border_fill,0,'C');
-            $pdf->Cell($w_point,$h,'',$border_fill,1,'C');
+            $pdf->Ln(5);
 
-            $this->spasi_transcript_table($pdf,'B');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'Teori',$border_fill_t,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'Praktek',$border_fill_t,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'Penyusunan',$border_fill,0,'C');
 
-            if($pdf->GetY()>=320){ // novie
-//                $pdf->SetMargins($margin_left,40.5,10);
-                $pdf->SetMargins($margin_left,18,10);
-                $pdf->AddPage();
-//                $pdf->SetXY(10,43.5);
-                $this->header_transcript_table($pdf);
+            $pdf->Ln(5);
+
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell((($w_course-5)/2)/2,$h,'',$border_fill_t,0,'C');
+    
+            $pdf->Ln(5);
+
+            $pdf->Cell(($w_course-5)/2,$h,'Pengesahan',$border_fill_t,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Dosen Pengembang RPS',$border_fill_t,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Koordinator MK (Jika ada)',$border_fill_t,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Kepala Bagian Pusat',$border_fill_t,0,'C');
+            
+            $pdf->Ln(5);
+
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Pengembangan Pembelajaran',$border_fill,0,'C');
+            
+            $pdf->Ln(5);
+
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Tanda Tangan',$border_fill_t,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Tanda Tangan',$border_fill_t,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'Tanda Tangan',$border_fill_t,0,'C');
+            
+            $pdf->Ln(5);
+
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            
+            $pdf->Ln(5);
+
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill,0,'C');
+            
+            $pdf->Ln(5);
+
+            $pdf->Cell(($w_course-5)/2,$h,'',$border_fill_b,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'( Nama Doaen Pengembang )',$border_fill_b,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'( Nama Koordinator )',$border_fill_b,0,'C');
+            $pdf->Cell(($w_course-5)/2,$h,'( Nama Kepala Bagian )',$border_fill_b,0,'C');
+
+
+            //table
+            
+            $pdf->Ln(5);
+            $pdf->Cell(($w_course-5)*2,$h,'Capaian Pembelajaran',$border_fill_t,0,'L');
+            
+            $pdf->Ln(5);
+            $pdf->Cell(($w_course-5)*2,$h,'Capaian Pembelajaran Lulusan (CPL) Prodi yang dibebankan pada MK',$border_fill_t,0,'L');
+
+            $DetailCPL = $CPL;
+            $pdf->Ln(5);
+            $pdf->Cell(40,0.5,'',$border_fill_t,0,'L');
+            $pdf->Cell(150,0.5,'',$border_fill_t,0,'L');
+            
+            for($i=0;$i<count($DetailCPL);$i++){
+                $dCPL = $DetailCPL[$i];
+                $pdf->Ln(0);
+
+                $pdf->Cell(40,$h,$dCPL['Code'],1,0);
+                $pdf->Cell(150,$h,$dCPL['Description'],1,1);
             }
-        }
-
-
-        $dataIPK = $dataStudent['DetailCourse']['dataIPK'];
-
-        $DataGraduation = $this->m_save_to_pdf->getGraduation(number_format($dataIPK['IPK'],2,'.',''));
-
-        $this->spasi_transcript_table($pdf,'TR');
-        $pdf->SetFont('dinproExpBold','',$font_medium);
-        $pdf->Cell($w_course+$w_no,$h,'Jumlah',$border_fill,0,'R');
-        $ytext = $pdf->GetY()+3.5;
-        $xtext = $pdf->GetX()+5.5;
-        $pdf->Text($xtext,$ytext,$dataIPK['TotalSKS']);
-        $pdf->Cell($w_credit,$h,'',$border_fill,0,'C');
-
-        $ytext = $pdf->GetY()+3.5;
-        $xtext = $pdf->GetX()+7;
-        $pdf->Text($xtext,$ytext,'-');
-        $pdf->Cell($w_grade,$h,'',$border_fill,0,'C');
-        $ytext = $pdf->GetY()+3.5;
-        $xtext = $pdf->GetX()+7;
-        $pdf->Text($xtext,$ytext,'-');
-        $pdf->Cell($w_score,$h,'',$border_fill,0,'C');
-
-        $ytext = $pdf->GetY()+3.5;
-        $xtext = $pdf->GetX()+7.5;
-        $pdf->Text($xtext,$ytext,$dataIPK['TotalPoint']);
-        $pdf->Cell($w_point,$h,'',$border_fill,1,'C');
-
-        $pdf->SetFont('dinlightitalic','',$font_medium_i);
-        $pdf->Cell($w_course+$w_no,$h,'Total',$border_fill,0,'R');
-        $pdf->Cell($w_credit,$h,'',$border_fill,0,'C');
-        $pdf->Cell($w_grade,$h,'',$border_fill,0,'C');
-        $pdf->Cell($w_score,$h,'',$border_fill,0,'C');
-        $pdf->Cell($w_point,$h,'',$border_fill,1,'C');
-        $this->spasi_transcript_table($pdf,'BR');
-
-        $pdf->Ln(3);
-        $totalW = $w_course+$w_no+$w_credit+$w_grade+$w_score+$w_point;
-        $w_Div = $totalW/2;
-        $w_R_label = 35.5;
-        $w_R_sparator = 5;
-        $w_R_fill = 52.5;
-
-        $h = 1.5;
-        $pdf->Cell($w_Div,$h,'','LRT',0,'L');
-        $pdf->Cell($w_Div,$h,'','LRT',1,'L');
-
-        //$IPKFinal = $Result['IPK'];
-        $IPKFinal = $dataIPK['IPK'];
-        // if(strlen($Result['IPK'])==2) {
-        //     $IPKFinal = $Result['IPK'].'00';
-        // } else if(strlen($Result['IPK'])==3){
-        //     $IPKFinal = $Result['IPK'].'0';
-        // }
-
-        $h=3;
-        $pdf->SetFont('dinpromedium','',$font_medium);
-        $pdf->Cell($w_R_label,$h,' Indeks Prestasi Kumulatif','L',0,'L');
-        $pdf->Cell($w_R_sparator,$h,':',0,0,'L');
-        $pdf->Cell($w_R_fill,$h,$IPKFinal,'R',0,'L');
-        $pdf->Cell($w_R_label,$h,' Predikat Kelulusan','L',0,'L');
-        $pdf->Cell($w_R_sparator,$h,':',0,0,'C');
-        $pdf->Cell($w_R_fill,$h,$DataGraduation[0]['Description'],'R',1,'L');
-
-        $h=3;
-        $pdf->SetFont('dinlightitalic','',$font_medium_i);
-        $pdf->Cell($w_R_label,$h,' Grade Point Average','L',0,'L');
-        $pdf->Cell($w_R_sparator,$h,'',0,0,'C');
-        $pdf->Cell($w_R_fill,$h,'','R',0,'L');
-        $pdf->Cell($w_R_label,$h,' Graduation Honor','L',0,'L');
-        $pdf->Cell($w_R_sparator,$h,':',0,0,'C');
-        $pdf->Cell($w_R_fill,$h,$DataGraduation[0]['DescriptionEng'],'R',1,'L');
-
-        $h = 1.5;
-        $pdf->Cell($w_Div,$h,'','LRB',0,'L');
-        $pdf->Cell($w_Div,$h,'','LRB',1,'L');
-
-
-        $pdf->SetFont('dinpromedium','',$font_medium);
-        $h = 1.5;
-        $pdf->Cell($totalW,$h,'','LRT',1,'L');
-        $h=3;
-        $SkripsiInd = ($Student['TitleInd']!='' && $Student['TitleInd']!=null) ? $Student['TitleInd'] : '-';
-        $SkripsiEng = ($Student['TitleEng']!='' && $Student['TitleEng']!=null) ? $Student['TitleEng'] : '-';
-
-        $yA = $pdf->GetY();
-
-        $pdf->Cell($w_R_label,$h,'Judul Skripsi / ',0,0,'L');
-        $pdf->Cell($w_R_sparator,$h,':',0,0,'C');
-        $pdf->MultiCell($w_R_fill+$w_Div-2,$h,$SkripsiInd,0);
-
-        $pdf->SetFont('dinlightitalic','',$font_medium_i);
-//        $pdf->SetFont('dinprolight','',$font_medium_i);
-        $pdf->Cell($w_R_label,$h,'Thesis Title',0,0,'L');
-        $pdf->Cell($w_R_sparator,$h,':',0,0,'C');
-        $pdf->MultiCell($w_R_fill+$w_Div-2,$h,$SkripsiEng,0);
-
-        $yA2 = $pdf->GetY();
-//        $pdf->SetLineWidth(0.2);
-        $pdf->Line($margin_left, $yA, $margin_left, $yA2);
-        $pdf->Line($margin_left+$w_R_label+$w_R_sparator+$w_R_fill+$w_Div, $yA, $margin_left+$w_R_label+$w_R_sparator+$w_R_fill+$w_Div, $yA2);
-        $h = 1.5;
-        $pdf->Cell($totalW,$h,'','LRB',1,'L');
-        $h=3;
-        $y = $pdf->GetY();
-        $pdf->Ln(17);
-
-        $min = 25;
-        $borderttd = 0;
-
-        if($Student['FacultyID']!=4 || $Student['FacultyID']!='4'){
-
-            $pdf->SetFont('dinpromedium','',$font_medium);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'Tempat dan Tanggal Diterbitkan',$borderttd,1,'L');
-
-
-            $pdf->SetFont('dinlightitalic','',$font_medium_i);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'Place and Date Issued',$borderttd,1,'L');
-
-            $pdf->SetFont('dinpromedium','',$font_medium);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,ucwords(strtolower($Transcript['PlaceIssued'])).', '.$this->getDateIndonesian($Transcript['DateIssued']),$borderttd,1,'L');
-
-            $pdf->SetFont('dinlightitalic','',$font_medium_i);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,ucwords(strtolower($Transcript['PlaceIssued'])).',  '.date('F j, Y',strtotime($Transcript['DateIssued'])),$borderttd,1,'L');
-
+            
+            $pdf->Cell(($w_course-5)*2,$h,'Capaian Pembelajaran Mata Kuliah',$border_fill_t,0,'L');
+            
+            $DetailCPMK = $NonSubCPMK;
             $pdf->Ln(5);
+            
+            for($i=0;$i<count($DetailCPMK);$i++){
+                $dCPMK = $DetailCPMK[$i];
 
-            $pdf->SetFont('dinpromedium','',$font_medium);
-            $pdf->Cell($w_Div+$min,$h,'Wakil Rektor I Bidang Akademik',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'Dekan',$borderttd,1,'L');
+                $cellWidth=150;
+                $cellHeight=5;
 
-            $pdf->SetFont('dinlightitalic','',$font_medium_i);
-            $pdf->Cell($w_Div+$min,$h,'Vice Rector of Academic Affairs',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'Dean',$borderttd,1,'L');
+                if ($pdf->GetStringWidth($dCPMK['Description']) < $cellWidth) {
+                    $line=1;
+                } else {
+                    $textLength=strlen($dCPMK['Description']);
+                    
+                    $errMargin=10;
+                    $startChar=0;
+                    $maxChar=0;
+                    $textArray=[];
+                    $tmpString="";
+                    $temp=0;
 
-            $pdf->Ln(17);
+                    while ($startChar <= $textLength) {
+                        while (round($pdf->GetStringWidth( $tmpString )) < ($cellWidth-$errMargin) &&
+                         ($startChar+$maxChar) < $textLength) {
+                            $maxChar++;
+                            $tmpString=substr($dCPMK['Description'],$startChar,$maxChar);
+                            $value=array_push($textArray,$tmpString);
+                            $textValue=$value.',';
+                            $dataArray=explode(',',$textValue);
+                            unset($dataArray[1]);
+                            
+                        }
+                        $startChar=$startChar+$dataArray[0];
+                        $temp++;
+                        $maxChar=0;
+                        $tmpString="";
 
+                    }
+                    
+                    $line=$temp;
 
-            $titleA = ($Student['TitleAhead']!='') ? $Student['TitleAhead'].'' : '';
-            $titleB = ($Student['TitleBehind']!='') ? $Student['TitleBehind'] : '' ;
+                }
 
-            $Dekan = $titleA.''.$Student['Dekan'].','.$titleB;
+                $pdf->Cell(40,($line*$cellHeight),$dCPMK['Code'],1,0);
+                $xPos= $pdf->GetX();
+                $yPos= $pdf->GetY();
 
-            $Rektorat = $dataStudent['Rektorat'][0];
-            $titleARektor = ($Rektorat['TitleAhead']!='')? $Rektorat['TitleAhead'].'' : '';
-            $titleBRektor = ($Rektorat['TitleBehind']!='')? $Rektorat['TitleBehind'] : '';
-            $Rektor = $titleARektor.''.$Rektorat['Name'].', '.$titleBRektor;
+                $pdf->MultiCell($cellWidth,$cellHeight,$dCPMK['Description'],1);
+                $pdf->SetXY($xPos+$cellWidth, $yPos);
+                $pdf->Ln($line*5);  
 
-            // Foto
-            $pdf->SetFont('dinpromedium','',$font_medium);
-            $pdf->Cell($w_Div+$min,$h,$Rektor,$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,$Dekan,$borderttd,1,'L');
-
-            $pdf->SetFont('dinpromedium','',$font_medium_i);
-            $pdf->Cell($w_Div+$min,$h,'NIP : '.$Rektorat['NIP'],$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'NIP : '.$Student['NIP'],$borderttd,1,'L');
-
-            // $pdf->Rect(85, $y+5, 40, 58);
-            $pdf->Rect(85, $y+16, 40, 48);
-
-        } else {
-
-            $min = 5;
-            $borderttd = 0;
-
-            $pdf->SetFont('dinpromedium','',$font_medium);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'Tempat dan Tanggal Diterbitkan',$borderttd,1,'L');
-
-
-            $pdf->SetFont('dinlightitalic','',$font_medium_i);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'Place and Date Issued',$borderttd,1,'L');
-
-            $pdf->SetFont('dinpromedium','',$font_medium);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,ucwords(strtolower($Transcript['PlaceIssued'])).', '.$this->getDateIndonesian($Transcript['DateIssued']),$borderttd,1,'L');
-
-            $pdf->SetFont('dinlightitalic','',$font_medium_i);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,ucwords(strtolower($Transcript['PlaceIssued'])).',  '.date('F j, Y',strtotime($Transcript['DateIssued'])),$borderttd,1,'L');
-
+            }
+            $pdf->Cell(($w_course-5)*2,$h,'Sub CPMK',$border_fill_t,0,'L');
+            $DetailSubCPMK = $SubCPMK;
             $pdf->Ln(5);
+            
+            for($i=0;$i<count($DetailSubCPMK);$i++){
+                $dSubCPMK = $DetailSubCPMK[$i];
 
-            $pdf->SetFont('dinpromedium','',$font_medium);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'Wakil Rektor I Bidang Akademik',$borderttd,1,'L');
+                $cellWidth=150;
+                $cellHeight=5;
 
-            $pdf->SetFont('dinlightitalic','',$font_medium_i);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'Vice Rector of Academic Affairs',$borderttd,1,'L');
+                if ($pdf->GetStringWidth($dSubCPMK['Description']) < $cellWidth) {
+                    $line=1;
+                } else {
+                    $textLength=strlen($dSubCPMK['Description']);
+                    
+                    $errMargin=10;
+                    $startChar=0;
+                    $maxChar=0;
+                    $textArray=[];
+                    $tmpString="";
+                    $temp=0;
 
-            $pdf->Ln(17);
+                    while ($startChar <= $textLength) {
+                        while (round($pdf->GetStringWidth( $tmpString )) < ($cellWidth-$errMargin) &&
+                         ($startChar+$maxChar) < $textLength) {
+                            $maxChar++;
+                            $tmpString=substr($dSubCPMK['Description'],$startChar,$maxChar);
+                            $value=array_push($textArray,$tmpString);
+                            $textValue=$value.',';
+                            $dataArray=explode(',',$textValue);
+                            unset($dataArray[1]);
+                            
+                        }
+                        $startChar=$startChar+$dataArray[0];
+                        $temp++;
+                        $maxChar=0;
+                        $tmpString="";
 
-            $Rektorat = $dataStudent['Rektorat'][0];
+                    }
+                    
+                    $line=$temp;
 
-            $titleARektor = ($Rektorat['TitleAhead']!='')? $Rektorat['TitleAhead'].'' : '';
-            $titleBRektor = ($Rektorat['TitleBehind']!='')? $Rektorat['TitleBehind'] : '';
-            $Rektor = $titleARektor.''.$Rektorat['Name'].', '.$titleBRektor;
+                }
 
-            // Foto
-            $pdf->SetFont('dinpromedium','',$font_medium);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,$Rektor,$borderttd,1,'L');
+                $pdf->Cell(40,($line*$cellHeight),$dSubCPMK['Code'],1,0);
+                $xPos= $pdf->GetX();
+                $yPos= $pdf->GetY();
 
-            $pdf->SetFont('dinpromedium','',$font_medium_i);
-            $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
-            $pdf->Cell($w_Div-$min,$h,'NIP : '.$Rektorat['NIP'],$borderttd,1,'L');
+                $pdf->MultiCell($cellWidth,$cellHeight,$dSubCPMK['Description'],1);
+                $pdf->SetXY($xPos+$cellWidth, $yPos);
+                $pdf->Ln($line*5);  
 
-            // $pdf->Rect(61, $y+5, 40, 58);
-            $pdf->Rect(61, $y+16, 40, 48);
+            }
 
-        }
+            $pdf->Cell(($w_course-5)*2,$h,'Deskripsi MK',$border_fill_t,0,'L');
+            
+            $DetailDescMK = $DescMK;
+            $pdf->Ln(5);
+            
+            for($i=0;$i<count($DetailDescMK);$i++){
+                $dDescMK = $DetailDescMK[$i];
+
+                $cellWidth=190;
+                $cellHeight=5;
+
+                if ($pdf->GetStringWidth($dDescMK['Description']) < $cellWidth) {
+                    $line=1;
+                } else {
+                    $textLength=strlen($dDescMK['Description']);
+                    
+                    $errMargin=10;
+                    $startChar=0;
+                    $maxChar=0;
+                    $textArray=[];
+                    $tmpString="";
+                    $temp=0;
+
+                    while ($startChar <= $textLength) {
+                        while (round($pdf->GetStringWidth( $tmpString )) < ($cellWidth-$errMargin) &&
+                         ($startChar+$maxChar) < $textLength) {
+                            $maxChar++;
+                            $tmpString=substr($dDescMK['Description'],$startChar,$maxChar);
+                            $value=array_push($textArray,$tmpString);
+                            $textValue=$value.',';
+                            $dataArray=explode(',',$textValue);
+                            unset($dataArray[1]);
+                            
+                        }
+                        $startChar=$startChar+$dataArray[0];
+                        $temp++;
+                        $maxChar=0;
+                        $tmpString="";
+
+                    }
+                    
+                    $line=$temp;
+
+                }
+
+                $xPos= $pdf->GetX();
+                $yPos= $pdf->GetY();
+
+                $pdf->MultiCell($cellWidth,$cellHeight,$dDescMK['Description'],1);
+                $pdf->SetXY($xPos+$cellWidth, $yPos);
+                $pdf->Ln($line*5);  
+
+            }
+
+            $pdf->Cell(($w_course-5)*2,$h,'Bahan Kajian',$border_fill_t,0,'L');
+            
+            $DetailBahanKajian = $BahanKajian;
+            $pdf->Ln(5);
+            $no=0;
+            for($i=0;$i<count($DetailBahanKajian);$i++){
+                $dBahanKajian = $DetailBahanKajian[$i];
+
+                $cellWidth=190;
+                $cellHeight=5;
+                $no++;
+
+                if ($pdf->GetStringWidth($dBahanKajian['Description']) < $cellWidth) {
+                    $line=1;
+                } else {
+                    $textLength=strlen($dBahanKajian['Description']);
+                    
+                    $errMargin=30;
+                    $startChar=0;
+                    $maxChar=0;
+                    $textArray=[];
+                    $tmpString="";
+                    $temp=0;
+
+                    while ($startChar <= $textLength) {
+                        while (round($pdf->GetStringWidth( $tmpString )) < ($cellWidth-$errMargin) &&
+                         ($startChar+$maxChar) < $textLength) {
+                            $maxChar++;
+                            $tmpString=substr($dBahanKajian['Description'],$startChar,$maxChar);
+                            $value=array_push($textArray,$tmpString);
+                            $textValue=$value.',';
+                            $dataArray=explode(',',$textValue);
+                            unset($dataArray[1]);
+                            
+                        }
+                        $startChar=$startChar+$dataArray[0];
+                        $temp++;
+                        $maxChar=0;
+                        $tmpString="";
+
+                    }
+                    
+                    $line=$temp;
+
+                }
+
+                $xPos= $pdf->GetX()+6.5;
+                $yPos= $pdf->GetY();
+
+                $pdf->MultiCell($cellWidth,$cellHeight,'    '.$no.'. '.$dBahanKajian['Description'],$border_fill);
+                $pdf->SetXY($xPos+$cellWidth, $yPos);
+                $pdf->Ln($line*5);  
+
+            }
+
+            $pdf->Cell(70,$h,'Penilaian',$border_fill_t,0,'L');
+            $pdf->Cell(20,$h,'Tugas',$border_fill_t,0,'L');
+            $pdf->Cell(20,$h,'45%',$border_fill_t,0,'L');
+            $pdf->Cell(20,$h,'UTS',$border_fill_t,0,'L');
+            $pdf->Cell(20,$h,'25%',$border_fill_t,0,'L');
+            $pdf->Cell(20,$h,'UAS',$border_fill_t,0,'L');
+            $pdf->Cell(20,$h,'30%',$border_fill_t,0,'L');
+            $pdf->Ln(5);
+            $pdf->Cell(70,$h,'Pustaka Utama',$border_fill_t,0,'L');
+            $pdf->Cell(120,$h,'',$border_fill_t,0,'L');
+            $pdf->Ln(5);
+            $pdf->Cell(70,$h,'Pustaka Pendukung',$border_fill_t,0,'L');
+            $pdf->Cell(120,$h,'',$border_fill_t,0,'L');
+            $pdf->Ln(5);
+            $pdf->Cell(70,$h,'Mata Kuliah Prasyarat (jika ada)',$border_fill_t,0,'L');
+            $pdf->Cell(120,$h,'',$border_fill_t,0,'L');
+            $pdf->Ln(5);
+            $pdf->Cell(70,$h,'Dosen Team Teaching (jika ada)',$border_fill_t,0,'L');
+            $pdf->Cell(120,$h,'',$border_fill_t,0,'L');
+            $pdf->Ln(5);
+            $pdf->Cell(70,$h,'Media Pembelajaran',$border_fill_t,0,'L');
+            $pdf->Cell(120,$h,'',$border_fill_t,0,'L');
+            $pdf->Ln(5);
+            $pdf->Cell(70,0,'',$border_fill_b,0,'C');
+            $pdf->Cell(120,0,'',$border_fill_b,0,'C');
+
+            $pdf->Ln(10);
+            $pdf->Cell(70,$h,'Penilaian',$border_fill_t,0,'L');
+
+            $DetailBahanKajian = $BahanKajian;
+            $pdf->Ln(5);
+            $no=0;
+            for($i=0;$i<count($DetailBahanKajian);$i++){
+                $dBahanKajian = $DetailBahanKajian[$i];
+
+                $cellWidth=190;
+                $cellHeight=5;
+                $no++;
+
+                if ($pdf->GetStringWidth($dBahanKajian['Description']) < $cellWidth) {
+                    $line=1;
+                } else {
+                    $textLength=strlen($dBahanKajian['Description']);
+                    
+                    $errMargin=30;
+                    $startChar=0;
+                    $maxChar=0;
+                    $textArray=[];
+                    $tmpString="";
+                    $temp=0;
+
+                    while ($startChar <= $textLength) {
+                        while (round($pdf->GetStringWidth( $tmpString )) < ($cellWidth-$errMargin) &&
+                         ($startChar+$maxChar) < $textLength) {
+                            $maxChar++;
+                            $tmpString=substr($dBahanKajian['Description'],$startChar,$maxChar);
+                            $value=array_push($textArray,$tmpString);
+                            $textValue=$value.',';
+                            $dataArray=explode(',',$textValue);
+                            unset($dataArray[1]);
+                            
+                        }
+                        $startChar=$startChar+$dataArray[0];
+                        $temp++;
+                        $maxChar=0;
+                        $tmpString="";
+
+                    }
+                    
+                    $line=$temp;
+
+                }
+
+                $xPos= $pdf->GetX()+6.5;
+                $yPos= $pdf->GetY();
+
+                $pdf->MultiCell($cellWidth,$cellHeight,'    '.$no.'. '.$dBahanKajian['Description'],$border_fill);
+                $pdf->SetXY($xPos+$cellWidth, $yPos);
+                $pdf->Ln($line*5);  
+
+            }
+
+            if($pdf->GetY()>=200){ // novie
+                //                $pdf->SetMargins($margin_left,40.5,10);
+                $margin_left = 15.315;
+                $pdf->SetMargins($margin_left,40.5,10);
+                $pdf->AddPage();
+                //                $pdf->SetXY(10,43.5);
+                $this->header_transcript_table($pdf);
+                $pdf->Ln(5);
+
+            }
+            // $DetailBahanKajian = $BahanKajian;
+            // $pdf->Ln(5);
+            // $no=0;
+            // for($i=0;$i<count($DetailBahanKajian);$i++){
+            //     $dBahanKajian = $DetailBahanKajian[$i];
+
+            //     $cellWidth=190;
+            //     $cellHeight=5;
+            //     $no++;
+
+            //     if ($pdf->GetStringWidth($dBahanKajian['Description']) < $cellWidth) {
+            //         $line=1;
+            //     } else {
+            //         $textLength=strlen($dBahanKajian['Description']);
+                    
+            //         $errMargin=30;
+            //         $startChar=0;
+            //         $maxChar=0;
+            //         $textArray=[];
+            //         $tmpString="";
+            //         $temp=0;
+
+            //         while ($startChar <= $textLength) {
+            //             while (round($pdf->GetStringWidth( $tmpString )) < ($cellWidth-$errMargin) &&
+            //              ($startChar+$maxChar) < $textLength) {
+            //                 $maxChar++;
+            //                 $tmpString=substr($dBahanKajian['Description'],$startChar,$maxChar);
+            //                 $value=array_push($textArray,$tmpString);
+            //                 $textValue=$value.',';
+            //                 $dataArray=explode(',',$textValue);
+            //                 unset($dataArray[1]);
+                            
+            //             }
+            //             $startChar=$startChar+$dataArray[0];
+            //             $temp++;
+            //             $maxChar=0;
+            //             $tmpString="";
+
+            //         }
+                    
+            //         $line=$temp;
+
+            //     }
+
+            //     $xPos= $pdf->GetX()+6.5;
+            //     $yPos= $pdf->GetY();
+
+            //     $pdf->MultiCell($cellWidth,$cellHeight,'    '.$no.'. '.$dBahanKajian['Description'],$border_fill);
+            //     $pdf->SetXY($xPos+$cellWidth, $yPos);
+            //     $pdf->Ln($line*5);  
+
+            // }
+            
+
+//             // $ytext = $pdf->GetY()+3.5;
+//             // $xtext = $pdf->GetX()+6.5;
+//             // $pdf->Text($xtext,$ytext,$ds['Grade']);
+//             // $pdf->Cell($w_grade,$h,'',$border_fill,0,'C');
+
+//             // $ytext = $pdf->GetY()+3.5;
+//             // $xtext = $pdf->GetX()+6.3;
+//             // $pdf->Text($xtext,$ytext,str_replace(',','.',$ds['GradeValue']));
+//             // $pdf->Cell($w_score,$h,'',$border_fill,0,'C');
+
+//             // $ytext = $pdf->GetY()+3.5;
+//             // $xtext = $pdf->GetX()+9.5;
+//             // $pdf->Text($xtext,$ytext,str_replace(',','.',$ds['Point']));
+//             // $pdf->Cell($w_point,$h,'',$border_fill,1,'C');
+
+//             // $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//             // $pdf->Cell($w_no,$h,'',$border_fill,0,'C');
+//             // $pdf->Cell($w_course,$h,$ds['CourseEng'],$border_fill,0,'L');
+//             // $pdf->Cell($w_credit,$h,'',$border_fill,0,'C');
+//             // $pdf->Cell($w_grade,$h,'',$border_fill,0,'C');
+//             // $pdf->Cell($w_score,$h,'',$border_fill,0,'C');
+//             // $pdf->Cell($w_point,$h,'',$border_fill,1,'C');
+
+//             $this->spasi_transcript_table($pdf,'B');
+
+//             if($pdf->GetY()>=320){ // novie
+// //                $pdf->SetMargins($margin_left,40.5,10);
+//                 $pdf->SetMargins($margin_left,18,10);
+//                 $pdf->AddPage();
+// //                $pdf->SetXY(10,43.5);
+//                 $this->header_transcript_table($pdf);
+//             }
+    //     }
+
+
+//         $dataIPK = $dataStudent['DetailCourse']['dataIPK'];
+
+//         $DataGraduation = $this->m_save_to_pdf->getGraduation(number_format($dataIPK['IPK'],2,'.',''));
+
+//         $this->spasi_transcript_table($pdf,'TR');
+//         $pdf->SetFont('dinproExpBold','',$font_medium);
+//         $pdf->Cell($w_course+$w_no,$h,'Jumlah',$border_fill,0,'R');
+//         $ytext = $pdf->GetY()+3.5;
+//         $xtext = $pdf->GetX()+5.5;
+//         $pdf->Text($xtext,$ytext,$dataIPK['TotalSKS']);
+//         $pdf->Cell($w_credit,$h,'',$border_fill,0,'C');
+
+//         $ytext = $pdf->GetY()+3.5;
+//         $xtext = $pdf->GetX()+7;
+//         $pdf->Text($xtext,$ytext,'-');
+//         $pdf->Cell($w_grade,$h,'',$border_fill,0,'C');
+//         $ytext = $pdf->GetY()+3.5;
+//         $xtext = $pdf->GetX()+7;
+//         $pdf->Text($xtext,$ytext,'-');
+//         $pdf->Cell($w_score,$h,'',$border_fill,0,'C');
+
+//         $ytext = $pdf->GetY()+3.5;
+//         $xtext = $pdf->GetX()+7.5;
+//         $pdf->Text($xtext,$ytext,$dataIPK['TotalPoint']);
+//         $pdf->Cell($w_point,$h,'',$border_fill,1,'C');
+
+//         $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//         $pdf->Cell($w_course+$w_no,$h,'Total',$border_fill,0,'R');
+//         $pdf->Cell($w_credit,$h,'',$border_fill,0,'C');
+//         $pdf->Cell($w_grade,$h,'',$border_fill,0,'C');
+//         $pdf->Cell($w_score,$h,'',$border_fill,0,'C');
+//         $pdf->Cell($w_point,$h,'',$border_fill,1,'C');
+//         $this->spasi_transcript_table($pdf,'BR');
+
+//         $pdf->Ln(3);
+//         $totalW = $w_course+$w_no+$w_credit+$w_grade+$w_score+$w_point;
+//         $w_Div = $totalW/2;
+//         $w_R_label = 35.5;
+//         $w_R_sparator = 5;
+//         $w_R_fill = 52.5;
+
+//         $h = 1.5;
+//         $pdf->Cell($w_Div,$h,'','LRT',0,'L');
+//         $pdf->Cell($w_Div,$h,'','LRT',1,'L');
+
+//         //$IPKFinal = $Result['IPK'];
+//         $IPKFinal = $dataIPK['IPK'];
+//         // if(strlen($Result['IPK'])==2) {
+//         //     $IPKFinal = $Result['IPK'].'00';
+//         // } else if(strlen($Result['IPK'])==3){
+//         //     $IPKFinal = $Result['IPK'].'0';
+//         // }
+
+//         $h=3;
+//         $pdf->SetFont('dinpromedium','',$font_medium);
+//         $pdf->Cell($w_R_label,$h,' Indeks Prestasi Kumulatif','L',0,'L');
+//         $pdf->Cell($w_R_sparator,$h,':',0,0,'L');
+//         $pdf->Cell($w_R_fill,$h,$IPKFinal,'R',0,'L');
+//         $pdf->Cell($w_R_label,$h,' Predikat Kelulusan','L',0,'L');
+//         $pdf->Cell($w_R_sparator,$h,':',0,0,'C');
+//         $pdf->Cell($w_R_fill,$h,$DataGraduation[0]['Description'],'R',1,'L');
+
+//         $h=3;
+//         $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//         $pdf->Cell($w_R_label,$h,' Grade Point Average','L',0,'L');
+//         $pdf->Cell($w_R_sparator,$h,'',0,0,'C');
+//         $pdf->Cell($w_R_fill,$h,'','R',0,'L');
+//         $pdf->Cell($w_R_label,$h,' Graduation Honor','L',0,'L');
+//         $pdf->Cell($w_R_sparator,$h,':',0,0,'C');
+//         $pdf->Cell($w_R_fill,$h,$DataGraduation[0]['DescriptionEng'],'R',1,'L');
+
+//         $h = 1.5;
+//         $pdf->Cell($w_Div,$h,'','LRB',0,'L');
+//         $pdf->Cell($w_Div,$h,'','LRB',1,'L');
+
+
+//         $pdf->SetFont('dinpromedium','',$font_medium);
+//         $h = 1.5;
+//         $pdf->Cell($totalW,$h,'','LRT',1,'L');
+//         $h=3;
+//         $SkripsiInd = ($Student['TitleInd']!='' && $Student['TitleInd']!=null) ? $Student['TitleInd'] : '-';
+//         $SkripsiEng = ($Student['TitleEng']!='' && $Student['TitleEng']!=null) ? $Student['TitleEng'] : '-';
+
+//         $yA = $pdf->GetY();
+
+//         $pdf->Cell($w_R_label,$h,'Judul Skripsi / ',0,0,'L');
+//         $pdf->Cell($w_R_sparator,$h,':',0,0,'C');
+//         $pdf->MultiCell($w_R_fill+$w_Div-2,$h,$SkripsiInd,0);
+
+//         $pdf->SetFont('dinlightitalic','',$font_medium_i);
+// //        $pdf->SetFont('dinprolight','',$font_medium_i);
+//         $pdf->Cell($w_R_label,$h,'Thesis Title',0,0,'L');
+//         $pdf->Cell($w_R_sparator,$h,':',0,0,'C');
+//         $pdf->MultiCell($w_R_fill+$w_Div-2,$h,$SkripsiEng,0);
+
+//         $yA2 = $pdf->GetY();
+// //        $pdf->SetLineWidth(0.2);
+//         $pdf->Line($margin_left, $yA, $margin_left, $yA2);
+//         $pdf->Line($margin_left+$w_R_label+$w_R_sparator+$w_R_fill+$w_Div, $yA, $margin_left+$w_R_label+$w_R_sparator+$w_R_fill+$w_Div, $yA2);
+//         $h = 1.5;
+//         $pdf->Cell($totalW,$h,'','LRB',1,'L');
+//         $h=3;
+//         $y = $pdf->GetY();
+//         $pdf->Ln(17);
+
+//         $min = 25;
+//         $borderttd = 0;
+
+//         if($Student['FacultyID']!=4 || $Student['FacultyID']!='4'){
+
+//             $pdf->SetFont('dinpromedium','',$font_medium);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'Tempat dan Tanggal Diterbitkan',$borderttd,1,'L');
+
+
+//             $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'Place and Date Issued',$borderttd,1,'L');
+
+//             $pdf->SetFont('dinpromedium','',$font_medium);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,ucwords(strtolower($Transcript['PlaceIssued'])).', '.$this->getDateIndonesian($Transcript['DateIssued']),$borderttd,1,'L');
+
+//             $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,ucwords(strtolower($Transcript['PlaceIssued'])).',  '.date('F j, Y',strtotime($Transcript['DateIssued'])),$borderttd,1,'L');
+
+//             $pdf->Ln(5);
+
+//             $pdf->SetFont('dinpromedium','',$font_medium);
+//             $pdf->Cell($w_Div+$min,$h,'Wakil Rektor I Bidang Akademik',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'Dekan',$borderttd,1,'L');
+
+//             $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//             $pdf->Cell($w_Div+$min,$h,'Vice Rector of Academic Affairs',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'Dean',$borderttd,1,'L');
+
+//             $pdf->Ln(17);
+
+
+//             $titleA = ($Student['TitleAhead']!='') ? $Student['TitleAhead'].'' : '';
+//             $titleB = ($Student['TitleBehind']!='') ? $Student['TitleBehind'] : '' ;
+
+//             $Dekan = $titleA.''.$Student['Dekan'].','.$titleB;
+
+//             $Rektorat = $dataStudent['Rektorat'][0];
+//             $titleARektor = ($Rektorat['TitleAhead']!='')? $Rektorat['TitleAhead'].'' : '';
+//             $titleBRektor = ($Rektorat['TitleBehind']!='')? $Rektorat['TitleBehind'] : '';
+//             $Rektor = $titleARektor.''.$Rektorat['Name'].', '.$titleBRektor;
+
+//             // Foto
+//             $pdf->SetFont('dinpromedium','',$font_medium);
+//             $pdf->Cell($w_Div+$min,$h,$Rektor,$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,$Dekan,$borderttd,1,'L');
+
+//             $pdf->SetFont('dinpromedium','',$font_medium_i);
+//             $pdf->Cell($w_Div+$min,$h,'NIP : '.$Rektorat['NIP'],$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'NIP : '.$Student['NIP'],$borderttd,1,'L');
+
+//             // $pdf->Rect(85, $y+5, 40, 58);
+//             $pdf->Rect(85, $y+16, 40, 48);
+
+//         } else {
+
+//             $min = 5;
+//             $borderttd = 0;
+
+//             $pdf->SetFont('dinpromedium','',$font_medium);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'Tempat dan Tanggal Diterbitkan',$borderttd,1,'L');
+
+
+//             $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'Place and Date Issued',$borderttd,1,'L');
+
+//             $pdf->SetFont('dinpromedium','',$font_medium);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,ucwords(strtolower($Transcript['PlaceIssued'])).', '.$this->getDateIndonesian($Transcript['DateIssued']),$borderttd,1,'L');
+
+//             $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,ucwords(strtolower($Transcript['PlaceIssued'])).',  '.date('F j, Y',strtotime($Transcript['DateIssued'])),$borderttd,1,'L');
+
+//             $pdf->Ln(5);
+
+//             $pdf->SetFont('dinpromedium','',$font_medium);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'Wakil Rektor I Bidang Akademik',$borderttd,1,'L');
+
+//             $pdf->SetFont('dinlightitalic','',$font_medium_i);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'Vice Rector of Academic Affairs',$borderttd,1,'L');
+
+//             $pdf->Ln(17);
+
+//             $Rektorat = $dataStudent['Rektorat'][0];
+
+//             $titleARektor = ($Rektorat['TitleAhead']!='')? $Rektorat['TitleAhead'].'' : '';
+//             $titleBRektor = ($Rektorat['TitleBehind']!='')? $Rektorat['TitleBehind'] : '';
+//             $Rektor = $titleARektor.''.$Rektorat['Name'].', '.$titleBRektor;
+
+//             // Foto
+//             $pdf->SetFont('dinpromedium','',$font_medium);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,$Rektor,$borderttd,1,'L');
+
+//             $pdf->SetFont('dinpromedium','',$font_medium_i);
+//             $pdf->Cell($w_Div+$min,$h,'',$borderttd,0,'L');
+//             $pdf->Cell($w_Div-$min,$h,'NIP : '.$Rektorat['NIP'],$borderttd,1,'L');
+
+//             // $pdf->Rect(61, $y+5, 40, 58);
+//             $pdf->Rect(61, $y+16, 40, 48);
+
+//         }
 
 
 
-        $nameF = str_replace(' ','_',($Student['Name']));
-        $pdf->Output('TRNSCPT_'.$Student['NPM'].'_'.$nameF.'.pdf','I');
+        $pdf->Output('TRNSCPT_'.$data_arr['CDID'].'_'.$data_arr['MKCode'].'.pdf','I');
     }
 
 }
