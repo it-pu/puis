@@ -1342,6 +1342,15 @@ class C_api2 extends CI_Controller
                                                   WHERE b.ID_Attd = "' . $ID_Attd . '"
                                                    AND b.Sesi = "' . $i . '" ')->result_array();
 
+                        $rps=$this->db->query('SELECT rb.SubCPMK AS Subject, rb.Material AS Material
+                                            FROM db_academic.rps_basic rb 
+                                            LEFT JOIN db_academic.schedule_details_course sdc on (rb.CDID = sdc.CDID)
+                                            LEFT JOIN db_academic.schedule s ON (sdc.ScheduleID = s.ID)
+                                            LEFT JOIN db_academic.attendance attd ON (s.ID = attd.ScheduleID)
+                                            LEFT JOIN db_academic.attendance_bap b ON (attd.ID = b.ID_Attd )
+                                            WHERE b.ID_Attd = "'.$ID_Attd.'"
+                                            AND rb.Week = "'.$i.'"')->result_array();
+
                         // Get Present
                         $p = ' AND atts.M' . $i . ' = "1" ';
                         $present = $this->db->query('SELECT * FROM db_academic.attendance_students atts
@@ -1373,6 +1382,7 @@ class C_api2 extends CI_Controller
                             'Absent' => $countAbsent,
                             'Lecturer' => $dataLect,
                             'BAP' => $bap,
+                            'RPS' => $rps,
                             'Exchange' => $dataExc
                         );
                         array_push($result, $arrRes);

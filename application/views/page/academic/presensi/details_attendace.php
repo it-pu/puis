@@ -159,6 +159,10 @@
                         var d = jsonResult[i];
                         var dataLecturer = d.Lecturer;
                         var dataBAP = d.BAP;
+                        var dataRPS = d.RPS;
+                
+                        var SubjectRPS = (dataRPS.length>0) ?  '<span class="label label-default" style="left: 0">Learning Center </span><br><div class="well" id="viewSubjectRPS'+no+'">'+dataRPS[0].Subject+'</div>' : '';
+                        var MaterialRPS = (dataRPS.length>0) ?  '<span class="label label-default" style="left: 0">Learning Center </span><br><div class="well" id="viewMaterialRPS'+no+'">'+dataRPS[0].Material+'</div>' : '';
 
                         var Subject = (dataBAP.length > 0) ? dataBAP[0].Subject : '';
                         var Material = (dataBAP.length > 0) ? dataBAP[0].Material : '';
@@ -197,16 +201,18 @@
                             '<span class="label label-danger">Need Clear</span>' : '';
 
                         $('#dataRowBAB').append('<tr>' +
-                            '<td>' + no + ' ' + ClassExc + ' ' + needClearAll + '</td>' +
-                            '<td style="text-align: left;"><span class="viewerBAP viewerBAP' + no + '" id="viewSubject' + no + '">' + Subject + '</span><textarea class="form-control hide formBAP formBAP' + no + '" rows="3" id="formSubject' + no + '">' + Subject + '</textarea></td>' +
-                            '<td style="text-align: left;"><span class="viewerBAP viewerBAP' + no + '" id="viewMaterial' + no + '">' + Material + '</span><textarea class="form-control hide formBAP formBAP' + no + '" rows="3" id="formMaterial' + no + '">' + Material + '</textarea></td>' +
-                            '<td style="text-align: left;"><span class="viewerBAP viewerBAP' + no + '" id="viewDescription' + no + '">' + Description + '</span><textarea class="form-control hide formBAP formBAP' + no + '" rows="3" id="formDescription' + no + '">' + Description + '</textarea></td>' +
-                            '<td>' + d.Present + '</td>' +
-                            '<td>' + d.Absent + '</td>' +
-                            '<td style="text-align: left;">' + lecturer + '</td>' +
-                            '<td>' + btnSignStudent + '</td>' +
-                            '<td>' + exchange + '</td>' +
-                            '<td style="text-align: left;">' + Review + '</td>' +
+
+                            '<td>'+no+' '+ClassExc+' '+needClearAll+'</td>' +
+                            '<td style="text-align: left;">'+SubjectRPS+'<span class="label label-default" style="left: 0">Lecture </span><br><span class="viewerBAP viewerBAP'+no+'" id="viewSubject'+no+'">'+Subject+'</span><textarea class="form-control hide formBAP formBAP'+no+'" rows="3" id="formSubject'+no+'">'+Subject+'</textarea></td>' +
+                            '<td style="text-align: left;">'+MaterialRPS+'<span class="label label-default" style="left: 0">Lecture </span><br><span class="viewerBAP viewerBAP'+no+'" id="viewMaterial'+no+'">'+Material+'</span><textarea class="form-control hide formBAP formBAP'+no+'" rows="3" id="formMaterial'+no+'">'+Material+'</textarea></td>' +
+                            '<td style="text-align: left;"><span class="viewerBAP viewerBAP'+no+'" id="viewDescription'+no+'">'+Description+'</span><textarea class="form-control hide formBAP formBAP'+no+'" rows="3" id="formDescription'+no+'">'+Description+'</textarea></td>' +
+                            '<td>'+d.Present+'</td>' +
+                            '<td>'+d.Absent+'</td>' +
+                            '<td style="text-align: left;">'+lecturer+'</td>' +
+                            '<td>'+btnSignStudent+'</td>' +
+                            '<td>'+exchange+'</td>' +
+                            '<td style="text-align: left;">'+Review+'</td>' +
+
                             '</tr>');
                         no += 1;
                     }
