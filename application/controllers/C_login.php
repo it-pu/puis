@@ -24,9 +24,9 @@ class C_login extends CI_Controller {
         // define config Virtual Account
         if (!defined('VA_client_id')) {
             $getCFGVA = $this->m_master->showData_array('db_va.cfg_bank');
-            define('VA_client_id',$getCFGVA[0]['client_id'] ,true);
-            define('VA_secret_key',$getCFGVA[0]['secret_key'] ,true);
-            define('VA_url',$getCFGVA[0]['url'] ,true);
+            define('VA_client_id',$getCFGVA[0]['client_id']);
+            define('VA_secret_key',$getCFGVA[0]['secret_key']);
+            define('VA_url',$getCFGVA[0]['url']);
         }
 
     }

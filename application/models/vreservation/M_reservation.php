@@ -2695,7 +2695,7 @@ a.`delete`,c.`read` as readMenu,c.`update` as updateMenu,c.`write` as writeMenu,
             $KetAdditional = $query[$i]['KetAdditional'];
             $KetAdditional = json_decode($KetAdditional);
             $Participant = '<ul><li>Participant Qty : '.$query[$i]['ParticipantQty'].'</li>';
-            if (count($KetAdditional) > 0) {
+            if ( is_array($KetAdditional) && count($KetAdditional) > 0) {
                 foreach ($KetAdditional as $key => $value) {
                     if ($value != "" || $value != null) {
                         $Participant .= '<li>'.str_replace("_", " ", $key).' : '.$value.'</li>';

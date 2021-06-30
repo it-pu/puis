@@ -13,6 +13,7 @@ class MY_Controller extends CI_Controller {
             $this->load->model('m_menu');
             $this->load->model('m_menu2');
             $this->load->model('m_menu3lpmi');
+            $this->load->model('m_menuwebdivisi');
             // define config Virtual Account
             if (!defined('VA_client_id')) {
                 $getCFGVA = $this->m_master->showData_array('db_va.cfg_bank');
@@ -981,10 +982,10 @@ abstract class Webdivisi_Controler extends Globalclass{
     {
         parent::__construct();
         $this->load->model('webdivisi/m_webdivisi');
-        if (!$this->session->userdata('prodi_get')) {
+        if (!$this->session->userdata('webdivisi_get')) {
           $this->m_webdivisi->auth();  
         }
-        $this->m_menu2->set_model('prodi_sess','auth_prodi_sess','menu_prodi_sess','menu_prodi_grouping','db_prodi');
+        $this->m_menuwebdivisi->set_model('webdivisi_sess','auth_webdivisi_sess','menu_webdivisi_sess','menu_webdivisi_grouping','db_webdivisi');
     }
 
 }

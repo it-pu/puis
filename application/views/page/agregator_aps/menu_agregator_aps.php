@@ -256,6 +256,34 @@
 
     };
 
+    const selectFilterOpYear = (selector) => {
+
+        var Year = <?php echo date('Y')  ?>;
+        var StartYear = Year - 5;
+        selector.empty();
+        selector.append('<option value="0" selected>All Year</option>');
+        selector.append('<option value="-3">Last 3 Year</option>');
+        selector.append('<option value="-5">Last 5 Year</option>');
+
+        var YearPlus = <?php echo date('Y')  ?> + 4;
+        for (let i = StartYear; i <= YearPlus; i++) {
+            selector.append('<option value="'+i+'">'+i+'</option>');
+        }
+
+        // for (let i = StartYear; i <= Year; i++) {
+        //     selector.append('<option value="'+i+'">'+i+'</option>');
+        // }
+
+    }
+
+    const selectFilterOpYear2 = (selector) => {
+        selector.empty();
+        selector.append('<option value="0" selected>All Year</option>');
+        selector.append('<option value="-3">Last 3 Year</option>');
+        selector.append('<option value="-5">Last 5 Year</option>');
+
+    }
+
     $(document).ready(function () {
         $('.fixed-header').addClass('sidebar-closed');
 

@@ -3,10 +3,21 @@
         <!--=== Navigation ===-->
         <ul id="nav">
             <!-- list menu -->
-            <li class="<?php if($this->uri->segment(2)=='yudisium'){echo "current";} ?>">
+            <li class="<?php if ($this->uri->segment(2) == 'yudisium') {
+                            echo "current";
+                        } ?>">
                 <a href="<?php echo base_url('library/yudisium/final-project'); ?>">
                     <i class="fa fa-graduation-cap"></i>
                     Judiciums Monitoring
+                </a>
+            </li>
+
+            <li class="<?php if ($this->uri->segment(2) == 'booking') {
+                            echo "current";
+                        } ?>">
+                <a href="<?php echo base_url('library/booking/list'); ?>">
+                    <i class="fa fa-th-list"></i>
+                    Booking List
                 </a>
             </li>
         </ul>

@@ -315,6 +315,17 @@
                         </label>
                     </td>
                 </tr>
+                <tr>
+                    <td>Total Sessions</td>
+                    <td></td>
+                    <td>
+                        <select class="form-control" id="form_TotalSession">
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                        </select>
+                    </td>
+                </tr>
             </table>
         </div>
         <hr />
@@ -496,6 +507,7 @@
                     edom2End: ($('#edom2_end').datepicker("getDate") != null) ? moment($('#edom2_end').datepicker("getDate")).format('YYYY-MM-DD') : '',
                     TARegStart: ($('#taReg_start').datepicker("getDate") != null) ? moment($('#taReg_start').datepicker("getDate")).format('YYYY-MM-DD') : '',
                     TARegEnd: ($('#taReg_end').datepicker("getDate") != null) ? moment($('#taReg_end').datepicker("getDate")).format('YYYY-MM-DD') : '',
+                    totalSession: $('#form_TotalSession').val(),
                 },
                 dataFormAttd: {
                     In_Session_Std: $('#form_In_Session_Std').val(),
@@ -513,8 +525,7 @@
                     Out_User_Lec: JSON.stringify(Out_User_Lec),
                     DefaultAttendance: $("input[name=form_DefaultAttendance]:checked").val(),
                     ModifyAttendance: ($('#ModifyAttendance').datepicker("getDate") != null) ?
-                        moment($('#ModifyAttendance').datepicker("getDate")).format('YYYY-MM-DD') :
-                        moment($('#kuliah_end').datepicker("getDate")).format('YYYY-MM-DD'),
+                        moment($('#ModifyAttendance').datepicker("getDate")).format('YYYY-MM-DD') : moment($('#kuliah_end').datepicker("getDate")).format('YYYY-MM-DD'),
                     UpdateBy: sessionNIP,
                     UpdateAt: dateTimeNow()
                 },
@@ -689,6 +700,8 @@
                 $('#form_Out_Session_Lec').val(d.Out_Session_Lec);
                 $('#form_Out_Type_Lec').val(d.Out_Type_Lec);
                 $('#form_Out_Time_Lec').val(d.Out_Time_Lec);
+
+                $('#form_TotalSession').val(d.totalSession);
 
                 if (d.DefaultAttendance == 1 || d.DefaultAttendance == '1') {
                     $('#DefPres').prop('checked', true);

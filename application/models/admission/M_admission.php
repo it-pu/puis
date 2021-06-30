@@ -2761,9 +2761,10 @@ class M_admission extends CI_Model {
       foreach ($data2 as $key => $value) {
             $a = explode('-', $key);
             if (count($a) > 1) {
+              $typePayResult = $a[1];
               $get = $this->m_master->caribasedprimary('db_finance.payment_type','Abbreviation',$a[1]);
               $temp2['Discount'] = $value;
-              $temp2['Pay_tuition_fee'] = $this->m_master->ClearPricetoDB($data2->$a[1]);
+              $temp2['Pay_tuition_fee'] = $this->m_master->ClearPricetoDB($data2->$typePayResult);
               $temp2['PTID'] = $get[0]['ID'];
               $temp2['ID_register_formulir'] = $data2->id_formulir;
 
@@ -3226,7 +3227,7 @@ class M_admission extends CI_Model {
         $this->mypdf->Cell(60,$height,'Tanggal',1,0,'C',true);
         $this->mypdf->Cell(70,$height,'Jumlan',1,1,'C',true);
 
-        $cicilan_tulis = array('Cicilan Pertama','Cicilan Kedua','Cicilan Ketiga','Cicilan Keempat','Cicilan Kelima','Cicilan Keenam','Cicilan Ketujuh');
+        $cicilan_tulis = array('Cicilan Pertama','Cicilan Kedua','Cicilan Ketiga','Cicilan Keempat','Cicilan Kelima','Cicilan Keenam','Cicilan Ketujuh','Cicilan Kedelapan','Cicilan Kesembilan','Cicilan Kesepuluh');
 
         for ($i=0; $i < count($arr_cicilan); $i++) {
             $setY = $setY + $height;

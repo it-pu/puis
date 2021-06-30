@@ -28,10 +28,10 @@ class C_rest3 extends CI_Controller {
             $this->data['dataToken'] = $dataToken;
         } catch (Exception $e) {
            // handling orang iseng
-           echo '{"status":"999","message":"Not Authorize"}'; 
+           echo '{"status":"999","message":"Not Authorize"}';
            die();
         }
-        
+
     }
 
     private function getInputToken()
@@ -90,7 +90,7 @@ class C_rest3 extends CI_Controller {
                 $Year = Date('Y');
                 $Year3 = $Year - 4;
                 $arr_year = [];
-                for ($i=$Year3; $i<= $Year; $i++) { 
+                for ($i=$Year3; $i<= $Year; $i++) {
                    $arr_year[] = $i;
                 }
                 $header[] = ['Name' => 'Jumlah Judul Penelitian','rowspan' => 1,'Sub' => $arr_year,'colspan' => count($arr_year) ];
@@ -101,13 +101,13 @@ class C_rest3 extends CI_Controller {
                 $G_SumberDana = $this->m_master->caribasedprimary('db_agregator.sumber_dana','Status','1');
                 $body = [];
                 $ProdiID = $dataToken['ProdiID'];
-                for ($i=0; $i < count($G_SumberDana); $i++) { 
+                for ($i=0; $i < count($G_SumberDana); $i++) {
                     $No = $i+1;
                     $ID_sumberdana = $G_SumberDana[$i]['ID'];
                     $Name = $G_SumberDana[$i]['SumberDana'];
                     $temp = [];
-                    $temp[] = array('show' => $No ,'data' => []); // $j = 0 adalah No 
-                    $temp[] = array('show' => $Name ,'data' => []); // $j = 1 adalah Name Sumber Dana 
+                    $temp[] = array('show' => $No ,'data' => []); // $j = 0 adalah No
+                    $temp[] = array('show' => $Name ,'data' => []); // $j = 1 adalah Name Sumber Dana
                     $JmlPenelitian = 0;
                     $JmlPKM = 0;
                     for ($j=2; $j < count($header); $j++) {
@@ -116,15 +116,15 @@ class C_rest3 extends CI_Controller {
                                  // cek sub
                                  $sub = $header[$j]['Sub'];
                                  if (count($sub) > 0 ) {
-                                    for ($k=0; $k < count($sub); $k++) { 
+                                    for ($k=0; $k < count($sub); $k++) {
                                         $Y = $sub[$k];
                                         $sql = 'select a.*,b.Name from db_research.litabmas as a
                                                join db_employees.employees as b on a.NIP = b.NIP
                                                where a.ID_sumberdana = ? and a.ID_thn_laks = ?
-                                               and b.ProdiID = ?     
+                                               and b.ProdiID = ?
                                                 ';
                                         $query=$this->db->query($sql, array($ID_sumberdana,$Y,$ProdiID))->result_array();
-                                        for ($lt=0; $lt < count($query); $lt++) { 
+                                        for ($lt=0; $lt < count($query); $lt++) {
                                           $sqlGetAnggota = 'select usrr.Nama from db_research.list_anggota_penelitian as a
                                                             join db_research.master_anggota_penelitian as b on a.ID_anggota = b.ID
                                                             '.$this->m_research->QueryUserReserachJoin('b.ID_user').'
@@ -138,7 +138,7 @@ class C_rest3 extends CI_Controller {
                                         $token = $this->jwt->encode($query,"UAP)(*");
                                         $temp[] = array('show' => $tot ,'data' => $token);
                                         $JmlPenelitian += count($query);
-                                    }     
+                                    }
                                  }
                                  else
                                  {
@@ -152,15 +152,15 @@ class C_rest3 extends CI_Controller {
                                 // cek sub
                                 $sub = $header[$j]['Sub'];
                                 if (count($sub) > 0 ) {
-                                   for ($k=0; $k < count($sub); $k++) { 
+                                   for ($k=0; $k < count($sub); $k++) {
                                        $Y = $sub[$k];
                                        $sql = 'select a.*,b.Name from db_research.pengabdian_masyarakat as a
                                                join db_employees.employees as b on a.NIP = b.NIP
                                               where a.ID_sumberdana = ? and a.ID_thn_laks = ?
-                                              and b.ProdiID = ?     
+                                              and b.ProdiID = ?
                                                ';
                                        $query=$this->db->query($sql, array($ID_sumberdana,$Y,$ProdiID))->result_array();
-                                       for ($lt=0; $lt < count($query); $lt++) { 
+                                       for ($lt=0; $lt < count($query); $lt++) {
                                          $sqlGetAnggota = 'select usrr.Nama from db_research.list_anggota_pkm as a
                                                            join db_research.master_anggota_pkm as b on a.ID_anggota = b.ID
                                                            '.$this->m_research->QueryUserReserachJoin('b.ID_user').'
@@ -174,7 +174,7 @@ class C_rest3 extends CI_Controller {
                                        $token = $this->jwt->encode($query,"UAP)(*");
                                        $temp[] = array('show' => $tot ,'data' => $token);
                                        $JmlPKM += count($query);
-                                   }     
+                                   }
                                 }
                                 else
                                 {
@@ -187,7 +187,7 @@ class C_rest3 extends CI_Controller {
                              default:
                                  # code...
                                  break;
-                         } 
+                         }
                     }
                     $body[] = $temp;
 
@@ -210,19 +210,19 @@ class C_rest3 extends CI_Controller {
                 $body = [];
                 $ProdiID = $dataToken['ProdiID'];
                 $filterTahun = $dataToken['filterTahun'];
-                $sql = 'select a.*,b.Name from db_agregator.rekognisi_dosen as a 
+                $sql = 'select a.*,b.Name from db_agregator.rekognisi_dosen as a
                         join db_employees.employees as b on a.NIP = b.NIP
                         where b.ProdiID = ? and a.Tahun = ?
                         order by a.NIP,a.ID desc limit 1000
                         ';
                 $query=$this->db->query($sql, array($ProdiID,$filterTahun))->result_array();
-                for ($i=0; $i < count($query); $i++) { 
+                for ($i=0; $i < count($query); $i++) {
                     $No = $i + 1;
                     $NIP = $query[$i]['NIP'];
                     $NameDosen = $query[$i]['Name'];
                     $G_dt_artikel = $this->m_master->caribasedprimary('db_agregator.sitasi_karya','NIP_penulis',$NIP);
                     $temp = [];
-                    for ($k=0; $k < count($header); $k++) { 
+                    for ($k=0; $k < count($header); $k++) {
                         switch ($k) {
                             case 0: // No
                                $temp[] = $No;
@@ -246,7 +246,7 @@ class C_rest3 extends CI_Controller {
                                 for ($l=0; $l < count($Sub); $l++) {
                                     $wr = '';
                                    if ($Sub[$l] == $query[$i]['Tingkat']) {
-                                       $wr = 'V'; 
+                                       $wr = 'V';
                                    }
                                    $temp[] = $wr;
                                 }
@@ -259,7 +259,7 @@ class C_rest3 extends CI_Controller {
                                $wr = '';
                                if (count($G_dt_artikel) > 0) {
                                    $wr .= $G_dt_artikel[0]['Judul_artikel'];
-                                   for ($l=1; $l < count($G_dt_artikel); $l++) { 
+                                   for ($l=1; $l < count($G_dt_artikel); $l++) {
                                       $wr .= '<br/>'.$G_dt_artikel[$l]['Judul_artikel'];
                                    }
                                }
@@ -269,7 +269,7 @@ class C_rest3 extends CI_Controller {
                                $wr = '';
                                if (count($G_dt_artikel) > 0) {
                                    $wr .= $G_dt_artikel[0]['Banyak_artikel'];
-                                   for ($l=1; $l < count($G_dt_artikel); $l++) { 
+                                   for ($l=1; $l < count($G_dt_artikel); $l++) {
                                       $wr .= '<br/>'.$G_dt_artikel[$l]['Banyak_artikel'];
                                    }
                                }
@@ -286,7 +286,7 @@ class C_rest3 extends CI_Controller {
 
                 $rs['header'] = $header;
                 $rs['body'] = $body;
-                echo json_encode($rs);    
+                echo json_encode($rs);
                 break;
             case 'RekognisiDosenKaryaIlmiah':
                 $rs = ['header' => [],'body' => [] ];
@@ -315,7 +315,7 @@ class C_rest3 extends CI_Controller {
                         order by EntredAt desc limit 1000
                         ';
                 $query=$this->db->query($sql, array($ProdiID,$filterTahun,$ProdiID,$filterTahun))->result_array();
-                for ($i=0; $i < count($query); $i++) { 
+                for ($i=0; $i < count($query); $i++) {
                   $temp = [];
                     // check rowspan
                     $sql_rekognisi = 'select * from db_agregator.rekognisi_dosen
@@ -323,7 +323,7 @@ class C_rest3 extends CI_Controller {
                                     ';
                     $queryRekognisi = $this->db->query($sql_rekognisi,array())->result_array();
                     $rowspan = (count($queryRekognisi) == 0) ? 1 : count($queryRekognisi);
-                    $temp = [ 
+                    $temp = [
                       [
                       'rowspan' => $rowspan,
                       'value' => $i+1,
@@ -337,7 +337,7 @@ class C_rest3 extends CI_Controller {
                     // Rekognisi , BuktiPendukungName , BuktiPendukungUpload
                       $arr_rekog = [];
                       $Rekognisi =  '';
-                      for ($j=0; $j < count($queryRekognisi); $j++) { 
+                      for ($j=0; $j < count($queryRekognisi); $j++) {
                         $Rekognisi = $queryRekognisi[$j]['Rekognisi'];
                         $BuktiName = $queryRekognisi[$j]['BuktiPendukungName'];
                         $BuktiPendukungUpload = $queryRekognisi[$j]['BuktiPendukungUpload'];
@@ -355,21 +355,21 @@ class C_rest3 extends CI_Controller {
                     // Wilayah
                     $arr_rekog = [];
                     for ($j=0; $j < count($queryRekognisi); $j++) {
-                      $wr = ''; 
+                      $wr = '';
                       if ('Wilayah' == $queryRekognisi[$j]['Tingkat']) {
-                          $wr = 'V'; 
+                          $wr = 'V';
                       }
                       $arr_rekog[] = $wr;
                     }
 
-                    $temp[] = $arr_rekog;  
-                    
+                    $temp[] = $arr_rekog;
+
                     // Nasional
                     $arr_rekog = [];
                     for ($j=0; $j < count($queryRekognisi); $j++) {
-                      $wr = ''; 
+                      $wr = '';
                       if ('Nasional' == $queryRekognisi[$j]['Tingkat']) {
-                          $wr = 'V'; 
+                          $wr = 'V';
                       }
                       $arr_rekog[] = $wr;
                     }
@@ -379,9 +379,9 @@ class C_rest3 extends CI_Controller {
                     // Internasional
                     $arr_rekog = [];
                     for ($j=0; $j < count($queryRekognisi); $j++) {
-                      $wr = ''; 
+                      $wr = '';
                       if ('Internasional' == $queryRekognisi[$j]['Tingkat']) {
-                          $wr = 'V'; 
+                          $wr = 'V';
                       }
                       $arr_rekog[] = $wr;
                     }
@@ -400,7 +400,7 @@ class C_rest3 extends CI_Controller {
                     $wr = '';
                     if (count($G_dt_artikel) > 0) {
                       $wr = '<ul style = "margin-left:-20px;">';
-                      for ($l=0; $l < count($G_dt_artikel); $l++) { 
+                      for ($l=0; $l < count($G_dt_artikel); $l++) {
                          $wr .= '<li>'.$G_dt_artikel[$l]['Title'].'</li>';
                       }
                       $wr .= '</ul>';
@@ -415,12 +415,12 @@ class C_rest3 extends CI_Controller {
                     $wr = '';
                     if (count($G_dt_artikel) > 0) {
                       $wr = '<ul style = "margin-left:-20px;">';
-                      for ($l=0; $l < count($G_dt_artikel); $l++) { 
+                      for ($l=0; $l < count($G_dt_artikel); $l++) {
                          $wr .= '<li>'.$G_dt_artikel[$l]['Citation'].'</li>';
                       }
                       $wr .= '</ul>';
                     }
-                    
+
                     $temp[] = [
                       'rowspan' => $rowspan,
                       'value' => $wr,
@@ -431,7 +431,7 @@ class C_rest3 extends CI_Controller {
 
                 $rs['header'] = $header;
                 $rs['body'] = $body;
-                echo json_encode($rs);    
+                echo json_encode($rs);
                 break;
             case 'DataDosen':
                 $rs = [];
@@ -456,7 +456,7 @@ class C_rest3 extends CI_Controller {
                 $Year = $G_smt[0]['Year'];
                 $Year3 = $Year - 2;
                 $arr_year = [];
-                for ($i=$Year3; $i <= $Year; $i++) { 
+                for ($i=$Year3; $i <= $Year; $i++) {
                    $arr_year[] = $i;
                 }
 
@@ -471,20 +471,20 @@ class C_rest3 extends CI_Controller {
                 }
 
                 $sql = 'select a.*,b.Position as JabatanAkademik from db_employees.employees as a
-                    left join db_employees.lecturer_academic_position as b on a.LecturerAcademicPositionID = b.ID  
-                     where ( 
-                                #SPLIT_STR(a.PositionMain, ".", 2) = 7 or 
+                    left join db_employees.lecturer_academic_position as b on a.LecturerAcademicPositionID = b.ID
+                     where (
+                                #SPLIT_STR(a.PositionMain, ".", 2) = 7 or
                                 #SPLIT_STR(a.PositionOther1, ".", 2) = 7 or
                                 #SPLIT_STR(a.PositionOther2, ".", 2) = 7 or
                                 #SPLIT_STR(a.PositionOther3, ".", 2) = 7
 
-                                SPLIT_STR(a.PositionMain, ".", 1) = 14 or 
+                                SPLIT_STR(a.PositionMain, ".", 1) = 14 or
                                 SPLIT_STR(a.PositionOther1, ".", 1) = 14 or
                                 SPLIT_STR(a.PositionOther2, ".", 1) = 14 or
                                 SPLIT_STR(a.PositionOther3, ".", 1) = 14
                             ) and StatusForlap  is not null and ProdiID = ? and StatusForlap != "" '.$AndWhere;
                 $query=$this->db->query($sql, array($ProdiID))->result_array();
-                for ($i=0; $i < count($query); $i++) { 
+                for ($i=0; $i < count($query); $i++) {
                     $NIP = $query[$i]['NIP'];
                     $LevelEducationName = function($ID){
                         $rs = '';
@@ -519,7 +519,7 @@ class C_rest3 extends CI_Controller {
                         }
                         return $rs;
                     };
-                    
+
                     $SertifikatPendidikProfesional = function($NIP){
                         return '';
                     };
@@ -527,16 +527,16 @@ class C_rest3 extends CI_Controller {
                     $MKPSAkreditasi = function($NIP,$ProdiID,$SemesterID){
                         $rs = '<ul style = "margin-left:-20px;" >';
                         $sql = 'select a.ID as SdcID,a.ScheduleID,a.MKID,b.ClassGroup,c.NameEng
-                                from db_academic.schedule_details_course as a 
+                                from db_academic.schedule_details_course as a
                                 join db_academic.schedule as b on a.ScheduleID = b.ID
                                 join db_academic.mata_kuliah as c on a.MKID = c.ID
                                 where a.ProdiID = ? and b.Coordinator = ? and b.SemesterID = ?
-                                group by b.ID,a.MKID    
+                                group by b.ID,a.MKID
                                  ';
                         $query=$this->db->query($sql, array($ProdiID,$NIP,$SemesterID))->result_array();
                         if (count($query) > 0) {
                             $rs .= '<li>'.$query[0]['ClassGroup'].' - '.$query[0]['NameEng'].'</li>';
-                            for ($i=1; $i < count($query); $i++) { 
+                            for ($i=1; $i < count($query); $i++) {
                                 $rs .= '<li>'.$query[$i]['ClassGroup'].' - '.$query[$i]['NameEng'].'</li>';
                             }
                         }
@@ -548,12 +548,12 @@ class C_rest3 extends CI_Controller {
                     $dtAcademic = function($NIP,$ProdiID,$SemesterID){
                         $rs = array('MK' => '','SKS' => '');
                         $sql = 'select a.ID as SdcID,a.ScheduleID,a.MKID,b.ClassGroup,c.NameEng,d.TotalSKS
-                                from db_academic.schedule_details_course as a 
+                                from db_academic.schedule_details_course as a
                                 join db_academic.schedule as b on a.ScheduleID = b.ID
                                 join db_academic.mata_kuliah as c on a.MKID = c.ID
                                 join db_academic.curriculum_details as d on a.CDID = d.ID
                                 where a.ProdiID != ? and b.Coordinator = ? and b.SemesterID = ?
-                                group by b.ID,a.MKID    
+                                group by b.ID,a.MKID
                                  ';
                         $query=$this->db->query($sql, array($ProdiID,$NIP,$SemesterID))->result_array();
                         $MK = '<ul style = "margin-left:-20px;" >';
@@ -565,7 +565,7 @@ class C_rest3 extends CI_Controller {
                             $MK .= '<li>'.$query[0]['ClassGroup'].' - '.$query[0]['NameEng'].'</li>';
                             $dataSKS[] =array('data' => $query[0]['ClassGroup'].' - '.$query[0]['NameEng'],'SKS' => $query[0]['TotalSKS']) ;
                             $SKS += $query[0]['TotalSKS'];
-                            for ($i=1; $i < count($query); $i++) { 
+                            for ($i=1; $i < count($query); $i++) {
                                 $MK .= '<li>'.$query[$i]['ClassGroup'].' - '.$query[$i]['NameEng'].'</li>';
                                 $dataSKS[] =array('data' => $query[$i]['ClassGroup'].' - '.$query[$i]['NameEng'],'SKS' => $query[$i]['TotalSKS']) ;
                                 // $SKS .= ', '.$query[$i]['TotalSKS'];
@@ -576,18 +576,18 @@ class C_rest3 extends CI_Controller {
                         }
                         // gabung untuk bobot kredit
                         $sql2 = 'select a.ID as SdcID,a.ScheduleID,a.MKID,b.ClassGroup,c.NameEng,d.TotalSKS
-                                from db_academic.schedule_details_course as a 
+                                from db_academic.schedule_details_course as a
                                 join db_academic.schedule as b on a.ScheduleID = b.ID
                                 join db_academic.mata_kuliah as c on a.MKID = c.ID
                                 join db_academic.curriculum_details as d on a.CDID = d.ID
                                 where a.ProdiID = ? and b.Coordinator = ? and b.SemesterID = ?
-                                group by b.ID,a.MKID    
+                                group by b.ID,a.MKID
                                  ';
                         $query2=$this->db->query($sql2, array($ProdiID,$NIP,$SemesterID))->result_array();
                         if (count($query2) > 0) {
                             $SKS += $query2[0]['TotalSKS'];
                             $dataSKS[] =array('data' => $query2[0]['ClassGroup'].' - '.$query2[0]['NameEng'],'SKS' => $query2[0]['TotalSKS']) ;
-                            for ($i=1; $i < count($query2); $i++) { 
+                            for ($i=1; $i < count($query2); $i++) {
                                 $SKS += $query2[$i]['TotalSKS'];
                                 $dataSKS[] =array('data' => $query2[$i]['ClassGroup'].' - '.$query2[$i]['NameEng'],'SKS' => $query2[$i]['TotalSKS']) ;
                             }
@@ -605,7 +605,7 @@ class C_rest3 extends CI_Controller {
                     $JMLDibimbingBy_LainPS = array();
                     $SumBimbingan_tahun = 0;
                     $SumProgram_tahun = 0;
-                    for ($k=0; $k < count($arr_year); $k++) { 
+                    for ($k=0; $k < count($arr_year); $k++) {
                         $Y = $arr_year[$k];
                         $sql_ = 'select a.NPM,b.Name from db_academic.mentor_academic as a
                                 join db_academic.auth_students as b on a.NPM = b.NPM
@@ -646,7 +646,7 @@ class C_rest3 extends CI_Controller {
                     $G_master_academic = $PendidikanPascaSarjana($NIP,$LevelEdu);
                     $G_master_academic2 = $PendidikanPascaSarjana($NIP,'S2');
                     $G_master_academic3 = $PendidikanPascaSarjana($NIP,'S3');
-                   
+
                     $temp = ['No'  =>  ($i+1),
                              'NameDosen' => $query[$i]['Name'],
                              'NIDN' => $query[$i]['NIDN'],
@@ -672,9 +672,9 @@ class C_rest3 extends CI_Controller {
                              // 'SumBimbingan_tahun' => $SumBimbingan_tahun,
                              // 'SumProgram_tahun' => $SumProgram_tahun,
                           ];
-                    $rs[] = $temp;      
+                    $rs[] = $temp;
                 }
-                echo json_encode($rs);    
+                echo json_encode($rs);
                 break;
                 case 'EWMP':
                     $rs = [];
@@ -683,10 +683,10 @@ class C_rest3 extends CI_Controller {
                     // get SemesterID in dalam tahun
                     $G_yearSMT = $this->m_master->caribasedprimary('db_academic.semester','Year',$FilterTahun);
                     $TahunFilter = [];
-                    for ($i=0; $i < count($G_yearSMT); $i++) { 
+                    for ($i=0; $i < count($G_yearSMT); $i++) {
                         $TahunFilter[] = $G_yearSMT[$i]['ID'];
                     }
-                    
+
                     $TahunFilter = implode(',',$TahunFilter);
 
                     // Dosen tetap dengan status pada db_employees.employees StatusForlap = "1" dan "2"
@@ -695,7 +695,7 @@ class C_rest3 extends CI_Controller {
                     for ($i=0; $i < count($queryDosen); $i++) {
                         $temp = [];
                         $No = $i+1;
-                        $temp[] = $No; 
+                        $temp[] = $No;
                         $Name = $queryDosen[$i]['Name'];
                         $NIP = $queryDosen[$i]['NIP'];
                         $temp[] = $Name;
@@ -705,13 +705,13 @@ class C_rest3 extends CI_Controller {
                         $sqlPSAkreditasi = '
                                             select SUM(Credit) as TotalCredit from (
                                                 select a.ID as SdcID,a.ScheduleID,a.MKID,b.ClassGroup,c.NameEng,sd.Credit
-                                                from db_academic.schedule_details_course as a 
+                                                from db_academic.schedule_details_course as a
                                                 join db_academic.schedule as b on a.ScheduleID = b.ID
                                                 join db_academic.mata_kuliah as c on a.MKID = c.ID
                                                 join db_academic.schedule_details as sd on sd.ScheduleID = b.ID
                                                 where a.ProdiID = ? and b.Coordinator = ? and b.SemesterID in('.$TahunFilter.')
                                                 group by b.ID,a.MKID
-                                            )xx   
+                                            )xx
                                             ';
                         $queryPSAkreditasi=$this->db->query($sqlPSAkreditasi, array($ProdiID,$NIP))->result_array();
 
@@ -722,7 +722,7 @@ class C_rest3 extends CI_Controller {
                                                     where ats.MentorFP1 = ? and emp.ProdiID = ? and ats.ProdiID = ?
                                                     ';
                           $query_get_mhs_by_mentor=$this->db->query($sql_get_mhs_by_mentor, array($NIP,$ProdiID,$ProdiID))->result_array();
-                          for ($z=0; $z < count($query_get_mhs_by_mentor); $z++) { 
+                          for ($z=0; $z < count($query_get_mhs_by_mentor); $z++) {
                             $ta_db = 'ta_'.$query_get_mhs_by_mentor[$z]['Year'];
                             $NPMByMentor = $query_get_mhs_by_mentor[$z]['NPM'];
                             $sql_stp = 'select stp.NPM from '.$ta_db.'.study_planning as stp
@@ -755,7 +755,7 @@ class C_rest3 extends CI_Controller {
                                                     where ats.MentorFP2 = ? and emp.ProdiID = ? and ats.ProdiID = ?
                                                     ';
                           $query_get_mhs_by_mentor=$this->db->query($sql_get_mhs_by_mentor, array($NIP,$ProdiID,$ProdiID))->result_array();
-                          for ($z=0; $z < count($query_get_mhs_by_mentor); $z++) { 
+                          for ($z=0; $z < count($query_get_mhs_by_mentor); $z++) {
                             $ta_db = 'ta_'.$query_get_mhs_by_mentor[$z]['Year'];
                             $NPMByMentor = $query_get_mhs_by_mentor[$z]['NPM'];
                             $sql_stp = 'select stp.NPM from '.$ta_db.'.study_planning as stp
@@ -781,18 +781,18 @@ class C_rest3 extends CI_Controller {
                           }
                         // end get mentor pendamping sks
 
-                        // get data 
+                        // get data
                         $sqlDataAkreditasi = 'select a.ID as SdcID,a.ScheduleID,a.MKID,b.ClassGroup,c.NameEng,sd.Credit
-                                                from db_academic.schedule_details_course as a 
+                                                from db_academic.schedule_details_course as a
                                                 join db_academic.schedule as b on a.ScheduleID = b.ID
                                                 join db_academic.mata_kuliah as c on a.MKID = c.ID
                                                 join db_academic.schedule_details as sd on sd.ScheduleID = b.ID
                                                 where a.ProdiID = ? and b.Coordinator = ? and b.SemesterID in('.$TahunFilter.')
                                                 group by b.ID,a.MKID';
-                        $queryDataPSAkreditasi=$this->db->query($sqlDataAkreditasi, array($ProdiID,$NIP))->result_array(); 
+                        $queryDataPSAkreditasi=$this->db->query($sqlDataAkreditasi, array($ProdiID,$NIP))->result_array();
                         // get sum count mentor utama sks
                         $tot = ($queryPSAkreditasi[0]['TotalCredit'] == null ) ? 0 : $queryPSAkreditasi[0]['TotalCredit'];
-                        for ($z=0; $z < count($arr_get_mhs_by_mentor); $z++) { 
+                        for ($z=0; $z < count($arr_get_mhs_by_mentor); $z++) {
                           $tot += $arr_get_mhs_by_mentor[$z]['SKS'];
                           $arr_adding = [
                             'SdcID' => '',
@@ -806,7 +806,7 @@ class C_rest3 extends CI_Controller {
                           $queryDataPSAkreditasi[] = $arr_adding;
                         }
 
-                        for ($z=0; $z < count($arr_get_mhs_by_mentor_pendamping); $z++) { 
+                        for ($z=0; $z < count($arr_get_mhs_by_mentor_pendamping); $z++) {
                           $tot += $arr_get_mhs_by_mentor_pendamping[$z]['SKS'];
                           $arr_adding = [
                             'SdcID' => '',
@@ -822,22 +822,22 @@ class C_rest3 extends CI_Controller {
 
                         // encode token
                         $token = $this->jwt->encode($queryDataPSAkreditasi,"UAP)(*");
-                        $temp[] = array('count' => $tot ,'data' => $token);  
+                        $temp[] = array('count' => $tot ,'data' => $token);
                         $arr_get[] = $tot;
 
-                        
+
 
                         // Total PS lain di dalam pt
                         $sqlPSLainDalamPT = '
                                             select SUM(Credit) as TotalCredit from (
                                                 select a.ID as SdcID,a.ScheduleID,a.MKID,b.ClassGroup,c.NameEng,sd.Credit
-                                                from db_academic.schedule_details_course as a 
+                                                from db_academic.schedule_details_course as a
                                                 join db_academic.schedule as b on a.ScheduleID = b.ID
                                                 join db_academic.mata_kuliah as c on a.MKID = c.ID
                                                 join db_academic.schedule_details as sd on sd.ScheduleID = b.ID
                                                 where a.ProdiID != ? and b.Coordinator = ? and b.SemesterID in('.$TahunFilter.')
                                                 group by b.ID,a.MKID
-                                            )xx   
+                                            )xx
                                             ';
                         $queryPSLainDalamPT=$this->db->query($sqlPSLainDalamPT, array($ProdiID,$NIP))->result_array();
                         $tot = ($queryPSLainDalamPT[0]['TotalCredit'] == null) ? 0 : $queryPSLainDalamPT[0]['TotalCredit'] ;
@@ -849,7 +849,7 @@ class C_rest3 extends CI_Controller {
                                                     where ats.MentorFP1 = ? and emp.ProdiID = ? and ats.ProdiID != ?
                                                     ';
                           $query_get_mhs_by_mentor=$this->db->query($sql_get_mhs_by_mentor, array($NIP,$ProdiID,$ProdiID))->result_array();
-                          for ($z=0; $z < count($query_get_mhs_by_mentor); $z++) { 
+                          for ($z=0; $z < count($query_get_mhs_by_mentor); $z++) {
                             $ta_db = 'ta_'.$query_get_mhs_by_mentor[$z]['Year'];
                             $NPMByMentor = $query_get_mhs_by_mentor[$z]['NPM'];
                             $sql_stp = 'select stp.NPM from '.$ta_db.'.study_planning as stp
@@ -882,7 +882,7 @@ class C_rest3 extends CI_Controller {
                                                     where ats.MentorFP2 = ? and emp.ProdiID = ? and ats.ProdiID != ?
                                                     ';
                           $query_get_mhs_by_mentor=$this->db->query($sql_get_mhs_by_mentor, array($NIP,$ProdiID,$ProdiID))->result_array();
-                          for ($z=0; $z < count($query_get_mhs_by_mentor); $z++) { 
+                          for ($z=0; $z < count($query_get_mhs_by_mentor); $z++) {
                             $ta_db = 'ta_'.$query_get_mhs_by_mentor[$z]['Year'];
                             $NPMByMentor = $query_get_mhs_by_mentor[$z]['NPM'];
                             $sql_stp = 'select stp.NPM from '.$ta_db.'.study_planning as stp
@@ -910,7 +910,7 @@ class C_rest3 extends CI_Controller {
 
                         $sqlDataPSLainDalamPT = '
                         select a.ID as SdcID,a.ScheduleID,a.MKID,b.ClassGroup,c.NameEng,sd.Credit
-                        from db_academic.schedule_details_course as a 
+                        from db_academic.schedule_details_course as a
                         join db_academic.schedule as b on a.ScheduleID = b.ID
                         join db_academic.mata_kuliah as c on a.MKID = c.ID
                         join db_academic.schedule_details as sd on sd.ScheduleID = b.ID
@@ -919,7 +919,7 @@ class C_rest3 extends CI_Controller {
                         ';
                         $queryDataPSLainDalamPT=$this->db->query($sqlDataPSLainDalamPT, array($ProdiID,$NIP))->result_array();
 
-                        for ($z=0; $z < count($arr_get_mhs_by_mentor); $z++) { 
+                        for ($z=0; $z < count($arr_get_mhs_by_mentor); $z++) {
                           $tot += $arr_get_mhs_by_mentor[$z]['SKS'];
                           $arr_adding = [
                             'SdcID' => '',
@@ -933,7 +933,7 @@ class C_rest3 extends CI_Controller {
                           $queryDataPSLainDalamPT[] = $arr_adding;
                         }
 
-                        for ($z=0; $z < count($arr_get_mhs_by_mentor_pendamping); $z++) { 
+                        for ($z=0; $z < count($arr_get_mhs_by_mentor_pendamping); $z++) {
                           $tot += $arr_get_mhs_by_mentor_pendamping[$z]['SKS'];
                           $arr_adding = [
                             'SdcID' => '',
@@ -950,14 +950,14 @@ class C_rest3 extends CI_Controller {
                         // encode token
                         $token = $this->jwt->encode($queryDataPSLainDalamPT,"UAP)(*");
                         $temp[] = array('count' => $tot ,'data' => $token);
-                        $arr_get[] = $tot;                        
+                        $arr_get[] = $tot;
 
                         $temp[] = 0; // PS lain di luar PT
-                        $arr_get[] = 0;  
+                        $arr_get[] = 0;
 
-                        // Penelitian 
+                        // Penelitian
                         //Note : Convert to sks untuk mendapatkan satu penelitian
-                        // $sqlPenelitian = 'select *,1 as Credit from db_research.litabmas where ID_thn_laks = ? and NIP = ? '; 
+                        // $sqlPenelitian = 'select *,1 as Credit from db_research.litabmas where ID_thn_laks = ? and NIP = ? ';
                         $sqlPenelitian = 'select a.Judul,jp.Nm_jns_pub,Year(a.Tgl_terbit) as Year,a.Ket,b.NIP,b.Name as NameDosen,jp.SKS as Credit
                           from db_research.publikasi as a
                           join db_research.jenis_publikasi as jp on jp.ID_jns_pub = a.ID_jns_pub
@@ -965,37 +965,43 @@ class C_rest3 extends CI_Controller {
                           where Year(a.Tgl_terbit) = ? and a.NIP = ?
                           UNION
                           select a.Judul,jp.Nm_jns_pub,Year(a.Tgl_terbit) as Year,a.Ket,d.NIP,d.Name as NameDosen,jp.SKS as Credit
-                          from db_research.publikasi as a 
+                          from db_research.publikasi as a
                           join db_research.jenis_publikasi as jp on jp.ID_jns_pub = a.ID_jns_pub
                           join db_research.list_anggota_publikasi as b on a.ID_publikasi = b.ID_publikasi
                           join db_research.master_anggota_publikasi as c on b.ID = c.ID
-                          join db_employees.employees as d on c.NIP = d.NIP
+                          #join db_employees.employees as d on c.NIP = d.NIP
+                          join db_employees.employees as d on SUBSTRING(c.ID_user, 5) = d.NIP
                            where Year(a.Tgl_terbit) = ? and d.NIP = ?
-                           '; 
+                           ';
                         $queryPenelitian =$this->db->query($sqlPenelitian, array($FilterTahun,$NIP,$FilterTahun,$NIP))->result_array();
                         // $tot = count($queryPenelitian);
                         $tot = 0;
-                        for ($z=0; $z < count($queryPenelitian); $z++) { 
+                        for ($z=0; $z < count($queryPenelitian); $z++) {
                           $tot += $queryPenelitian[$z]['Credit'];
                         }
                         // encode token
                         $token = $this->jwt->encode($queryPenelitian,"UAP)(*");
-                        $temp[] = array('count' => $tot ,'data' => $token); 
-                        $arr_get[] = $tot;                       
-                        // End Penelitian                        
-                        
+                        $temp[] = array('count' => $tot ,'data' => $token);
+                        $arr_get[] = $tot;
+                        // End Penelitian
+
                         // PKM Note : Convert to sks untuk mendapatkan satu PKM
-                        // $sqlPKM = 'select *,1 as Credit from db_research.pengabdian_masyarakat where ID_thn_laks = ? and NIP = ? '; 
-                        $sqlPKM = 'select a.*,1 as Credit from db_research.pengabdian_masyarakat as a 
-                                  join db_research.list_anggota_pkm as b on a.ID_PKM = b.ID_PKM
-                                  join db_research.master_anggota_pkm as c on b.ID_anggota = c.ID
-                                  where a.ID_thn_laks = ? and c.NIP = ? '; 
-                        $queryPKM =$this->db->query($sqlPKM, array($FilterTahun,$NIP))->result_array();
+                        // $sqlPKM = 'select *,1 as Credit from db_research.pengabdian_masyarakat where ID_thn_laks = ? and NIP = ? ';
+
+                        // $sqlPKM = 'select a.*,1 as Credit from db_research.pengabdian_masyarakat as a
+                        //           join db_research.list_anggota_pkm as b on a.ID_PKM = b.ID_PKM
+                        //           join db_research.master_anggota_pkm as c on b.ID_anggota = c.ID
+                        //           #where a.ID_thn_laks = ? and c.NIP = ?
+                        //           where a.ID_thn_laks = ? and c.SUBSTRING(c.ID_user, 5) = ? ';
+                        // $queryPKM =$this->db->query($sqlPKM, array($FilterTahun,$NIP))->result_array();
+
                         // encode token
-                        $tot = count($queryPKM);
-                        $token = $this->jwt->encode($queryPKM,"UAP)(*");
-                        $temp[] = array('count' => $tot ,'data' => $token); 
-                        $arr_get[] = $tot; 
+                        // $tot = count($queryPKM);
+                        $tot =0;
+                        // $token = $this->jwt->encode($queryPKM,"UAP)(*");
+                        $token = '';
+                        $temp[] = array('count' => $tot ,'data' => $token);
+                        $arr_get[] = $tot;
                         // End PKM
 
                         // tugas tambahan
@@ -1004,21 +1010,21 @@ class C_rest3 extends CI_Controller {
                                     where NIP = ? and SemesterID in('.$TahunFilter.')
                         )xx
                             ';
-                        $querySumSKSTugas =$this->db->query($SqlSumSKSTugas, array($NIP))->result_array();    
+                        $querySumSKSTugas =$this->db->query($SqlSumSKSTugas, array($NIP))->result_array();
 
                         $SqlDataSKSTugas = 'select a.*,b.Position,b.Description,c.Name as NameSemester,"'.$Name.'" as NameEmployee from
-                                            db_rektorat.tugas_tambahan as a 
+                                            db_rektorat.tugas_tambahan as a
                                             join db_employees.position as b on a.PositionID = b.ID
                                             join db_academic.semester as c on a.SemesterID = c.ID
                                             where a.NIP = ? and a.SemesterID in('.$TahunFilter.')
                                             ';
                         $queryDataSKSTugas =$this->db->query($SqlDataSKSTugas, array($NIP))->result_array();
                          // encode token
-                         $tot = ($querySumSKSTugas[0]['TotalCredit'] == null ) ? 0 : $querySumSKSTugas[0]['TotalCredit']; 
+                         $tot = ($querySumSKSTugas[0]['TotalCredit'] == null ) ? 0 : $querySumSKSTugas[0]['TotalCredit'];
                          $token = $this->jwt->encode($queryDataSKSTugas,"UAP)(*");
                          $temp[] = array('count' => $tot ,'data' => $token);
-                         $arr_get[] = $tot;     
-                         // End Tugas Tambahan       
+                         $arr_get[] = $tot;
+                         // End Tugas Tambahan
 
                         // Jumlah SKS
                         $temp[] = array_sum($arr_get);
@@ -1039,28 +1045,28 @@ class C_rest3 extends CI_Controller {
                   $P = explode('.', $P);
                   $ProdiID = $P[0];
                   $WhereOrAnd = ($AddWhere != '' && $AddWhere  != null) ? ' and' : ' where';
-                   $AddWhere .= $WhereOrAnd.' b.ProdiID ='.$ProdiID; 
-                } 
+                   $AddWhere .= $WhereOrAnd.' b.ProdiID ='.$ProdiID;
+                }
                if (array_key_exists('Year', $dataToken)) {
                   $P = $dataToken['ProdiID'];
                   $P = explode('.', $P);
                   $ProdiID = $P[0];
                   $Year = $dataToken['Year'];
                   $WhereOrAnd = ($AddWhere != '' && $AddWhere  != null) ? ' and' : ' where';
-                  $AddWhere .= $WhereOrAnd.' a.Year ='.$Year;  
+                  $AddWhere .= $WhereOrAnd.' a.Year ='.$Year;
                 }
-               
+
                $sql  = 'select a.*,b.Name,b.ProdiID,b.NIP
-                       from db_agregator.produk_jasa as a 
+                       from db_agregator.produk_jasa as a
                        join db_employees.employees as b on a.Updated_by = b.NIP
                        '.$AddWhere.'
                ';
 
                $query = $this->db->query($sql,array())->result_array();
                $data = array();
-               for ($i=0; $i < count($query); $i++) { 
+               for ($i=0; $i < count($query); $i++) {
                  $nestedData = array();
-                 $row = $query[$i]; 
+                 $row = $query[$i];
                  $nestedData[] = $i+1;
                  $nestedData[] = $row['NIP'].'-'.$row['Name'];
                  $nestedData[] = $row['NamaProdukJasa'];
@@ -1103,12 +1109,12 @@ class C_rest3 extends CI_Controller {
                   // $nestedData[] = ['text' => '' ,'colspan' => 0,'style' => '""'];
                   $row[] = $nestedData;
                   $sql = 'select a.Judul,Year(a.Tgl_terbit) as Year,a.Ket,b.NIP,b.Name as NameDosen
-                          from db_research.publikasi as a 
+                          from db_research.publikasi as a
                           join db_employees.employees as b on a.NIP = b.NIP
                           where b.ProdiID = '.$ProdiID.' and a.ID_kat_capaian = '.$arr_ID_kat_capaian[$i].'
                           UNION
                           select a.Judul,Year(a.Tgl_terbit) as Year,a.Ket,d.NIP,d.Name as NameDosen
-                          from db_research.publikasi as a 
+                          from db_research.publikasi as a
                           join db_research.list_anggota_publikasi as b on a.ID_publikasi = b.ID_publikasi
                           join db_research.master_anggota_publikasi as c on b.ID_anggota = c.ID
                            '.$this->m_research->QueryUserReserachJoin('c.ID_user').'
@@ -1117,7 +1123,7 @@ class C_rest3 extends CI_Controller {
                            and c.Type_anggota = "DSN"
                          ';
                   $query = $this->db->query($sql,array())->result_array();
-                  for ($j=0; $j < count($query); $j++) { 
+                  for ($j=0; $j < count($query); $j++) {
                     $nestedData = array();
                     $nestedData[] = ['text' => $j+1 ,'colspan' => 1,'style' => '"text-align:right"'];
                     $nestedData[] = ['text' => $query[$j]['Judul'] ,'colspan' => 1,'style' => '""'];
@@ -1142,19 +1148,19 @@ class C_rest3 extends CI_Controller {
                 $arr_ts = json_decode(json_encode($dataToken['arr_ts']),true);
                 $G_jns_forlap_publikasi = $this->m_master->showData_array('db_research.jenis_forlap_publikasi');
                 for ($i=0; $i < count($G_jns_forlap_publikasi); $i++) {
-                  $data = []; 
+                  $data = [];
                   $data[] = $i+1;
                   $data[] = $G_jns_forlap_publikasi[$i]['NamaForlap_publikasi'];
                   $jumlah = 0;
                   $ID_forlap_publikasi = $G_jns_forlap_publikasi[$i]['ID'];
-                  for ($j=0; $j < count($arr_ts) ; $j++) { 
+                  for ($j=0; $j < count($arr_ts) ; $j++) {
                     $sql = 'select a.ID_publikasi,Judul,Tgl_terbit,a.NIP,b.Name as NameDosen from db_research.publikasi as a
                     join db_employees.employees as b on a.NIP = b.NIP
                             where Year(a.Tgl_terbit) = '.$arr_ts[$j].' and a.ID_forlap_publikasi = "'.$ID_forlap_publikasi.'"
                             and b.ProdiID = '.$ProdiID.'
                       ';
                     $query = $this->db->query($sql,array())->result_array();
-                    for ($lt=0; $lt < count($query); $lt++) { 
+                    for ($lt=0; $lt < count($query); $lt++) {
                       $sqlGetAnggota = 'select usrr.Nama from db_research.list_anggota_publikasi as a
                                         join db_research.master_anggota_publikasi as b on a.ID_anggota = b.ID
                                         '.$this->m_research->QueryUserReserachJoin('b.ID_user').'
@@ -1173,13 +1179,14 @@ class C_rest3 extends CI_Controller {
                 echo json_encode($rs);
                 break;
             default:
-                echo '{"status":"999","message":"Not Authorize"}'; 
+                echo '{"status":"999","message":"Not Authorize"}';
                 break;
         }
     }
 
     public function APS_CrudAgregatorTB7_()
     {
+      $this->load->model('research/m_research');
       $dataToken = $this->data['dataToken'];
       $mode = $dataToken['mode'];
       switch ($mode) {
@@ -1188,7 +1195,7 @@ class C_rest3 extends CI_Controller {
           $P = $dataToken['ProdiID'];
           $P = explode('.', $P);
           $ProdiID = $P[0];
-          $sql = 'select a.ID_PKM,b.Name as NamaDosen,"" as RoadMap,a.Judul_PKM,a.ID_thn_laks, 
+          $sql = 'select a.ID_PKM,b.Name as NamaDosen,"" as RoadMap,a.Judul_PKM,a.ID_thn_laks,
                       (select COUNT(*) from db_research.list_anggota_pkm as x
                         join db_research.master_anggota_pkm as y on x.ID_anggota = y.ID
                         where x.ID_PKM = a.ID_PKM and y.Type_anggota = "MHS") AS totalstudent 
@@ -1201,9 +1208,9 @@ class C_rest3 extends CI_Controller {
                  ';
           $query = $this->db->query($sql,array())->result_array();
           $data = [];
-          for ($i=0; $i < count($query); $i++) { 
+          for ($i=0; $i < count($query); $i++) {
             if (!empty($query[$i]['totalstudent'])){
-            
+
             $nestedData = [];
             $row = $query[$i];
             $nestedData[] = $i+1;
@@ -1216,11 +1223,11 @@ class C_rest3 extends CI_Controller {
                                           ';
             $q_MHS = $this->db->query($sql_MHS,array())->result_array();
             $MHSName = '<ul style = "margin-left:-20px;">';
-            for ($j=0; $j < count($q_MHS); $j++) { 
+            for ($j=0; $j < count($q_MHS); $j++) {
               $MHSName .=  '<li>'.$q_MHS[$j]['Name_mahasiswa'].'</li>';
             }
 
-            $MHSName .= '</ul>';      
+            $MHSName .= '</ul>';
 
             // $nestedData[] = $row['Name_mahasiswa'];
             $nestedData[] = $MHSName;
@@ -1234,10 +1241,10 @@ class C_rest3 extends CI_Controller {
               "recordsTotal"    => intval(count($query)),
               "recordsFiltered" => intval( count($query) ),
               "data"            => $data
-          );       
+          );
           echo json_encode($rs);
           break;
-        
+
         default:
           # code...
           break;
@@ -1261,16 +1268,16 @@ class C_rest3 extends CI_Controller {
                         where x.ID_Litabmas = a.ID_litabmas and y.Type_anggota = "MHS") AS totalstudent
                   from db_research.litabmas as a
                   join db_employees.employees as b on a.NIP = b.NIP
-                 
+
                   #join db_research.litabmas_list_mahasiswa as c on c.ID_litabmas = a.ID_litabmas
                   #join db_research.anggota_panitia_mahasiswa as d on d.ID_ang_mahasiswa = c.ID_ang_mahasiswa
 
-                  where b.ProdiID = '.$ProdiID.' 
+                  where b.ProdiID = '.$ProdiID.'
                   group by a.NIP, a.ID_litabmas;
                  ';
           $query = $this->db->query($sql,array())->result_array();
           $data = [];
-          for ($i=0; $i < count($query); $i++) { 
+          for ($i=0; $i < count($query); $i++) {
             if (!empty($query[$i]['totalstudent'])){
             $nestedData = [];
             $row = $query[$i];
@@ -1281,15 +1288,15 @@ class C_rest3 extends CI_Controller {
                         join db_research.master_anggota_penelitian as b on a.ID_anggota = b.ID
                         '.$this->m_research->QueryUserReserachJoin('b.ID_user').'
                         where a.ID_Litabmas = '.$query[$i]['ID_litabmas'].' and b.Type_anggota = "MHS"
-                  
+
                   ';
             $q_MHS = $this->db->query($sql_MHS,array())->result_array();
             $MHSName = '<ul style = "margin-left:-20px;">';
-            for ($j=0; $j < count($q_MHS); $j++) { 
+            for ($j=0; $j < count($q_MHS); $j++) {
               $MHSName .=  '<li>'.$q_MHS[$j]['Name_mahasiswa'].'</li>';
             }
 
-            $MHSName .= '</ul>';      
+            $MHSName .= '</ul>';
 
             // $nestedData[] = $row['Name_mahasiswa'];
             $nestedData[] = $MHSName;
@@ -1303,10 +1310,10 @@ class C_rest3 extends CI_Controller {
               "recordsTotal"    => intval(count($query)),
               "recordsFiltered" => intval( count($query) ),
               "data"            => $data
-          );       
+          );
           echo json_encode($rs);
           break;
-        
+
         default:
           # code...
           break;
@@ -1338,27 +1345,27 @@ class C_rest3 extends CI_Controller {
             // $nestedData[] = ['text' => '' ,'colspan' => 0,'style' => '""'];
             $row[] = $nestedData;
             // $sql = 'select a.Judul,Year(a.Tgl_terbit) as Year,a.Ket
-            //         from db_research.publikasi as a 
+            //         from db_research.publikasi as a
             //         join db_employees.employees as b on a.NIP = b.NIP
             //         where b.ProdiID = '.$ProdiID.' and a.ID_kat_capaian = '.$arr_ID_kat_capaian[$i].'
             //         UNION
             //         select a.Judul,Year(a.Tgl_terbit) as Year,a.Ket
-            //         from db_research.publikasi as a 
+            //         from db_research.publikasi as a
             //         join db_research.publikasi_list_mahasiswa as b on a.ID_publikasi = b.ID_publikasi
             //         join db_research.penulis_mahasiswa as c on b.ID_Penulis_Mahasiswa = c.ID_Penulis_Mahasiswa
             //         join db_academic.auth_students as d on c.NIM = d.NPM
             //          where d.ProdiID = '.$ProdiID.' and a.ID_kat_capaian = '.$arr_ID_kat_capaian[$i].'
             //        ';
             $sql = 'select a.Judul,Year(a.Tgl_terbit) as Year,a.Ket,usrr.Nama
-                    from db_research.publikasi as a 
+                    from db_research.publikasi as a
                     join db_research.list_anggota_publikasi as b on a.ID_publikasi = b.ID_publikasi
                     join db_research.master_anggota_publikasi as c on b.ID_anggota = c.ID
                     '.$this->m_research->QueryUserReserachJoin('c.ID_user').'
                     join db_academic.auth_students as d on usrr.NIPorNPM = d.NPM
                      where d.ProdiID = '.$ProdiID.' and a.ID_kat_capaian = '.$arr_ID_kat_capaian[$i].' and c.Type_anggota = "MHS"
-                   '; 
+                   ';
             $query = $this->db->query($sql,array())->result_array();
-            for ($j=0; $j < count($query); $j++) { 
+            for ($j=0; $j < count($query); $j++) {
               $nestedData = array();
               $nestedData[] = ['text' => $j+1 ,'colspan' => 1,'style' => '"text-align:right"'];
               $nestedData[] = ['text' => $query[$j]['Judul'] ,'colspan' => 1,'style' => '""'];
@@ -1374,7 +1381,7 @@ class C_rest3 extends CI_Controller {
 
           echo json_encode($rs);
           break;
-        
+
         case 'produk_jasa_mhs':
           $AddWhere = '';
           $ProdiID = '';
@@ -1384,28 +1391,28 @@ class C_rest3 extends CI_Controller {
              $P = explode('.', $P);
              $ProdiID = $P[0];
              $WhereOrAnd = ($AddWhere != '' && $AddWhere  != null) ? ' and' : ' where';
-              $AddWhere .= $WhereOrAnd.' b.ProdiID ='.$ProdiID; 
-           } 
+              $AddWhere .= $WhereOrAnd.' b.ProdiID ='.$ProdiID;
+           }
           if (array_key_exists('Year', $dataToken)) {
              $P = $dataToken['ProdiID'];
              $P = explode('.', $P);
              $ProdiID = $P[0];
              $Year = $dataToken['Year'];
              $WhereOrAnd = ($AddWhere != '' && $AddWhere  != null) ? ' and' : ' where';
-             $AddWhere .= $WhereOrAnd.' a.Year ='.$Year;  
+             $AddWhere .= $WhereOrAnd.' a.Year ='.$Year;
            }
-          
+
           $sql  = 'select a.*,b.Name,b.ProdiID,b.NPM
-                  from db_agregator.produk_jasa_mhs as a 
+                  from db_agregator.produk_jasa_mhs as a
                   join db_academic.auth_students as b on a.Updated_by = b.NPM
                   '.$AddWhere.'
           ';
 
           $query = $this->db->query($sql,array())->result_array();
           $data = array();
-          for ($i=0; $i < count($query); $i++) { 
+          for ($i=0; $i < count($query); $i++) {
             $nestedData = array();
-            $row = $query[$i]; 
+            $row = $query[$i];
             $nestedData[] = $i+1;
             $nestedData[] = $row['NPM'].'-'.$row['Name'];
             $nestedData[] = $row['NamaProdukJasa'];
@@ -1434,13 +1441,13 @@ class C_rest3 extends CI_Controller {
           $YearNow = date('Y');
           $YearTahunLulusAwal = $YearNow - 2;
           $arr_tahun_lulus;
-          for ($i=$YearTahunLulusAwal; $i <= $YearNow; $i++) { 
+          for ($i=$YearTahunLulusAwal; $i <= $YearNow; $i++) {
             $arr_tahun_lulus[] = $i;
           }
           $P = $dataToken['ProdiID'];
           $P = explode('.', $P);
           $ProdiID = $P[0];
-          for ($i=0; $i < count($arr_tahun_lulus); $i++) { 
+          for ($i=0; $i < count($arr_tahun_lulus); $i++) {
             $data = [];
             $data[] = $arr_tahun_lulus[$i];
             $sqlJumlahLulusan = 'select NPM,Name from db_academic.auth_students
@@ -1453,11 +1460,11 @@ class C_rest3 extends CI_Controller {
             ];
             $data[] = $arr_pass;
 
-            $sqlLulusanTerlacak = 'select a.NPM,a.Name from db_academic.auth_students as a 
+            $sqlLulusanTerlacak = 'select a.NPM,a.Name from db_academic.auth_students as a
                                   join db_studentlife.alumni_experience as b on a.NPM = b.NPM
                                   where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.'
                                   group by a.NPM
-                                  '; 
+                                  ';
             $queryLulusanTerlacak = $this->db->query($sqlLulusanTerlacak,array())->result_array();
             $arr_pass = [
                 'total' => count($queryLulusanTerlacak),
@@ -1468,20 +1475,20 @@ class C_rest3 extends CI_Controller {
             // Jumlah lulusan dengan waktu tunggu mendapatkan pekerjaan (Sarjana) hanya s1 saja
             $sqlWaktuTungguKecil6Bulan = '
                                         select * from (
-                                          select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja) 
-                                                                                  - YEAR(GraduationDate)) 
-                                                                           + (MONTH(TglKerja) 
-                                                                               - MONTH(GraduationDate)) ) AS Bulan 
+                                          select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja)
+                                                                                  - YEAR(GraduationDate))
+                                                                           + (MONTH(TglKerja)
+                                                                               - MONTH(GraduationDate)) ) AS Bulan
                                            from (
                                                select a.NPM,a.Name,a.GraduationDate,
                                                  (select concat(StartYear,"-",StartMonth,"-","01") as TglKerja from db_studentlife.alumni_experience
-                                                     where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                     where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                  ) as TglKerja
-                                               from db_academic.auth_students as a 
-                                               join db_academic.program_study as b on a.ProdiID = b.ID   
+                                               from db_academic.auth_students as a
+                                               join db_academic.program_study as b on a.ProdiID = b.ID
                                                where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.' and b.EducationLevelID = 3
                                             ) subprocess
-                                            
+
                                         ) xx
                                         where Bulan is not null and Bulan < 6
                                           ';
@@ -1494,20 +1501,20 @@ class C_rest3 extends CI_Controller {
 
             $sqlWaktuTungguKecil6BulanUntil18 = '
                                         select * from (
-                                          select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja) 
-                                                                                  - YEAR(GraduationDate)) 
-                                                                           + (MONTH(TglKerja) 
-                                                                               - MONTH(GraduationDate)) ) AS Bulan 
+                                          select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja)
+                                                                                  - YEAR(GraduationDate))
+                                                                           + (MONTH(TglKerja)
+                                                                               - MONTH(GraduationDate)) ) AS Bulan
                                            from (
                                                select a.NPM,a.Name,a.GraduationDate,
                                                  (select concat(StartYear,"-",StartMonth,"-","01") as TglKerja from db_studentlife.alumni_experience
-                                                     where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                     where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                  ) as TglKerja
-                                               from db_academic.auth_students as a 
-                                               join db_academic.program_study as b on a.ProdiID = b.ID   
+                                               from db_academic.auth_students as a
+                                               join db_academic.program_study as b on a.ProdiID = b.ID
                                                where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.' and b.EducationLevelID = 3
                                             ) subprocess
-                                            
+
                                         ) xx
                                         where Bulan is not null and Bulan >= 6 and Bulan <= 18
                                           ';
@@ -1520,20 +1527,20 @@ class C_rest3 extends CI_Controller {
 
             $sqlWaktuTungguKecilBesar18 = '
                                         select * from (
-                                           select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja) 
-                                                                                  - YEAR(GraduationDate)) 
-                                                                           + (MONTH(TglKerja) 
-                                                                               - MONTH(GraduationDate)) ) AS Bulan 
+                                           select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja)
+                                                                                  - YEAR(GraduationDate))
+                                                                           + (MONTH(TglKerja)
+                                                                               - MONTH(GraduationDate)) ) AS Bulan
                                            from (
                                                select a.NPM,a.Name,a.GraduationDate,
                                                  (select concat(StartYear,"-",StartMonth,"-","01") as TglKerja from db_studentlife.alumni_experience
-                                                     where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                     where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                  ) as TglKerja
-                                               from db_academic.auth_students as a 
-                                               join db_academic.program_study as b on a.ProdiID = b.ID   
+                                               from db_academic.auth_students as a
+                                               join db_academic.program_study as b on a.ProdiID = b.ID
                                                where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.' and b.EducationLevelID = 3
                                             ) subprocess
-                                            
+
                                         ) xx
                                         where Bulan is not null and Bulan > 18
                                           ';
@@ -1546,20 +1553,20 @@ class C_rest3 extends CI_Controller {
 
             $sqlWaktuTungguKecil3bulan = '
                                         select * from (
-                                          select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja) 
-                                                                                  - YEAR(GraduationDate)) 
-                                                                           + (MONTH(TglKerja) 
-                                                                               - MONTH(GraduationDate)) ) AS Bulan 
+                                          select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja)
+                                                                                  - YEAR(GraduationDate))
+                                                                           + (MONTH(TglKerja)
+                                                                               - MONTH(GraduationDate)) ) AS Bulan
                                            from (
                                                select a.NPM,a.Name,a.GraduationDate,
                                                  (select concat(StartYear,"-",StartMonth,"-","01") as TglKerja from db_studentlife.alumni_experience
-                                                     where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                     where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                  ) as TglKerja
-                                               from db_academic.auth_students as a 
-                                               join db_academic.program_study as b on a.ProdiID = b.ID   
+                                               from db_academic.auth_students as a
+                                               join db_academic.program_study as b on a.ProdiID = b.ID
                                                where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.' and b.EducationLevelID = 9
                                             ) subprocess
-                                            
+
                                         ) xx
                                         where Bulan is not null and Bulan < 3
                                           ';
@@ -1572,20 +1579,20 @@ class C_rest3 extends CI_Controller {
 
            $sqlWaktuTungguKecil3bulan6Bulan = '
                                        select * from (
-                                         select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja) 
-                                                                                 - YEAR(GraduationDate)) 
-                                                                          + (MONTH(TglKerja) 
-                                                                              - MONTH(GraduationDate)) ) AS Bulan 
+                                         select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja)
+                                                                                 - YEAR(GraduationDate))
+                                                                          + (MONTH(TglKerja)
+                                                                              - MONTH(GraduationDate)) ) AS Bulan
                                           from (
                                               select a.NPM,a.Name,a.GraduationDate,
                                                 (select concat(StartYear,"-",StartMonth,"-","01") as TglKerja from db_studentlife.alumni_experience
-                                                    where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                    where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                 ) as TglKerja
-                                              from db_academic.auth_students as a 
-                                              join db_academic.program_study as b on a.ProdiID = b.ID   
+                                              from db_academic.auth_students as a
+                                              join db_academic.program_study as b on a.ProdiID = b.ID
                                               where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.' and b.EducationLevelID = 9
                                            ) subprocess
-                                           
+
                                        ) xx
                                        where Bulan is not null and Bulan >= 3 and Bulan <= 6
                                          ';
@@ -1598,20 +1605,20 @@ class C_rest3 extends CI_Controller {
 
                 $sqlWaktuTungguKecilBesar6Bulan = '
                                             select * from (
-                                              select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja) 
-                                                                                      - YEAR(GraduationDate)) 
-                                                                               + (MONTH(TglKerja) 
-                                                                                   - MONTH(GraduationDate)) ) AS Bulan 
+                                              select NPM,Name,GraduationDate,TglKerja,(12 * (YEAR(TglKerja)
+                                                                                      - YEAR(GraduationDate))
+                                                                               + (MONTH(TglKerja)
+                                                                                   - MONTH(GraduationDate)) ) AS Bulan
                                                from (
                                                    select a.NPM,a.Name,a.GraduationDate,
                                                      (select concat(StartYear,"-",StartMonth,"-","01") as TglKerja from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                      ) as TglKerja
-                                                   from db_academic.auth_students as a 
-                                                   join db_academic.program_study as b on a.ProdiID = b.ID   
+                                                   from db_academic.auth_students as a
+                                                   join db_academic.program_study as b on a.ProdiID = b.ID
                                                    where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.' and b.EducationLevelID = 9
                                                 ) subprocess
-                                                
+
                                             ) xx
                                             where Bulan is not null and Bulan > 6
                                               ';
@@ -1625,16 +1632,16 @@ class C_rest3 extends CI_Controller {
             $sqlLulusanSesuaiBidangKerjaRendah = '
                                   select * from (
                                     select a.NPM,a.Name,(select count(*) as total from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                   ) as count,
                                                   (select WorkSuitability from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                   ) as WorkSuitability
-                                    from db_academic.auth_students as a  
+                                    from db_academic.auth_students as a
                                     where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.'
                                   )xx
                                   where count > 0 and WorkSuitability = "0"
-                                  '; 
+                                  ';
             $queryLulusanSesuaiBidangKerjaRendah = $this->db->query($sqlLulusanSesuaiBidangKerjaRendah,array())->result_array();
             $arr_pass = [
                 'total' => count($queryLulusanSesuaiBidangKerjaRendah),
@@ -1645,16 +1652,16 @@ class C_rest3 extends CI_Controller {
             $sqlLulusanSesuaiBidangKerjaSedang = '
                                   select * from (
                                     select a.NPM,a.Name,(select count(*) as total from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                   ) as count,
                                                   (select WorkSuitability from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                   ) as WorkSuitability
-                                    from db_academic.auth_students as a  
+                                    from db_academic.auth_students as a
                                     where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.'
                                   )xx
                                   where count > 0 and WorkSuitability = "1"
-                                  '; 
+                                  ';
             $queryLulusanSesuaiBidangKerjaSedang = $this->db->query($sqlLulusanSesuaiBidangKerjaSedang,array())->result_array();
             $arr_pass = [
                 'total' => count($queryLulusanSesuaiBidangKerjaSedang),
@@ -1665,16 +1672,16 @@ class C_rest3 extends CI_Controller {
             $sqlLulusanSesuaiBidangKerjaTinggi = '
                                    select * from (
                                     select a.NPM,a.Name,(select count(*) as total from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                   ) as count,
                                                   (select WorkSuitability from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM and JobType = "1" order by StartYear asc,StartMonth asc limit 1
                                                   ) as WorkSuitability
-                                    from db_academic.auth_students as a  
+                                    from db_academic.auth_students as a
                                     where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.'
                                   )xx
                                   where count > 0 and WorkSuitability = "2"
-                                  '; 
+                                  ';
             $queryLulusanSesuaiBidangKerjaTinggi = $this->db->query($sqlLulusanSesuaiBidangKerjaTinggi,array())->result_array();
             $arr_pass = [
                 'total' => count($queryLulusanSesuaiBidangKerjaTinggi),
@@ -1685,13 +1692,13 @@ class C_rest3 extends CI_Controller {
             $sqlLulusanTelahBekerjaUsaha = '
                                   select * from (
                                     select a.NPM,a.Name,(select count(*) as total from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM order by StartYear asc,StartMonth asc limit 1
                                                   ) as count
-                                    from db_academic.auth_students as a  
+                                    from db_academic.auth_students as a
                                     where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.'
                                   )xx
                                   where count > 0
-                                  '; 
+                                  ';
             $queryLulusanTelahBekerjaUsaha = $this->db->query($sqlLulusanTelahBekerjaUsaha,array())->result_array();
             $arr_pass = [
                 'total' => count($queryLulusanTelahBekerjaUsaha),
@@ -1702,13 +1709,13 @@ class C_rest3 extends CI_Controller {
             $sqlLulusanUkuranLokal = '
                                   select * from (
                                     select a.NPM,a.Name,(select count(*) as total from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM and JobLevelID in(1,4) order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM and JobLevelID in(1,4) order by StartYear asc,StartMonth asc limit 1
                                                   ) as count
-                                    from db_academic.auth_students as a  
+                                    from db_academic.auth_students as a
                                     where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.'
                                   )xx
                                   where count > 0
-                                  '; 
+                                  ';
             $queryLulusanUkuranLokal = $this->db->query($sqlLulusanUkuranLokal,array())->result_array();
             $arr_pass = [
                 'total' => count($queryLulusanUkuranLokal),
@@ -1719,13 +1726,13 @@ class C_rest3 extends CI_Controller {
             $sqlLulusanUkuranNasional = '
                                   select * from (
                                     select a.NPM,a.Name,(select count(*) as total from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM  and JobLevelID in(2,5) order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM  and JobLevelID in(2,5) order by StartYear asc,StartMonth asc limit 1
                                                   ) as count
-                                    from db_academic.auth_students as a  
+                                    from db_academic.auth_students as a
                                     where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.'
                                   )xx
                                   where count > 0
-                                  '; 
+                                  ';
             $queryLulusanUkuranNasional = $this->db->query($sqlLulusanUkuranNasional,array())->result_array();
             $arr_pass = [
                 'total' => count($queryLulusanUkuranNasional),
@@ -1736,13 +1743,13 @@ class C_rest3 extends CI_Controller {
             $sqlLulusanUkuranInternasional = '
                                   select * from (
                                     select a.NPM,a.Name,(select count(*) as total from db_studentlife.alumni_experience
-                                                         where NPM = a.NPM  and JobLevelID in(2,5) order by StartYear asc,StartMonth asc limit 1             
+                                                         where NPM = a.NPM  and JobLevelID in(2,5) order by StartYear asc,StartMonth asc limit 1
                                                   ) as count
-                                    from db_academic.auth_students as a  
+                                    from db_academic.auth_students as a
                                     where a.GraduationYear = '.$arr_tahun_lulus[$i].' and a.ProdiID = '.$ProdiID.'
                                   )xx
                                   where count > 0
-                                  '; 
+                                  ';
             $queryLulusanUkuranInternasional = $this->db->query($sqlLulusanUkuranInternasional,array())->result_array();
             $arr_pass = [
                 'total' => count($queryLulusanUkuranInternasional),
@@ -1771,12 +1778,12 @@ class C_rest3 extends CI_Controller {
           $arr_ts = json_decode(json_encode($dataToken['arr_ts']),true);
           $G_jns_forlap_publikasi = $this->m_master->showData_array('db_research.jenis_forlap_publikasi');
           for ($i=0; $i < count($G_jns_forlap_publikasi); $i++) {
-            $data = []; 
+            $data = [];
             $data[] = $i+1;
             $data[] = $G_jns_forlap_publikasi[$i]['NamaForlap_publikasi'];
             $jumlah = 0;
             $ID_forlap_publikasi = $G_jns_forlap_publikasi[$i]['ID'];
-            for ($j=0; $j < count($arr_ts) ; $j++) { 
+            for ($j=0; $j < count($arr_ts) ; $j++) {
               $sql = 'select a.ID_publikasi,Judul,Tgl_terbit,a.NIP from db_research.publikasi as a
                       #join db_research.publikasi_list_mahasiswa as b on a.ID_publikasi = b.ID_publikasi
                       #join db_research.penulis_mahasiswa as c on b.ID_Penulis_Mahasiswa = c.ID_Penulis_Mahasiswa
@@ -1792,7 +1799,7 @@ class C_rest3 extends CI_Controller {
 
 
               $query = $this->db->query($sql,array())->result_array();
-              for ($lt=0; $lt < count($query); $lt++) { 
+              for ($lt=0; $lt < count($query); $lt++) {
                 $sqlGetAnggota = 'select usrr.Nama from db_research.list_anggota_publikasi as a
                                   join db_research.master_anggota_publikasi as b on a.ID_anggota = b.ID
                                   '.$this->m_research->QueryUserReserachJoin('b.ID_user').'
@@ -1810,7 +1817,7 @@ class C_rest3 extends CI_Controller {
           }
           echo json_encode($rs);
           break;
-          
+
         case 'kepuasan-lulusan':
           $Year = $dataToken['Year'];
           $ProdiID = $dataToken['ProdiID'];
@@ -1819,7 +1826,7 @@ class C_rest3 extends CI_Controller {
           if(count($dataAspek)>0){
 
               for($i=0;$i<count($dataAspek);$i++){
-                 $dataDetails = $this->db->query('SELECT afd.*, ats.Name, ats.NPM, mc.Name AS Company FROM db_studentlife.alumni_form_details afd 
+                 $dataDetails = $this->db->query('SELECT afd.*, ats.Name, ats.NPM, mc.Name AS Company FROM db_studentlife.alumni_form_details afd
                                                             LEFT JOIN db_studentlife.alumni_form af ON (af.ID = afd.FormID)
                                                             LEFT JOIN db_studentlife.alumni_experience ae ON (ae.ID = af.IDAE)
                                                             LEFT JOIN db_studentlife.master_company mc ON (mc.ID = ae.CompanyID)
@@ -1857,23 +1864,23 @@ class C_rest3 extends CI_Controller {
 
           }
 
-          echo json_encode($dataAspek);  
-          break; 
-        case 'karya_ilmiah_mhs_sitasi' : 
+          echo json_encode($dataAspek);
+          break;
+        case 'karya_ilmiah_mhs_sitasi' :
           $rs = [];
           $P = $dataToken['ProdiID'];
           $P = explode('.', $P);
           $ProdiID = $P[0];
           $Year = $dataToken['Year'];
-          $sql = 'select b.Name as NameMHS,a.judul_sitasi,a.jumlah_sitasi 
-                  from db_agregator.sitasi_karya_mhs as a 
+          $sql = 'select b.Name as NameMHS,a.judul_sitasi,a.jumlah_sitasi
+                  from db_agregator.sitasi_karya_mhs as a
                   join db_academic.auth_students as b on b.NPM = a.Updated_by
                   where b.ProdiID = '.$ProdiID.' and a.year = '.$Year.'
 
                 ';
           $query = $this->db->query($sql,array())->result_array();
           $data = array();
-          for ($i=0; $i < count($query); $i++) { 
+          for ($i=0; $i < count($query); $i++) {
               $nestedData = array();
               $row = $query[$i];
               $nestedData[] = $i+1;
@@ -1887,11 +1894,11 @@ class C_rest3 extends CI_Controller {
                "recordsTotal"    => intval(count($query)),
                "recordsFiltered" => intval( count($query) ),
                "data"            => $data
-           );          
+           );
           echo json_encode($rs);
-          break; 
+          break;
         default:
-          echo '{"status":"999","message":"Not Authorize"}'; 
+          echo '{"status":"999","message":"Not Authorize"}';
           break;
       }
     }
@@ -1913,13 +1920,13 @@ class C_rest3 extends CI_Controller {
           $sql = '
                   select  * from (
                     select a.Judul_litabmas,b.Name as NameDosen,c.Name as NameMataKuliah,a.Bentuk_integrasi,a.ID_thn_laks
-                    from db_research.litabmas as a 
+                    from db_research.litabmas as a
                     join db_employees.employees as b on a.NIP = b.NIP
                     join db_academic.mata_kuliah as c on c.MKCode = a.MKCode
                     where a.SemesterID = '.$SemesterID.' and b.ProdiID = '.$ProdiID.'
-                    UNION 
+                    UNION
                     select a.Judul_PKM,b.Name as NameDosen,c.Name as NameMataKuliah,a.Bentuk_integrasi,a.ID_thn_laks
-                    from db_research.pengabdian_masyarakat as a 
+                    from db_research.pengabdian_masyarakat as a
                     join db_employees.employees as b on a.NIP = b.NIP
                     join db_academic.mata_kuliah as c on c.MKCode = a.MKCode
                     where a.SemesterID = '.$SemesterID.' and b.ProdiID = '.$ProdiID.'
@@ -1927,7 +1934,7 @@ class C_rest3 extends CI_Controller {
                   order by ID_thn_laks desc
                 ';
             $query = $this->db->query($sql,array())->result_array();
-            for ($i=0; $i < count($query); $i++) { 
+            for ($i=0; $i < count($query); $i++) {
                 $data = [];
                 $data[] = $i+1;
                 $row = $query[$i];
@@ -1935,7 +1942,7 @@ class C_rest3 extends CI_Controller {
                   $data[] = $value;
                 }
                 $rs[] = $data;
-            }    
+            }
             echo json_encode($rs);
           break;
         case 'LoadSelectOptionAspekRatio' :
@@ -1952,13 +1959,13 @@ class C_rest3 extends CI_Controller {
           $S = explode('.', $S);
           $SemesterID = $S[0];
           $sql = 'select a.ID_m_aspek_ratio, b.Aspek,a.k_sangat_baik,a.k_baik,a.k_cukup,a.k_kurang,a.RencanaTindakLanjut,a.SemesterID,a.ProdiID,a.Updated_at,a.Updated_by,a.ID
-                  from db_agregator.kepuasan_mhs as a 
+                  from db_agregator.kepuasan_mhs as a
                   join db_agregator.m_aspek_ratio as b on a.ID_m_aspek_ratio = b.ID
                   where a.ProdiID = '.$ProdiID.' and a.SemesterID = '.$SemesterID.'
                   ';
           $query = $this->db->query($sql,array())->result_array();
           $data = [];
-          for ($i=0; $i < count($query); $i++) { 
+          for ($i=0; $i < count($query); $i++) {
             $nestedData = [];
             $row = $query[$i];
             $nestedData[] = $i+1;
@@ -1982,7 +1989,7 @@ class C_rest3 extends CI_Controller {
               "data"            => $data
           );
           echo json_encode($rs);
-          break; 
+          break;
 
         case 'kepuasan-mhs-add' :
           $dataSave = $dataToken['data'];
@@ -2007,9 +2014,9 @@ class C_rest3 extends CI_Controller {
           $this->db->where('ID',$ID);
           $this->db->delete('db_agregator.kepuasan_mhs');
           echo json_encode(1);
-          break;    
+          break;
         default:
-          echo '{"status":"999","message":"Not Authorize"}'; 
+          echo '{"status":"999","message":"Not Authorize"}';
           break;
       }
     }
@@ -2022,7 +2029,7 @@ class C_rest3 extends CI_Controller {
             $TA = $dataToken['ta'];
             $DBTA = 'ta_'.$TA;
             $sql = 'select a.NPM,a.Name,a.ProdiID,b.Name as NameProdi,c.FormulirCode,if(y.StatusReg = 1, (select No_Ref from db_admission.formulir_number_offline_m where FormulirCode = c.FormulirCode limit 1) ,(select No_Ref from db_admission.formulir_number_online_m where FormulirCode = c.FormulirCode limit 1)  ) as No_Ref
-            from '.$DBTA.'.students as a 
+            from '.$DBTA.'.students as a
             join db_academic.program_study as b on a.ProdiID = b.ID
             join db_admission.to_be_mhs as c on a.NPM = c.NPM
             join db_admission.register_verified as z on c.FormulirCode = z.FormulirCode
@@ -2042,7 +2049,7 @@ class C_rest3 extends CI_Controller {
             $this->load->model('admission/m_admission');
             $rs = ['Status' => 1,'Dt' => [] ];
             // $path = FCPATH.'upload\\document\\'.'11190042';
-            
+
             // if (!file_exists('./uploads/document/'.'111900424')) {
             //     print_r('Not Directory');
             // }
@@ -2074,9 +2081,9 @@ class C_rest3 extends CI_Controller {
             $taDB =  'ta_'.$ta;
             $DataSelected = json_decode(json_encode($DataSelected),true);
             for ($i=0; $i < count($DataSelected); $i++) {
-                $NPM = $DataSelected[$i]['NPM']; 
+                $NPM = $DataSelected[$i]['NPM'];
                 $Name = $DataSelected[$i]['Name'];
-                $MSG = ''; 
+                $MSG = '';
                 // library conn
                 $cekLib = $this->m_master->cekConectDb();
                 if (!$cekLib) {
@@ -2119,39 +2126,34 @@ class C_rest3 extends CI_Controller {
                         break;
                     }
                     else {
-                        $server = "ldap://10.1.30.2";
-                        $ds=ldap_connect($server);
-                        $dn = 'OU=Ldap,DC=pu,DC=local';
-                        $userBind = 'alhadi.rahman'.'@pu.local';
-                        $filter="(|(sAMAccountName=$NPM))";
-                        $pwdBind = 'IT@podomoro6737ht';
-                         if ($bind = ldap_bind($ds, $userBind , $pwdBind)) {
-                             $sr = ldap_search($ds, $dn, $filter);
-                             $ent= ldap_get_entries($ds,$sr);
-                            //  $cn = $ent[0]['cn'][0];
-                             $cn = 'test ad1';
-                             if ($ent["count"] == 1) {
-                               // api delete
-                               // dsrm -noprompt CN="test ad",OU=Ldap,DC=pu,DC=local
-                                $script = 'dsrm -noprompt CN="'.$cn.'",OU=Ldap,DC=pu,DC=local';
-                                $data = array(
-                                    'auth' => 's3Cr3T-G4N',
-                                    'Type' => 'Student',
-                                    'script' => $script,
-                                );
-                                
-                                if($_SERVER['SERVER_NAME']=='pcam.podomorouniversity.ac.id') { // AD jalannya hanya di live
-                                    $url = URLAD.'__api/Delete';
-                                    $token = $this->jwt->encode($data,"UAP)(*");
-                                    $this->m_master->apiservertoserver_NotWaitResponse($url,$token);
-                                    $MSG .= '<br/>AD Proses Delete : Finish';
-                                }
 
-                             }
-                             else {
-                                $MSG .= '<br/>AD Data : Tidak Ada';
-                             }
-                         }
+                      $urlADCheckExist = URLAD.'__api/check-student/'.$NPM;
+                      $get_ad = $this->m_master->apiservertoserver($urlADCheckExist);
+                      if ($get_ad['status'] == 1 || $get_ad['status'] == '1') {
+                          // api delete
+                          // dsrm -noprompt CN="test ad",OU=Ldap,DC=pu,DC=local
+                          $cn = $get_ad['callback'];
+                           $script = 'dsrm -noprompt CN="'.$cn.'",OU=Ldap,DC=pu,DC=local';
+                           $data = array(
+                               'auth' => 's3Cr3T-G4N',
+                               'Type' => 'Student',
+                               'script' => $script,
+                           );
+
+                           if($_SERVER['SERVER_NAME']=='pcam.podomorouniversity.ac.id') { // AD jalannya hanya di live
+                               $url = URLAD.'__api/Delete';
+                               $token = $this->jwt->encode($data,"UAP)(*");
+                               $this->m_master->apiservertoserver_NotWaitResponse($url,$token);
+                               $MSG .= '<br/>AD Proses Delete : Finish';
+                           }
+
+                          // $MSG .= '<br/>AD Proses Delete : Skip - Manually (Temporary)';
+
+                      }
+                      else
+                      {
+                        $MSG .= '<br/>AD Data : Tidak Ada';
+                      }
 
                          // Remove file di folder upload/document/{NPM}
                          $path = FCPATH.'uploads/document/'.$NPM;
@@ -2182,7 +2184,7 @@ class C_rest3 extends CI_Controller {
                           // remove di db_finance
                           $G_dtFin = $this->m_master->caribasedprimary('db_finance.payment','NPM',$NPM);
                           $countCek = 0;
-                          for ($z=0; $z < count($G_dtFin); $z++) { 
+                          for ($z=0; $z < count($G_dtFin); $z++) {
                               // delete di payment student first
                               $this->db->where('ID_payment',$G_dtFin[$z]['ID']);
                               $this->db->delete('db_finance.payment_students');
@@ -2195,7 +2197,7 @@ class C_rest3 extends CI_Controller {
                                 $countCek++;
                               }
                           }
-                          
+
                           if ($countCek == count($G_dtFin)) {
                             $MSG .= '<br/>Data Student -- Finance  : Berhasil dihapus';
                           }
@@ -2276,21 +2278,21 @@ class C_rest3 extends CI_Controller {
 
             $rs['Dt'] = $DataSelected;
             echo json_encode($rs);
-            
-        }     
-        else {
-            
+
         }
-        
+        else {
+
+        }
+
     }
 
-   
+
     public function Config_Jabatan_SKS() {
       $dataToken = $this->data['dataToken'];
       $mode = $dataToken['mode'];
       if ($mode=='showDataDosen') {
         $sql = 'select a.NIP,a.Name,a.PositionMain,a.PositionOther1,a.PositionOther2,a.PositionOther3 from db_employees.employees as a
-            where ( 
+            where (
                       StatusEmployeeID != -1
                     ) ';
         $query=$this->db->query($sql, array())->result_array();
@@ -2357,11 +2359,11 @@ class C_rest3 extends CI_Controller {
 
             $arr_year = [];
 
-            for ($i=$YearSt; $i <= $YearNow ; $i++) { 
+            for ($i=$YearSt; $i <= $YearNow ; $i++) {
                 $arr_year[] = $i;
             }
 
-            for ($i=0; $i < count($arr_year); $i++) { 
+            for ($i=0; $i < count($arr_year); $i++) {
                 $temp = [];
                 $temp[] = $arr_year[$i];
                 // get lulusan
@@ -2369,10 +2371,10 @@ class C_rest3 extends CI_Controller {
                 $query=$this->db->query($sql, array())->result_array();
                 // $token = $this->jwt->encode($query,"UAP)(*");
 
-                
+
 
                 $temp2 = [];
-                for ($k=0; $k < count($query); $k++) { 
+                for ($k=0; $k < count($query); $k++) {
                     $TADB = 'ta_'.$query[$k]['Year'];
                     $NPM = $query[$k]['NPM'];
                     $sql1 = 'select * from '.$TADB.'.study_planning where NPM = ?';
@@ -2403,7 +2405,7 @@ class C_rest3 extends CI_Controller {
                     $temp[] = 0;
                     $temp[] = 0;
                 }
-                
+
                 $rs[] = $temp;
             }
 
@@ -2416,7 +2418,7 @@ class C_rest3 extends CI_Controller {
           $ex = explode('.', $ProdiID);
           $ProdiID = $ex[0];
           $ProdiName = $dataToken['ProdiName'];
-          /*  
+          /*
               Tahun Masuk = ta
               ta awal adalah = 2014, 2014 kebawah tidak ada
           */
@@ -2427,11 +2429,11 @@ class C_rest3 extends CI_Controller {
           $arr_y_temp = [];
           $arr_row = [];
           $TaSelection = [];
-          for ($i=$YearTS6; $i <= $Year; $i++) { 
+          for ($i=$YearTS6; $i <= $Year; $i++) {
             $arr_y_temp[] = $i;
           }
 
-          for ($i=$YearTS6; $i <= $YearMinRow; $i++) { 
+          for ($i=$YearTS6; $i <= $YearMinRow; $i++) {
             $arr_row[] = $i;
           }
 
@@ -2441,38 +2443,38 @@ class C_rest3 extends CI_Controller {
                  'Name' => 'Tahun Masuk',
                  'colspan' => 1,
                  'rowspan' => 2,
-                 'dt' => [], 
+                 'dt' => [],
               ],
               [
                 'Name' => 'Jumlah Mahasiswa  Diterima',
                 'colspan' => 1,
                 'rowspan' => 2,
-                'dt' => [], 
+                'dt' => [],
               ],
               [
                 'Name' => 'Jumlah Mahasiswa yang lulus pada',
                 'colspan' => count($arr_y_temp),
                 'rowspan' => 1,
-                'dt' => $arr_y_temp, 
+                'dt' => $arr_y_temp,
               ],
               [
                 'Name' => 'Jumlah Lulusan s.d. akhir TS',
                 'colspan' => 1,
                 'rowspan' => 2,
-                'dt' => [], 
+                'dt' => [],
               ],
               [
                 'Name' => 'Rata-rata Masa Studi',
                 'colspan' => 1,
                 'rowspan' => 2,
-                'dt' => [], 
+                'dt' => [],
               ],
           ];
 
           $rs['header'] = $temp;
           $body = [];
           for ($i=0; $i < count($arr_row); $i++) {
-            $temp =  []; 
+            $temp =  [];
             $TahunMasuk = $arr_row[$i];
             $temp[] = $TahunMasuk;
             $JumlahMhsDiterima = 0;
@@ -2488,7 +2490,7 @@ class C_rest3 extends CI_Controller {
             $arr_rata2studi = [];
             if ($JumlahMhsDiterima > 0) { // jumlah mahasiswa yg lulus pada
               for ($k=0; $k < count($arr_y_temp); $k++) {
-                $get_tayear= $arr_y_temp[$k]; 
+                $get_tayear= $arr_y_temp[$k];
                 $sql1 = 'select NPM,Name,Year,GraduationYear from db_academic.auth_students where GraduationYear = "'.$get_tayear.'" and StatusStudentID = ? and Year = '.$TahunMasuk.' and ProdiID = '.$ProdiID;
                 $query1=$this->db->query($sql1, array(1))->result_array();
                 // $sql1 = 'select NPM,Name,Year,GraduationYear from db_academic.auth_students where GraduationYear = "'.$get_tayear.'" and Year = '.$TahunMasuk.' and ProdiID = '.$ProdiID;
@@ -2499,7 +2501,7 @@ class C_rest3 extends CI_Controller {
                 $temp[] = $s;
                 $JmlLulus += $tot;
 
-                for ($l=0; $l < count($query1); $l++) { 
+                for ($l=0; $l < count($query1); $l++) {
                   $Co = $query1[$l]['GraduationYear'] - $query1[$l]['Year'];
                   $arr_rata2studi[] = $Co;
                 }
@@ -2536,7 +2538,7 @@ class C_rest3 extends CI_Controller {
 
           $rs['body'] = $body;
           echo json_encode($rs);
-            
+
         }
 
         elseif ($mode == 'KurikulumCapaianRencana') {
@@ -2550,7 +2552,7 @@ class C_rest3 extends CI_Controller {
           $sql = 'select a.Semester,b.MKCode,b.NameEng as NameMataKuliah,if(b.TypeMK = "1","V","") as TypeMatakuliah,
                   if(b.CourseType = "1","V","") as Kuliah,if(b.CourseType = "4","V","") as Seminar,if(b.CourseType = "3" or b.CourseType = "2","V","") as Pratikum,
                   (a.TotalSKS * c.SKSPerMinutes) as Konversi,z.Year,a.MKID
-                  from db_academic.curriculum_details as a 
+                  from db_academic.curriculum_details as a
                   join db_academic.curriculum as z on z.ID = a.CurriculumID
                   join db_academic.mata_kuliah as b on a.MKID = b.ID
                   join db_rektorat.credit_type_courses as c on c.ID = b.CourseType
@@ -2561,7 +2563,7 @@ class C_rest3 extends CI_Controller {
           $data = array();
           // get semester
           $Get_semester = $this->m_master->showData_array('db_academic.semester');
-          for ($i=0; $i < count($query); $i++) { 
+          for ($i=0; $i < count($query); $i++) {
             $nestedData = array();
             $row = $query[$i];
             $nestedData[] = $i+1;
@@ -2584,7 +2586,7 @@ class C_rest3 extends CI_Controller {
             // get SemesterID
             $CountSemester = 0;
             $SemesterID = '';
-            for ($j=0; $j < count($Get_semester); $j++) { 
+            for ($j=0; $j < count($Get_semester); $j++) {
               if ($Get_semester[$j]['Year'] == $Year) {
                 $CountSemester++;
                 if ($Semester == $CountSemester) {
@@ -2596,7 +2598,7 @@ class C_rest3 extends CI_Controller {
             $Dokumen = '';
             if ($SemesterID != '') {
               $sql2 = 'select b.ScheduleID,c.SAP
-                      from db_academic.schedule as a 
+                      from db_academic.schedule as a
                       join db_academic.schedule_details_course as b on a.ID = b.ScheduleID
                       join db_academic.grade_course as c on c.ScheduleID = a.ID
                       where c.SemesterID = '.$SemesterID.' and b.ProdiID = '.$ProdiID.'
@@ -2617,15 +2619,15 @@ class C_rest3 extends CI_Controller {
                "recordsTotal"    => intval(count($query)),
                "recordsFiltered" => intval( count($query) ),
                "data"            => $data
-           );       
+           );
           echo json_encode($rs);
         }
         else
         {
-          echo '{"status":"999","message":"Not Authorize"}'; 
+          echo '{"status":"999","message":"Not Authorize"}';
         }
 
-       
+
     }
 
     public function submit_console_developer()
@@ -2641,14 +2643,14 @@ class C_rest3 extends CI_Controller {
            $DataForm = json_decode(json_encode($dataToken['DataForm']),true);
            $this->db->where('ID',$ID);
            $this->db->update('db_it.m_config',$DataForm);
-           
+
            echo json_encode(1);
         }
         elseif ($mode == 'insert') {
             $DataForm = json_decode(json_encode($dataToken['DataForm']),true);
             $this->db->insert('db_it.m_config',$DataForm);
             echo json_encode(1);
-        } 
+        }
     }
     public function crud_calendar()
     {
@@ -2661,8 +2663,8 @@ class C_rest3 extends CI_Controller {
             if (array_key_exists('FileUpload', $_FILES)) {
                 // do upload file
                 $FileUpload = $this->m_master->uploadDokumenMultiple(uniqid(),'FileUpload',$path = './uploads/calendar');
-                $FileUpload = json_encode($FileUpload); 
-                $dataSave['FileUpload'] = $FileUpload; 
+                $FileUpload = json_encode($FileUpload);
+                $dataSave['FileUpload'] = $FileUpload;
             }
 
             $data = $Input['data'];
@@ -2674,7 +2676,7 @@ class C_rest3 extends CI_Controller {
             echo json_encode(1);
 
         }
-       
+
        elseif ($action == 'delete') {
            $ID = $Input['ID'];
            $G_data_ = $this->m_master->caribasedprimary('db_academic.calendar_academic','ID',$ID);
@@ -2725,7 +2727,7 @@ class C_rest3 extends CI_Controller {
                     ';
             $query = $this->db->query($sql)->result_array();
             $data = array();
-            for ($i=0; $i <count($query) ; $i++) { 
+            for ($i=0; $i <count($query) ; $i++) {
                 $nestedData = array();
                 $row = $query[$i];
                 $nestedData[] = $i+1;
@@ -2735,7 +2737,7 @@ class C_rest3 extends CI_Controller {
                 $nestedData[] = $row['NameEmp'];
                 $nestedData[] = $row['Entered_at'];
                 $nestedData[] = $row['StatusPublish'];
-                
+
                 $nestedData[] = $row['ID'];
                 $token = $this->jwt->encode($row,"UAP)(*");
                 $nestedData[] = $token;
@@ -2763,12 +2765,12 @@ class C_rest3 extends CI_Controller {
                           left join db_academic.program_study as b on a.ProdiID = b.ID
                           left join db_employees.division as c on SPLIT_STR(a.PositionMain, ".", 1) = c.ID
                           left join db_employees.position as d on SPLIT_STR(a.PositionMain, ".", 2) = d.ID
-              where 
+              where
               (
                 a.Name LIKE "'.$requestData['search']['value'].'%" OR
                 a.NIP LIKE "'.$requestData['search']['value'].'%" OR
                 c.Division LIKE "'.$requestData['search']['value'].'%" OR
-                d.Position LIKE "'.$requestData['search']['value'].'%" 
+                d.Position LIKE "'.$requestData['search']['value'].'%"
               )
           )xx';
       $queryTotal = $this->db->query($sqlTotalData)->result_array();
@@ -2781,12 +2783,12 @@ class C_rest3 extends CI_Controller {
             left join db_academic.program_study as b on a.ProdiID = b.ID
             left join db_employees.division as c on SPLIT_STR(a.PositionMain, ".", 1) = c.ID
             left join db_employees.position as d on SPLIT_STR(a.PositionMain, ".", 2) = d.ID
-            where 
+            where
             (
               a.Name LIKE "'.$requestData['search']['value'].'%" OR
               a.NIP LIKE "'.$requestData['search']['value'].'%" OR
               c.Division LIKE "'.$requestData['search']['value'].'%" OR
-              d.Position LIKE "'.$requestData['search']['value'].'%" 
+              d.Position LIKE "'.$requestData['search']['value'].'%"
             )
             ';
       $sql.= ' ORDER BY a.ID desc LIMIT '.$requestData['start'].' , '.$requestData['length'].' ';
@@ -2821,7 +2823,7 @@ class C_rest3 extends CI_Controller {
 
     }
 
-   
+
 
     public function LoadStudents_server_side(){
       $input = $this->getInputToken2();
@@ -2830,16 +2832,16 @@ class C_rest3 extends CI_Controller {
       $param= [];
       if(!empty($requestData['search']['value']) ) {
           $search = $requestData['search']['value'];
-          $param[] = array("field"=>"(ta.`Name`","data"=>" like '%".$search."%' ","filter"=>"AND",);    
-          $param[] = array("field"=>"ta.`NPM`","data"=>" like '%".$search."%' ","filter"=>"OR",);    
-          $param[] = array("field"=>"ps.`NameEng`","data"=>" like '%".$search."%' ","filter"=>"OR",);    
-          $param[] = array("field"=>"ps.`Name`","data"=>" like '%".$search."%' )","filter"=>"OR",);    
+          $param[] = array("field"=>"(ta.`Name`","data"=>" like '%".$search."%' ","filter"=>"AND",);
+          $param[] = array("field"=>"ta.`NPM`","data"=>" like '%".$search."%' ","filter"=>"OR",);
+          $param[] = array("field"=>"ps.`NameEng`","data"=>" like '%".$search."%' ","filter"=>"OR",);
+          $param[] = array("field"=>"ps.`Name`","data"=>" like '%".$search."%' )","filter"=>"OR",);
       }
 
       // Filter Portal Alumni is active or not
       if(array_key_exists('isPortalAlumi', $input)){
           if ($input['isPortalAlumi'] == 1) {
-              $param[] = array("field"=>"(select count(*) as total from `db_alumni`.`registration` as alm where alm.NPM = ta.NPM limit 1  )","data"=>" > 0","filter"=>"AND",); 
+              $param[] = array("field"=>"(select count(*) as total from `db_alumni`.`registration` as alm where alm.NPM = ta.NPM limit 1  )","data"=>" > 0","filter"=>"AND",);
           }
           else if ($input['isPortalAlumi'] == 0) {
               $param[] = array("field"=>"(select count(*) as total from `db_alumni`.`registration` as alm where alm.NPM = ta.NPM limit 1  )","data"=>" = 0","filter"=>"AND",);
@@ -2852,13 +2854,13 @@ class C_rest3 extends CI_Controller {
         $Selection = $input['Selection'];
         if (count($Selection) > 0) {
           $strFilter = "'".$Selection[0]."'";
-          for ($i=1; $i < count($Selection); $i++) { 
+          for ($i=1; $i < count($Selection); $i++) {
             $strFilter .= ",'".$Selection[$i]."'";
           }
           $param[] = array("field"=>"ta.`NPM`","data"=>" not in (".$strFilter.") ","filter"=>" AND",);
         }
       }
-      
+
       $totalData = $this->Globalinformation_model->fetchTotalDataStudent($param)->Total;
       $result = $this->Globalinformation_model->fetchStudentsPS(false,false,$param,$requestData['start'],$requestData['length'],'');
       $No = (int)$requestData['start'] + 1;
@@ -2903,24 +2905,24 @@ class C_rest3 extends CI_Controller {
                      foreach ($SubArr as $keySub => $valueSub) {
                        switch ($keySub) {
                          case 'SemesterID':
-                            $AddwherePost[] = array('field'=>'csl.`'.$keySub.'`','data'=>' = '.$valueSub ,'filter' =>' AND '); 
+                            $AddwherePost[] = array('field'=>'csl.`'.$keySub.'`','data'=>' = '.$valueSub ,'filter' =>' AND ');
                            break;
-                         
+
                          default:
                            # code...
                            break;
                        }
-                       
+
                      }
-                      
+
                   }
                 }
               // end filter by manually
 
               if(!empty($requestData['search']['value']) ) {
                   $search = $requestData['search']['value'];
-                  $AddwherePost[] = array('field'=>'(emp.`'.'NIP'.'`','data'=>' like "'.$search.'%"' ,'filter' =>' AND ');     
-                  $AddwherePost[] = array('field'=>'emp.`'.'Name'.'`','data'=>' like "'.$search.'%" )' ,'filter' =>' OR ');     
+                  $AddwherePost[] = array('field'=>'(emp.`'.'NIP'.'`','data'=>' like "'.$search.'%"' ,'filter' =>' AND ');
+                  $AddwherePost[] = array('field'=>'emp.`'.'Name'.'`','data'=>' like "'.$search.'%" )' ,'filter' =>' OR ');
               }
 
               $sql_select = 'select csl.ID,csl.SemesterID,csl.NIP,emp.Name as LecturerName,sms.Name as SemesterName,csl.Money,csl.Allowance,csl.Allowance_NIDN,csl.UpdateAt,csl.UpdatedBy,empUpd.Name as UpdateByName';
@@ -2928,7 +2930,7 @@ class C_rest3 extends CI_Controller {
                                 join db_academic.semester as sms on sms.ID = csl.SemesterID
                                 join db_employees.employees as emp on emp.NIP = csl.NIP
                                 join db_employees.employees as empUpd on empUpd.NIP = csl.UpdatedBy';
-              
+
               if(!empty($AddwherePost)){
                 $where = ' WHERE ';
                 $counter = 0;
@@ -2953,7 +2955,7 @@ class C_rest3 extends CI_Controller {
               // print_r($this->db->last_query());die();
               $No = (int)$requestData['start'] + 1;
               $data = array();
-              for ($i=0; $i < count($queryData); $i++) { 
+              for ($i=0; $i < count($queryData); $i++) {
                 $row = $queryData[$i];
                 $nestedData = array();
                 $nestedData[] = $No;
@@ -2990,7 +2992,7 @@ class C_rest3 extends CI_Controller {
            }
            else
            {
-            $rs['status'] = 1; 
+            $rs['status'] = 1;
            }
            $this->db->db_debug=true;
            echo json_encode($rs);
@@ -3008,7 +3010,7 @@ class C_rest3 extends CI_Controller {
            }
            else
            {
-            $rs['status'] = 1; 
+            $rs['status'] = 1;
            }
            $this->db->db_debug=true;
            echo json_encode($rs);
@@ -3024,7 +3026,7 @@ class C_rest3 extends CI_Controller {
           }
           else
           {
-           $rs['status'] = 1; 
+           $rs['status'] = 1;
           }
 
           $this->db->db_debug=true;
@@ -3040,7 +3042,7 @@ class C_rest3 extends CI_Controller {
                    foreach ($SubArr as $keySub => $valueSub) {
                      switch ($keySub) {
                        case 'smt_active':
-                          $AddwherePost[] = array('field'=>'csl.`'.'SemesterID'.'`','data'=>' = '.($valueSub - 1) ,'filter' =>' AND '); 
+                          $AddwherePost[] = array('field'=>'csl.`'.'SemesterID'.'`','data'=>' = '.($valueSub - 1) ,'filter' =>' AND ');
                          break;
                        case 'SelectionCopy':
                           $arr_SelectionCopy = $valueSub;
@@ -3048,41 +3050,41 @@ class C_rest3 extends CI_Controller {
                           if (count($arr_SelectionCopy) > 0) {
                             $strValue = '(';
                             $strValue .= '"'.$arr_SelectionCopy[0].'"';
-                            for ($i=1; $i < count($arr_SelectionCopy); $i++) { 
+                            for ($i=1; $i < count($arr_SelectionCopy); $i++) {
                               $strValue .= ',"'.$arr_SelectionCopy[$i].'"';
                             }
 
                              $strValue .= ')';
                           }
                           if ($strValue != '') {
-                             $AddwherePost[] = array('field'=>'csl.`'.'NIP'.'`','data'=>' not in'.$strValue ,'filter' =>' AND '); 
+                             $AddwherePost[] = array('field'=>'csl.`'.'NIP'.'`','data'=>' not in'.$strValue ,'filter' =>' AND ');
                           }
-                         
+
                          break;
                        default:
                          # code...
                          break;
                      }
-                     
+
                    }
-                    
+
                 }
               }
             // end filter by manually
 
             if(!empty($requestData['search']['value']) ) {
                 $search = $requestData['search']['value'];
-                $AddwherePost[] = array('field'=>'(emp.`'.'NIP'.'`','data'=>' like "'.$search.'%"' ,'filter' =>' AND ');     
-                $AddwherePost[] = array('field'=>'emp.`'.'Name'.'`','data'=>' like "'.$search.'%" )' ,'filter' =>' OR ');     
+                $AddwherePost[] = array('field'=>'(emp.`'.'NIP'.'`','data'=>' like "'.$search.'%"' ,'filter' =>' AND ');
+                $AddwherePost[] = array('field'=>'emp.`'.'Name'.'`','data'=>' like "'.$search.'%" )' ,'filter' =>' OR ');
             }
 
-            $sql_select = 'select csl.ID,csl.SemesterID,csl.NIP,emp.Name as LecturerName,sms.Name as SemesterName,csl.Money,csl.Money,csl.Allowance,csl.Allowance_NIDN,csl.UpdateAt,csl.UpdatedBy,empUpd.Name as UpdateByName, 
+            $sql_select = 'select csl.ID,csl.SemesterID,csl.NIP,emp.Name as LecturerName,sms.Name as SemesterName,csl.Money,csl.Money,csl.Allowance,csl.Allowance_NIDN,csl.UpdateAt,csl.UpdatedBy,empUpd.Name as UpdateByName,
                           if( (select count(*) as total from db_employees.credit_salary_lecturer where SemesterID = '.$Input['smt_active'].' and NIP = csl.NIP limit 1 ) > 0 ,1,0 ) as SelectionThisSMT  ';
             $sql_from = ' from db_employees.credit_salary_lecturer as csl
                               join db_academic.semester as sms on sms.ID = csl.SemesterID
                               join db_employees.employees as emp on emp.NIP = csl.NIP
                               join db_employees.employees as empUpd on empUpd.NIP = csl.UpdatedBy';
-            
+
             if(!empty($AddwherePost)){
               $where = ' WHERE ';
               $counter = 0;
@@ -3107,7 +3109,7 @@ class C_rest3 extends CI_Controller {
             // print_r($this->db->last_query());die();
             $No = (int)$requestData['start'] + 1;
             $data = array();
-            for ($i=0; $i < count($queryData); $i++) { 
+            for ($i=0; $i < count($queryData); $i++) {
               $row = $queryData[$i];
               $nestedData = array();
               $nestedData[] = $No;
@@ -3139,7 +3141,7 @@ class C_rest3 extends CI_Controller {
           $SemesterID = $G_smt[0]['ID'];
           $sessionNIP = $Input['sessionNIP'];
           $this->db->db_debug=false;
-          for ($i=0; $i < count($data); $i++) { 
+          for ($i=0; $i < count($data); $i++) {
             $dataSave = [
               'SemesterID' => $SemesterID,
               'NIP' => $data[$i]['NIP'],
@@ -3150,7 +3152,7 @@ class C_rest3 extends CI_Controller {
               'UpdatedBy' => $sessionNIP,
             ];
 
-            
+
             $sql = $this->db->insert('db_employees.credit_salary_lecturer',$dataSave);
             $FromID = $data[$i]['ID'];
             $ToID = $this->db->insert_id();
@@ -3172,7 +3174,7 @@ class C_rest3 extends CI_Controller {
               'UpdatedBy' => $sessionNIP,
             ];
             $this->db->insert('db_employees.copy_credit_salary_lecturer',$dataSave2);
-             
+
 
           }
           $this->db->db_debug=true;
@@ -3190,14 +3192,14 @@ class C_rest3 extends CI_Controller {
       switch ($action) {
         case 'history':
           $queryData = $this->db->query(
-            'select a.*,b.Name as NameEMP from db_finance.trans_deposit as a 
+            'select a.*,b.Name as NameEMP from db_finance.trans_deposit as a
               join db_employees.employees as b on a.FillBy = b.NIP
               where a.NPM = "'.$dataToken['data']['NPM'].'"
               order by a.ID desc
              '
           )->result_array();
           $data = array();
-          for ($i=0; $i < count($queryData); $i++) { 
+          for ($i=0; $i < count($queryData); $i++) {
             $row = $queryData[$i];
             $nestedData = array();
             $nestedData[] = ($i+1);
@@ -3229,7 +3231,7 @@ class C_rest3 extends CI_Controller {
           # code...
           break;
       }
-      
+
     }
 
 }

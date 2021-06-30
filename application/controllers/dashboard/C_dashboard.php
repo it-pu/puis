@@ -12,6 +12,20 @@ class C_dashboard extends Globalclass {
         parent::__construct();
         $this->load->model(array('master/m_master','General_model','General_model','global-informations/Globalinformation_model','hr/m_hr','m_log_content'));
         $this->load->helper("General_helper");
+
+        // for kb log
+        $this->subdata['tbl_kb_log'] = [
+            'columns' => [
+                '0' => ['name' => 'ActionBy', 'width' => '200px', 'title' => "Action By", 'filter' => ['type' => 'dropdown', 'options' => $this->m_master->dropdownEMP() ]   ],
+                '1' => ['name' => 'ActionAt', 'title' => 'Action At', 'width' => '200px', 'class' => 'default-sort', 'sort' => 'desc', 'filter' => false ],
+                '2' => ['name' => 'Action', 'width' => '100px','title' => 'Action', 'filter' => ['type' => 'dropdown', 'options' => $this->kb_action() ] ],
+                '3' => ['name' => 'Type', 'title' => 'Type', 'filter' => ['type' => 'text'] ],
+                '4' => ['name' => 'IDDepartment', 'title' => 'Division', 'filter' => ['type' => 'dropdown', 'options' => $this->m_master->dropdownDiv() ] ],
+                '5' => ['name' => '`Desc`', 'title' => 'Desc', 'filter' => ['type' => 'text'] ],
+                '6' => ['name' => 'File','width' => '200px','title' => 'File', 'filter' => ['type' => 'text'] ],
+                '7' => ['name' => 'Status','width' => '100px', 'title' => 'Status', 'filter' => ['type' => 'dropdown', 'options' => $this->kb_dropdownStatus() ] ],
+            ],
+        ];
     }
     public function temp($content)
     {
@@ -1080,6 +1094,7 @@ class C_dashboard extends Globalclass {
         }
         else
         {
+             $this->load->helper('form');
             // clear session first for change division
             $this->session->unset_userdata('kb_div');
             $data['G_division'] = $this->m_master->apiservertoserver(base_url().'api/__getAllDepartementPU');
@@ -1087,10 +1102,67 @@ class C_dashboard extends Globalclass {
 
             $data['selected'] = 'NA.6';
             $data['G_data'] = $this->m_master->userKB($data['selected']);
+
+            $data['page_log_content'] = $this->load->view('global/kb/kb_log',$this->subdata,true);
+
             $content = $this->load->view('global/kb/kb',$data,true);
             $this->temp($content);
         }
 
+    }
+
+    public function get_log_kb_table(){
+        $this->input->is_ajax_request() or exit('No direct post submit allowed!');
+        $start = $this->input->post('start');
+        $length = $this->input->post('length');
+        $order = $this->input->post('order')[0];
+        $draw = intval($this->input->post('draw'));
+        $filter = $this->input->post('filter');
+        $this->session->set_userdata('tbl_kb_log', $filter);
+        $this->load->model('kb/m_kb_log');
+
+        $datas= $this->m_kb_log->get_all($start, $length, $filter, $order);
+        $data_total =  $this->m_kb_log->get_total();
+        $data_total_filtered =  $this->m_kb_log->get_total($filter);
+        $output['data'] = array();
+
+        if ($datas) {
+            foreach ($datas->result() as $data) {
+                $output['data'][] = array(
+                    $data->ActionBy.' - '.$data->ActionByName,
+                    $data->ActionAt,
+                    $data->Action,
+                    $data->Type,
+                    $data->DepartmentCode,
+                     $data->Desc,
+                    '<a href = "'.base_url().'fileGetAny/kb-'.$data->File.'" target="_blank" ><textarea class = "form-control" disabled>'.base_url().'fileGetAny/kb-'.$data->File.'</textarea></a>' ,
+                    $data->Status,
+                );
+            }
+        }
+
+        $output['draw'] = $draw++;
+        $output['recordsTotal'] = $data_total;
+        $output['recordsFiltered'] = $data_total_filtered;
+        echo json_encode($output);
+    }
+
+    private function kb_dropdownStatus(){
+        $options = [
+                    '%' => 'All',
+                    'Private' => 'Private',
+                    'Public' => 'Public',
+                   ];
+        return $options;
+    }
+
+    private function kb_action(){
+        $options = [
+                    '%' => 'All',
+                    'Insert' => 'Insert',
+                    'Delete' => 'Delete',
+                   ];
+        return $options;
     }
 
     public function upload_kb(){
@@ -1115,6 +1187,22 @@ class C_dashboard extends Globalclass {
                                         ['file_name' =>  $fileName]
                                 );
                 $success['success']['formGrade'] = 0;
+
+                $get_data =  $this->db->where('ID',$ID)->get('db_employees.knowledge_base')->row();
+
+                // save log
+                $dataSaveLog = [
+                 'ID_knowledge_base' => $ID,
+                 'Action' => 'Insert', // just insert not update
+                 'IDType' => $get_data->IDType,
+                 'Desc' => $get_data->Desc,
+                 'File' => $fileName,
+                 'Status' => $get_data->Status,
+                 'ActionBy' => $this->session->userdata('NIP'),
+                 'ActionAt' => date('Y-m-d H:i:s'),
+                ];
+
+                $this->m_master->kb_action_log($dataSaveLog);
 
                 return print_r(json_encode($success));
 
@@ -1152,11 +1240,63 @@ class C_dashboard extends Globalclass {
                 $success = array('success' => $this->upload->data());
                 $success['success']['formGrade'] = 0;
 
+
+                $get_data =  $this->db->where('ID',$ID)->get('db_employees.knowledge_base')->row();
+
+                // save log
+                $dataSaveLog = [
+                 'ID_knowledge_base' => $ID,
+                 'Action' => 'Insert', // just insert not update
+                 'IDType' => $get_data->IDType,
+                 'Desc' => $get_data->Desc,
+                 'File' => $fileName,
+                 'Status' => $get_data->Status,
+                 'ActionBy' => $this->session->userdata('NIP'),
+                 'ActionAt' => date('Y-m-d H:i:s'),
+                ];
+
+                $this->m_master->kb_action_log($dataSaveLog);
+
                 return print_r(json_encode($success));
             }
         }
 
     }
+
+    public function kb_change_public_private(){
+        $arr = ['status' => 0,'callback'=> ''];
+        $datatoken =  $this->getInputToken();
+        $data =  $this->db->where('ID',$datatoken['KBID'])->get('db_employees.knowledge_base')->row();
+
+        if ($data) {
+           $dataSave = [
+                'Status' => ($data->Status == 'Private') ? 'Public' : 'Private',
+           ];
+
+           $this->db->where('ID',$datatoken['KBID']);
+           $this->db->update('db_employees.knowledge_base',$dataSave); 
+
+           $dataNew =  $this->db->where('ID',$datatoken['KBID'])->get('db_employees.knowledge_base')->row();
+           // save log
+           $dataSaveLog = [
+            'ID_knowledge_base' => $datatoken['KBID'],
+            'Action' => 'Edit', // just insert not update
+            'IDType' => $dataNew->IDType,
+            'Desc' => $dataNew->Desc,
+            'File' => $dataNew->File,
+            'Status' => $dataNew->Status,
+            'ActionBy' => $this->session->userdata('NIP'),
+            'ActionAt' => date('Y-m-d H:i:s'),
+           ];
+
+           $this->m_master->kb_action_log($dataSaveLog);
+
+           $arr = ['status' => 1,'callback'=> ($data->Status == 'Private') ? 'Public' : 'Private'];  
+        }
+
+        echo json_encode($arr);  
+    }
+    
 
     public function ShowLoggingNotification()
     {

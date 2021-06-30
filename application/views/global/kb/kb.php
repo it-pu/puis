@@ -67,6 +67,13 @@
             <input class="form-control" id="formKB_Desc"/>
         </div>
         <div class="form-group">
+          <label>Status</label>
+          <select class="form-control" id = "statusKB">
+            <option value="Private">Private</option>
+            <option value="Public">Public</option>
+          </select>
+        </div>
+        <div class="form-group">
             <label>File</b></label>
           <form id="formupload_files" enctype="multipart/form-data" accept-charset="utf-8" method="post" action="">
           <input type="file" name="userfile" id="upload_files" accept="">
@@ -100,7 +107,29 @@
         </div>
       </div>
     </div>
+</div>
+<?php if ($this->session->userdata('IDdepartementNavigation') == 12): // just IT ?>
+<div class="row" style="max-height: 600px;overflow-y: auto;margin-top: 10px;">
+  <div class="col-md-12">
+
+    <div class="thumbnail">
+      <div class="row" style="padding:10px;">
+          <div class="col-md-12">
+              <p style="color: red;">Just IT for see that</p>
+              <div class="panel panel-primary">
+                  <div class="panel-heading clearfix">
+                      <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Log KB</h4>
+                  </div>
+                  <div class="panel-body">
+                    <?php echo  $page_log_content ?>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
   </div>
+</div>
+<?php endif ?>
 
 
 <script type="text/javascript">
@@ -144,8 +173,6 @@ $('#saveFormKB').click(function () {
     && uploadFile == true
 
   ){
-
-
       loading_button('#saveFormKB');
 
       var url = base_url_js+'api3/__crudkb';
@@ -154,7 +181,8 @@ $('#saveFormKB').click(function () {
           ID : '', // ID knowledge_base
           dataForm : {
               IDType : formKBID, // menampung id kb type
-              Desc : formKB_Desc
+              Desc : formKB_Desc,
+              Status : $('#statusKB option:selected').val(),
           }
       };
       var token = jwt_encode(data,'UAP)(*');
@@ -178,9 +206,6 @@ $('#saveFormKB').click(function () {
 
         });
 
-
-
-
         } else {
 
           if(uploadFile==false){
@@ -188,8 +213,6 @@ $('#saveFormKB').click(function () {
           } else {
           toastr.error('Form Required','error');
           }
-
-
         }
 
       });
@@ -368,7 +391,11 @@ $('#saveFormKB').click(function () {
               success : function(data) {
                   toastr.success('Upload Success','Saved');
                   setTimeout(function () {
-                      // window.location.href = '';
+                      if (oTable !== undefined) {
+                         oTable.ajax.reload((e) => {
+                             
+                         });
+                      }
                   },500);
                   // loadDataEmployees();
 
@@ -395,6 +422,12 @@ $('#saveFormKB').click(function () {
              toastr.success('Data removed','Success');
              // loadDataKB();
              $('#Division').trigger('change');
+
+             if (oTable !== undefined) {
+                oTable.ajax.reload((e) => {
+                    
+                });
+             }
          });
 
      }
@@ -483,4 +516,45 @@ $('#saveFormKB').click(function () {
 
     }
   });
+
+  const change_public_private = async(selector,KBID) => {
+    if(confirm('Are you sure ?')){
+        const url = base_url_js + 'dashboard/c_dashboard/kb_change_public_private';
+        const dataPost= {
+          KBID :KBID
+        }
+
+        const data_token = jwt_encode(dataPost,'UAP)(*');
+        const btn_html = selector.html();
+        loading_button2(selector);
+
+        try{
+            const pr = await AjaxSubmitFormPromises(url,data_token);
+
+            if (pr['status'] == 1 || pr['status'] == '1') {
+              toastr.success('Success');
+
+              selector.closest('.list-group-item').find('.lblStatus').html(pr['callback']);
+              let c = (pr['callback'] == 'Private') ? 'Public' : 'Private';
+              end_loading_button2(selector,'Change to '+c);
+            }
+            else
+            {
+              toastr.info('Failed');
+              end_loading_button2(selector,btn_html);
+            }
+        }
+        catch(err){
+          toastr.error('Something wrong','error');
+          end_loading_button2(selector,btn_html);
+          console.log(err);
+        }
+    } 
+  }
+
+  $(document).on('click','.btnChangeStatus',function(e){
+    const itsme =  $(this);
+    const KBID = itsme.attr('data-id');
+    change_public_private(itsme,KBID);
+  })
 </script>

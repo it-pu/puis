@@ -12,7 +12,7 @@ Prodi : <span id="viewProdiID"></span> | <span id="viewProdiName"></span>
                         <tr>
                             <th rowspan="2">No</th>
                             <th rowspan="2">Jenis Publikasi</th>
-                            <th colspan="3" style="text-align: center;">Jumlah Judul</th>
+                            <th colspan="5" style="text-align: center;">Jumlah Judul</th>
                             <th rowspan="2">Jumlah</th>
                         </tr>
                         <tr id = "JS_TS">
@@ -109,7 +109,7 @@ var App_publikasi_mhs = {
     FillTS : function(){
        var arr = [];
        var YearNow = <?php echo date('Y') ?>;
-       var YearTs2 = YearNow - 2;
+       var YearTs2 = YearNow - 4;
        var selector = $('#JS_TS');
        selector.empty(); 
        for (var i = YearTs2; i <= YearNow; i++) {

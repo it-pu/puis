@@ -1,15 +1,11 @@
-
-
-
-
 <div class="tabbable tabbable-custom tabbable-full-width">
     <ul class="nav nav-tabs">
        
         <li class="<?php if($this->uri->segment(2)=='contact' && ($this->uri->segment(3)=='' || $this->uri->segment(3)==null ) ) { echo 'active'; }?>">
-            <a href="<?php echo base_url('prodi/contact'); ?>">Address</a>
+            <a href="<?php echo base_url('webdivisi/contact'); ?>">Address</a>
         </li>
         <li class="<?php if($this->uri->segment(3)=='sosmed' ) { echo 'active'; } ?>">
-            <a href="<?php echo base_url('prodi/contact/sosmed'); ?>">Sosial Media</a>
+            <a href="<?php echo base_url('webdivisi/contact/sosmed'); ?>">Sosial Media</a>
         </li>
         
     </ul>
@@ -72,7 +68,7 @@
         };
 
         var token = jwt_encode(data,'UAP)(*');
-        var url = base_url_js+'api-prodi/__crudDataProdi';
+        var url = base_url_js+'api-webdivisi/__crudDataDivisi';
         $.post(url,{token:token},function (jsonResult) {
 
             if(jsonResult.length>0){

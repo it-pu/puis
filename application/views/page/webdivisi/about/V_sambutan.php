@@ -60,7 +60,7 @@
     $(document).ready(function () {
 
         window.G_Type = 'welcoming';
-        loadSelectOptionLanguageProdi('#LangID','');
+        loadSelectOptionLanguageWebdivisi('#LangID','');
 
         $('#Description').summernote({
             placeholder: 'Text your announcement',
@@ -117,7 +117,7 @@
             Type : G_Type
         };
         var token = jwt_encode(data,'UAP)(*');
-        var url = base_url_js+'api-prodi/__crudDataProdi';
+        var url = base_url_js+'api-webdivisi/__crudDataDivisi';
 
         $.post(url,{token:token},function (jsonResult) {
             $('#viewDataDesc').empty();
@@ -140,7 +140,7 @@
             LangID : LangID,
         };
         var token = jwt_encode(data,'UAP)(*');
-        var url = base_url_js+'api-prodi/__crudDataProdi';
+        var url = base_url_js+'api-webdivisi/__crudDataDivisi';
         var linkfile = base_url_js+'images/Kaprodi/';
         $.post(url,{token:token},function (jsonResult) {
             $('#viewDataPhoto').empty();
@@ -166,7 +166,7 @@
                 LangID : LangID
             };
             var token = jwt_encode(data,'UAP)(*');
-            var url = base_url_js+'api-prodi/__crudDataProdi';
+            var url = base_url_js+'api-webdivisi/__crudDataDivisi';
             $.post(url,{token:token},function (jsonResult) {
                 if(jsonResult.length>0){
                     $('#Description').summernote('code', jsonResult[0].Description);
@@ -199,9 +199,9 @@
                     }
                 };
                 var token = jwt_encode(data,'UAP)(*');
-                var url = base_url_js+'api-prodi/__crudDataProdi';
+                var url = base_url_js+'api-webdivisi/__crudDataDivisi';
                 var token = jwt_encode(data,'UAP)(*');
-                var url = base_url_js+'api-prodi/__crudDataProdi';
+                var url = base_url_js+'api-webdivisi/__crudDataDivisi';
                 $.post(url,{token:token},function (jsonResult) {
                     toastr.success('Data saved','Success');
                     loadDataWelcoming();
@@ -243,7 +243,7 @@
                 loading_button('#btnSave2');
                 var token = jwt_encode(data,'UAP)(*');
                 form_data.append('token',token);
-                var url = base_url_js+'api-prodi/__crudDataProdi';
+                var url = base_url_js+'api-webdivisi/__crudDataDivisi';
                 $.ajax({
                   type:"POST",
                   url:url,

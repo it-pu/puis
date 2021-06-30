@@ -4,7 +4,7 @@ class M_podivers extends CI_Model {
 
 
     var $table = 'db_podivers.set_list_member';
-    var $tableset = 'db_podivers.set_group';
+    var $tableset = 'db_blogs.set_group';
     var $column_order = array('po.ID_set_list_member','Name',null); //set column field database for datatable orderable
     var $column_search = array('NIPNPM'); //set column field database for datatable searchable just firstname , lastname , address are searchable
 
@@ -24,7 +24,7 @@ class M_podivers extends CI_Model {
         $this->db->join('db_blogs.set_list_member as bl', 'po.NIPNPM = bl.NIPNPM');
         $this->db->join('db_academic.auth_students', 'auth_students.NPM = po.NIPNPM', 'left');
         $this->db->join('db_blogs.set_master_group', 'set_master_group.ID_master_group = po.ID_master_group', 'left');
-         $this->db->join('db_blogs.set_group', 'po.ID_set_group = set_group.ID_set_group', 'left');
+        $this->db->join('db_blogs.set_group', 'po.ID_set_group = set_group.ID_set_group', 'left');
         $i = 0;
         
         // if(!isset($_POST['category']))
@@ -95,15 +95,7 @@ class M_podivers extends CI_Model {
         $this->db->where('ID_set_group',$id);     
         $query = $this->db->get(); 
         return $query->row();
-    }
-    
-    public function get_by_idCat($id)
-    {
-        $this->db->from('db_podivers.podivers');
-        $this->db->where('ID',$id);
-        $query = $this->db->get(); 
-        return $query->row();
-    }
+    }  
 
     public function save($data,$datablog)
     {   
@@ -139,6 +131,12 @@ class M_podivers extends CI_Model {
 
     public function getSetGroup(){
         $data = $this->db->query('SELECT * FROM db_blogs.set_group where Active = 1 ORDER BY ID_set_group ASC');
+
+        return $data->result_array();
+    }
+
+    public function getSetGroupSelect($id){
+        $data = $this->db->query('SELECT * FROM db_blogs.set_group where ID_master_group="'.$id.'" and Active = 1');
 
         return $data->result_array();
     }

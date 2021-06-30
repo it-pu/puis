@@ -99,7 +99,7 @@
                   };
                   var token = jwt_encode(dataform,"UAP)(*");
                   loading_button2(selector);
-                  var url = base_url_js + "api-prodi/__crudDataProdi";
+                  var url = base_url_js + "api-webdivisi/__crudDataDivisi";
                   $.post(url,{ token:token },function (resultJson) {
                           
                   }).done(function(resultJson) {
@@ -125,7 +125,7 @@
             action : 'readContactAddress',
         };
         var token = jwt_encode(data,'UAP)(*');
-        var url = base_url_js+'api-prodi/__crudDataProdi';
+        var url = base_url_js+'api-webdivisi/__crudDataDivisi';
 
         $.post(url,{token:token},function (jsonResult) {
             $('#viewDataDesc').empty();

@@ -5,10 +5,10 @@ $active_record = TRUE;
 
 $db['server_live'] = array(
     'dsn'   => '',
-    'hostname' => '10.1.30.18',
-    'username' => 'db_itpu',
-    'password' => 'Uap)(*&^%',
-    'database' => 'db_academic',
+    'hostname' => _DB_HOST,
+    'username' => _DB_USER,
+    'password' => _DB_PASSWORD,
+    'database' => _DB_NAME,
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
@@ -148,27 +148,55 @@ switch ($ServerName) {
         $db['statistik']['autoinit'] = TRUE;
         $db['statistik']['stricton'] = FALSE;
 
-        $db['server22'] = array(
-            'dsn'   => '',
-            'hostname' => '10.1.30.63',
-            'username' => 'root',
-            'password' => '4dm1n5!S',
-            'database' => 'library',
-            'dbdriver' => 'mysqli',
-            'dbprefix' => '',
-            'pconnect' => FALSE,
-            'db_debug' => (ENVIRONMENT !== 'production'),
-            'cache_on' => FALSE,
-            'cachedir' => '',
-            'char_set' => 'utf8',
-            'dbcollat' => 'utf8_general_ci',
-            'swap_pre' => '',
-            'encrypt' => FALSE,
-            'compress' => FALSE,
-            'stricton' => FALSE,
-            'failover' => array(),
-            'save_queries' => TRUE
-        );
+
+        if (!isset($_SERVER['_HOST_ID'])) {
+            $db['server22'] = array(
+                'dsn'   => '',
+                'hostname' => '10.1.30.63',
+                'username' => 'root',
+                'password' => '4dm1n5!S',
+                'database' => 'library',
+                'dbdriver' => 'mysqli',
+                'dbprefix' => '',
+                'pconnect' => FALSE,
+                'db_debug' => (ENVIRONMENT !== 'production'),
+                'cache_on' => FALSE,
+                'cachedir' => '',
+                'char_set' => 'utf8',
+                'dbcollat' => 'utf8_general_ci',
+                'swap_pre' => '',
+                'encrypt' => FALSE,
+                'compress' => FALSE,
+                'stricton' => FALSE,
+                'failover' => array(),
+                'save_queries' => TRUE
+            );
+        }
+        else
+        {
+            $db['server22'] = array(
+                'dsn'   => '',
+                'hostname' => _DB_HOST_LIBRARY,
+                'username' => 'root',
+                'password' => '4dm1n5!S',
+                'database' => 'library',
+                'port' => _DB_PORT_LIBRARY,
+                'dbdriver' => 'mysqli',
+                'dbprefix' => '',
+                'pconnect' => FALSE,
+                'db_debug' => (ENVIRONMENT !== 'production'),
+                'cache_on' => FALSE,
+                'cachedir' => '',
+                'char_set' => 'utf8',
+                'dbcollat' => 'utf8_general_ci',
+                'swap_pre' => '',
+                'encrypt' => FALSE,
+                'compress' => FALSE,
+                'stricton' => FALSE,
+                'failover' => array(),
+                'save_queries' => TRUE
+            );
+        }
         break;
     case 'demopcam.podomorouniversity.ac.id':
         $db['default']['hostname'] = _DB_HOST;

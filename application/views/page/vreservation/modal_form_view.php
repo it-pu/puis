@@ -146,7 +146,7 @@
                 </div>
             </div>
         </div>
-        <?php if (count($KetAdditional) > 0): ?>
+        <?php if ( is_array($KetAdditional) && count($KetAdditional) > 0): ?>
             <div class="form-group"> 
                 <div class="row">
                     <div class="col-sm-3">

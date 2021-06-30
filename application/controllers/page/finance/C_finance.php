@@ -2631,7 +2631,7 @@ class C_finance extends Finnance_Controler {
         $this->form_validation->set_data($data_token);
 
         $this->form_validation->set_rules('paymentid', 'Pilihan payment', 'trim|required');
-        $this->form_validation->set_rules('Pay', 'Nominal', 'trim|required|greater_than_equal_to[10000]');
+        $this->form_validation->set_rules('Pay', 'Nominal', 'trim|required|greater_than_equal_to[1]');
         $this->form_validation->set_rules('Pay_Date', 'Tanggal Bayar', 'trim|required');
 
         if ($this->form_validation->run() === true) {
@@ -2664,22 +2664,25 @@ class C_finance extends Finnance_Controler {
                             $left_pay_details = $Invoice_cicilan - $have_pay_details;
 
                             if ($left_pay_details > $pay_loop) {
-                                $dataSave = [
-                                    'ID_payment_students' => $ID_payment_students,
-                                    'UniqueGroupBy' => $UniqueGroupBy,
-                                    'Pay' => $pay_loop,
-                                    'Pay_Date' =>  $data_token['Pay_Date'],
-                                    'Created_By' => $this->session->userdata('NIP'),
-                                    'Created_At' => date('Y-m-d H:i:s'),
-                                ];
+                                if ($pay_loop > 0) {
+                                    $dataSave = [
+                                        'ID_payment_students' => $ID_payment_students,
+                                        'UniqueGroupBy' => $UniqueGroupBy,
+                                        'Pay' => $pay_loop,
+                                        'Pay_Date' =>  $data_token['Pay_Date'],
+                                        'Created_By' => $this->session->userdata('NIP'),
+                                        'Created_At' => date('Y-m-d H:i:s'),
+                                    ];
 
-                                $this->db->insert('db_finance.payment_student_details',$dataSave);
+                                    $this->db->insert('db_finance.payment_student_details',$dataSave);
+                                }
+                                
                                 break;
                             }
                             else
                             {
                                 // skip insert if zero
-                                if ($left_pay_details <= 0) {
+                                if ($left_pay_details > 0) {
                                    $dataSave = [
                                        'ID_payment_students' => $ID_payment_students,
                                        'UniqueGroupBy' => $UniqueGroupBy,

@@ -118,7 +118,7 @@
                         var token = jwt_encode(dataform,"UAP)(*");
                         form_data.append('token',token);
                         loading_button2(selector);
-                        var url = base_url_js + "api-prodi/__crudDataProdi";
+                        var url = base_url_js + "api-webdivisi/__crudDataDivisi";
                         $.ajax({
                           type:"POST",
                           url:url,
@@ -167,7 +167,7 @@
             action : 'readContactSosmed',
         };
         var token = jwt_encode(data,'UAP)(*');
-        var url = base_url_js+'api-prodi/__crudDataProdi';
+        var url = base_url_js+'api-webdivisi/__crudDataDivisi';
         var locimg = base_url_js+'images/icon/';
         $.post(url,{token:token},function (jsonResult) {
             $('#viewDataDesc').empty();
@@ -176,11 +176,12 @@
                 $.each(jsonResult,function (i,v) {
                     $('#viewDataDesc').append('<div class="col-lg-4 col-md-6">'+
                       '<div class="card" style="text-align: center; padding: 15px;">'+
-                      '<div class="card-body">'+
-                        '<h5 class="card-title"><i class="fa '+v.Icon+'" style="line-height: 1;  width: 50px; height: 50px; background: #083f88; padding: 10px; border-radius: 50%; font-size: 2em; color: #fff;"> </i></h5>'+
+                      '<div class="card-body">'+                       
                         
-                        '<p class="card-text"><a target="_blank" href="'+v.Link+'">'+v.Link+'</a></p>'+
-                        '<a href="javascript:void(0);" data-id="'+v.ID+'" class="btn-alert-hapus" id="btn-hapus"><span class="glyphicon glyphicon-trash"></span> Hapus</a>'+
+                        '<p class="card-text"><a target="_blank" href="'+v.Link+'">'+
+                        '<h5 class="card-title"><i class="fa '+v.Icon+'" style="line-height: 1;  width: 50px; height: 50px; background: #083f88; padding: 10px; border-radius: 50%; font-size: 2em; color: #fff;"> </i></h5>'+
+                        '</a></p>'+
+                        '<p class="card-text"><a href="javascript:void(0);" data-id="'+v.ID+'" class="btn btn-red btn-alert-hapus" id="btn-hapus">(Delete)</a></p>'+
                         
                       '</div>'+
                     '</div>');

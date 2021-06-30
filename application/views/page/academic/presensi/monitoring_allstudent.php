@@ -1,4 +1,3 @@
-
 <style>
     #tableAttd thead tr th {
         text-align: center;
@@ -40,42 +39,43 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <hr/>
+        <hr />
         <div id="divTableAttd"></div>
     </div>
 </div>
 
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
+        setLoadFullPage();
 
-        loSelectOptionSemester('#filterSemester','');
-        loadSelectOptionCurriculumASC('#filterCurriculum','');
-        loadSelectOptionBaseProdi('#filterProgrammeStudy','');
+        loSelectOptionSemester('#filterSemester', '');
+        loadSelectOptionCurriculumASC('#filterCurriculum', '');
+        loadSelectOptionBaseProdi('#filterProgrammeStudy', '');
 
-        var firsLoad = setInterval(function () {
+        var firsLoad = setInterval(function() {
 
             var filterSemester = $('#filterSemester').val();
             var formPercentage = $('#formPercentage').val();
 
-            if(filterSemester!='' && filterSemester!=null &&
-                formPercentage!='' && formPercentage!=null){
+            if (filterSemester != '' && filterSemester != null &&
+                formPercentage != '' && formPercentage != null) {
                 loadDataStudent();
                 clearInterval(firsLoad);
             }
 
-        },1000);
+        }, 1000);
 
     });
 
-    $('.filterMonitoring,#formPercentage').change(function () {
+    $('.filterMonitoring,#formPercentage').change(function() {
         loadDataStudent();
     });
 
-    $('#formPercentage').keyup(function () {
+    $('#formPercentage').keyup(function() {
         loadDataStudent();
     });
-    $('#formPercentage').blur(function () {
+    $('#formPercentage').blur(function() {
         loadDataStudent();
     });
 
@@ -86,14 +86,14 @@
         var filterSemester = $('#filterSemester').val();
         var formPercentage = $('#formPercentage').val();
 
-        if(filterSemester!='' && filterSemester!=null &&
-            formPercentage!='' && formPercentage!=null){
+        if (filterSemester != '' && filterSemester != null &&
+            formPercentage != '' && formPercentage != null) {
 
             var filterCurriculum = $('#filterCurriculum').val();
-            var Year = (filterCurriculum!='' && filterCurriculum!=null) ? filterCurriculum.split('.')[1] : '';
+            var Year = (filterCurriculum != '' && filterCurriculum != null) ? filterCurriculum.split('.')[1] : '';
 
             var filterProgrammeStudy = $('#filterProgrammeStudy').val();
-            var ProdiID = (filterProgrammeStudy!='' && filterProgrammeStudy!=null) ? filterProgrammeStudy.split('.')[0] : '';
+            var ProdiID = (filterProgrammeStudy != '' && filterProgrammeStudy != null) ? filterProgrammeStudy.split('.')[0] : '';
             var SemesterID = filterSemester.split('.')[0];
 
             $('#divTableAttd').html('<table class="table table-bordered" id="tableAttd">' +
@@ -108,35 +108,37 @@
                 '        </table>');
 
             var data = {
-                SemesterID : SemesterID,
-                Year : Year,
-                ProdiID : ProdiID,
-                Percentage : formPercentage
+                SemesterID: SemesterID,
+                Year: Year,
+                ProdiID: ProdiID,
+                Percentage: formPercentage
             };
 
-            var token = jwt_encode(data,'UAP)(*');
-            var url = base_url_js+'api/__getMonitoringAllStudent';
+            var token = jwt_encode(data, 'UAP)(*');
+            var url = base_url_js + 'api/__getMonitoringAllStudent';
 
-            var dataTable = $('#tableAttd').DataTable( {
+            var dataTable = $('#tableAttd').DataTable({
                 "processing": true,
                 "serverSide": true,
-                "iDisplayLength" : 10,
-                "ordering" : false,
+                "iDisplayLength": 10,
+                "ordering": false,
                 "language": {
                     "searchPlaceholder": "NIM , Name Student"
                 },
-                "ajax":{
-                    url : url, // json datasource
-                    data : {token:token},
-                    ordering : false,
-                    type: "post",  // method  , by default get
-                    error: function(){  // error handling
+                "ajax": {
+                    url: url, // json datasource
+                    data: {
+                        token: token
+                    },
+                    ordering: false,
+                    type: "post", // method  , by default get
+                    error: function() { // error handling
                         $(".employee-grid-error").html("");
                         $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
-                        $("#employee-grid_processing").css("display","none");
+                        $("#employee-grid_processing").css("display", "none");
                     }
                 }
-            } );
+            });
 
 
 
@@ -145,5 +147,4 @@
 
         }
     }
-
 </script>

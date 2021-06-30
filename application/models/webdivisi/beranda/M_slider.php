@@ -16,8 +16,8 @@ class M_slider extends CI_Model{
         // Jadi NIS di validasi hanya ketika menambah data siswa saja
         if($mode == "save")
           $this->form_validation->set_rules('input_images', 'Images', 'required');
-        $this->form_validation->set_rules('input_title', 'TitleImages', 'required');
-        $this->form_validation->set_rules('input_status', 'status', 'required');
+          $this->form_validation->set_rules('input_title', 'TitleImages', 'required');
+          $this->form_validation->set_rules('input_status', 'status', 'required');
         
         if($this->form_validation->run()) // Jika validasi benar
           return true; // Maka kembalikan hasilnya dengan TRUE
@@ -33,7 +33,7 @@ class M_slider extends CI_Model{
           "title" => $this->input->post('input_title'),
           "status" => $this->input->post('input_status'),
           "user" =>  $this->session->userdata('Name'),
-          "prodi" => $this->session->userdata('prodi_active'),
+          "prodi" => $this->session->userdata('IDdepartementNavigation'),
           "date" => date('m-d-Y')
         );
         $this->db2->insert('slider', $data); // Untuk mengeksekusi perintah insert data
@@ -53,7 +53,7 @@ class M_slider extends CI_Model{
         'gambar' => 'gambar',
         'date'  => 'date',
         'user' => 'user'
-        );
+        ); 
          return array();
         // return $hasil->result();
     }
@@ -65,17 +65,13 @@ class M_slider extends CI_Model{
     }
 
 
-    function get_slider_by_id($idslider){
-        $hsl=$this->db2->query("SELECT * FROM slider WHERE ID_Slider='$idslider'");
-        if($hsl->num_rows()>0){
-            foreach ($hsl->result() as $data) {
-                $hasil=array(
-                    'judul' => $data->judul,
-                    'gambar' => $data->gambar,
-                    );
-            }
-        }
-        return $hasil;
+    public function get_by_id($id)
+    {
+        $this->db->from('db_webdivisi.slider');
+        $this->db->where('ID',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
     }
 
 

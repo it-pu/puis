@@ -304,11 +304,11 @@
 		    				'<div class = "col-md-12">'+
 		    					'<div class = "form-group">'+
 		    						'<label>Choose Master Group</label>'+
-		    						'<select class = "form-control FrmListMember" name = "ID_master_group"></select>'+
+		    						'<select class = "form-control FrmListMember" id="ID_master_group" name = "ID_master_group"></select>'+
 		    					'</div>'+
 		    					'<div class = "form-group">'+
 		    						'<label>Choose Group</label>'+
-		    						'<select class = "form-control FrmListMember" name = "ID_set_group"></select>'+
+		    						'<select class = "form-control FrmListMember" id="ID_set_group" name = "ID_set_group"></select>'+
 		    					'</div>'+
 		    					'<div class = "form-group">'+
 		    						'<label>Choose Level Member</label>'+
@@ -652,7 +652,6 @@
 			return true
 		},
 	};
-
 
 	var App_master_group = {
 		Loaded : function(){
@@ -1289,6 +1288,13 @@
 	$(document).off('change', '#TypeMember').on('change', '#TypeMember',function(e) {
 		$('.FrmListMember[name="NIPNPM"]').val('');
 		$('.FrmListMember[name="NIPNPM"]').closest('.form-group').find('label[for="Name"]').html('');
+	})
+
+	$(document).off('change', '#ID_master_group').on('change', '#ID_master_group',function(e) {
+		var dataMaster = $('.FrmListMember[name="ID_master_group"]').val();
+		var selectorOPsetGroup = $('.FrmListMember[name="ID_set_group"]').val('');
+		// alert(selectorOPMasterGroup);
+		App_group.LoadSelectGroup(selectorOPsetGroup,'',dataMaster,'yes');
 	})
 
 	$(document).off('click', '.SearchNIPNPM').on('click', '.SearchNIPNPM',function(e) {
