@@ -73,7 +73,7 @@ class Pdf_mc_table extends Pdf
         }
 
         //multiply number of line with line height. This will be the height of current row
-        $h=20.5;
+        $h=43;
         //Issue a page break first if needed
         $this->CheckPageBreak($h);
         //Draw the cells of current row
