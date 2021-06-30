@@ -192,7 +192,7 @@ class C_rps extends Globalclass {
             header('Access-Control-Allow-Origin: *');
             header('Content-Type: application/json');
             $fileName = $formData['filesname'];
-    
+
             
             $dataInsrt = array(
                 'CDID' => $formData['CDID'],
@@ -202,6 +202,26 @@ class C_rps extends Globalclass {
             $dataCk = $this->db->get_where('db_academic.rps_basic',$dataInsrt)->result_array();
            
             $result = array('Status'=>0);
+    
+            if ($fileName=="") {
+                $dataInsrt['SubCPMK'] = $formData['RPSSubCPMK'];
+                $dataInsrt['Material'] = $formData['RPSBahanKajian'];
+                $dataInsrt['Indikator'] = $formData['RPSPenilaianIndikator'];
+                $dataInsrt['Kriteria'] = $formData['RPSPenilaianKriteria'];
+                $dataInsrt['Description'] = $formData['RPSPenilaianMetodePembelajaran'];
+                $dataInsrt['Value'] = $formData['RPSNilai'];
+                $dataInsrt['ValueDesc'] = $formData['RPSDescNilai'];
+                $dataInsrt['EntredAt'] = date('Y-m-d H:i:s');
+                $dataInsrt['EntredBy'] = $ActionBy;
+                $dataInsrt['File'] = "";
+
+                $this->db->insert('db_academic.rps_basic',$dataInsrt);
+
+                $result = array('Status'=>1);
+
+            } else {
+                
+            
             
             if(count($dataCk)<=0){
 
@@ -295,6 +315,7 @@ class C_rps extends Globalclass {
                     }
                 }
             }
+            }
             return print_r(json_encode($result));
         }
 
@@ -302,6 +323,40 @@ class C_rps extends Globalclass {
             $formData = $datatoken['dataEdit'];
             header('Access-Control-Allow-Origin: *');
             header('Content-Type: application/json');
+            if ($formData['filesname']=="") {
+                
+            $editIDRPS = $formData['idRPS'];
+            $editRPSSubCPMK = $formData['RPSSubCPMK'];
+            $editRPSBahanKajian = $formData['RPSBahanKajian'];
+            // $editRPSMinggu = $formData['RPSMinggu'];
+            $editRPSPenilaianIndikator = $formData['RPSPenilaianIndikator'];
+            $editRPSPenilaianKriteria = $formData['RPSPenilaianKriteria'];
+            $editRPSPenilaianMetodePembelajaran = $formData['RPSPenilaianMetodePembelajaran'];
+            $editRPSNilai = $formData['RPSNilai'];
+            $editRPSDescNilai = $formData['RPSDescNilai'];
+            $ActionBy = $this->session->userdata('Name');
+            $fileName = "";
+            
+            $updates = array(
+                'SubCPMK' => $editRPSSubCPMK,
+                'Material' => $editRPSBahanKajian,
+                'Indikator' => $editRPSPenilaianIndikator,
+                'Kriteria' => $editRPSPenilaianKriteria,
+                'Description' => $editRPSPenilaianMetodePembelajaran,
+                'Value' => $editRPSNilai,
+                'ValueDesc' => $editRPSDescNilai,
+                // 'Week' => $editRPSMinggu,
+                'EntredAt' => date('Y-m-d H:i:s'),
+                'EntredBy' => $ActionBy,
+                'File' => $fileName
+            );
+            
+            $this->db->where('ID', $editIDRPS);
+            $this->db->update('db_academic.rps_basic', $updates);
+                $result = array('Status'=>1);
+
+            } else {
+                
             $editIDRPS = $formData['idRPS'];
             $editRPSSubCPMK = $formData['RPSSubCPMK'];
             $editRPSBahanKajian = $formData['RPSBahanKajian'];
@@ -400,6 +455,7 @@ class C_rps extends Globalclass {
     
                 }
             }
+        }
             return print_r(json_encode($result));
         }
 
@@ -1863,7 +1919,31 @@ class C_rps extends Globalclass {
             $pdf->Cell(120,0,'',$border_fill_b,0,'C');
 
             $pdf->Ln(10);
-            $pdf->Cell(70,$h,'Penilaian',$border_fill_t,0,'L');
+            
+            $pdf->Cell(20,$h,'Minggu Ke-',$border_fill_t,0,'C');
+            $pdf->Cell(40,$h,'Sub CPMK',$border_fill_t,0,'C');
+            $pdf->Cell(35,$h,'Bahan Kajian',$border_fill_t,0,'C');
+            $pdf->Cell(40,$h,'Penilaian',$border_fill_t,0,'C');
+            $pdf->Cell(35,$h,'Bentuk dan Metode Pembelajaran;',$border_fill_t,0,'C');
+            $pdf->Cell(20,$h,'Nilai',$border_fill_t,0,'C');
+
+            $pdf->Ln(5);
+            $pdf->Cell(20,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell(40,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell(35,$h,'',$border_fill_t,0,'C');
+            $pdf->Cell(20,$h,'Indikator',$border_fill_t,0,'C');
+            $pdf->Cell(20,$h,'Kriteria; Bentuk',$border_fill_t,0,'C');
+            $pdf->Cell(35,$h,'Waktu; Penugasan',$border_fill_t,0,'C');
+            $pdf->Cell(20,$h,'(%)',$border_fill_t,0,'C');
+
+            $pdf->Ln(5);
+            $pdf->Cell(20,0,'',$border_fill_b,0,'C');
+            $pdf->Cell(40,0,'',$border_fill_b,0,'C');
+            $pdf->Cell(35,0,'',$border_fill_b,0,'C');
+            $pdf->Cell(20,0,'',$border_fill_b,0,'C');
+            $pdf->Cell(20,0,'',$border_fill_b,0,'C');
+            $pdf->Cell(35,0,'',$border_fill_b,0,'C');
+            $pdf->Cell(20,0,'',$border_fill_b,0,'C');
 
             $DetailBahanKajian = $BahanKajian;
             $pdf->Ln(5);

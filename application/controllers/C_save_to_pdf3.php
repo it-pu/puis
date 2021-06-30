@@ -3423,12 +3423,17 @@ class C_save_to_pdf3 extends CI_Controller {
 
             $d = (array) $dataBAP[$i];
             $bap = (count($d['BAP'])>0) ? $d['BAP'][0] : [];
+            $rps = (count($d['RPS'])>0) ? $d['RPS'][0] : [];
 
 
-            $Subject = (count($d['BAP'])>0 && $bap->Subject!='' && $bap->Subject!=null) ? $bap->Subject : '';
-            $Material = (count($d['BAP'])>0 && $bap->Material!='' && $bap->Material!=null) ? $bap->Material : '';
+            $Subject = (count($d['BAP'])>0 && $bap->Subject!='' && $bap->Subject!=null) ? 'Lecture : ' .$bap->Subject : '';
+            $Material = (count($d['BAP'])>0 && $bap->Material!='' && $bap->Material!=null) ? 'Lecture : ' .$bap->Material : '';
             $Description = (count($d['BAP'])>0 && $bap->Description!='' && $bap->Description!=null) ? $bap->Description : '';
             $Present = (count($d['BAP'])>0 && $d['Present']!='' && $d['Present']!=null) ? $d['Present'] : '';
+
+            
+            $SubjecRPS = (count($d['RPS'])>0 && $rps->Subject!='' && $rps->Subject!=null) ? 'Learning Center : ' .$rps->Subject ."\n"."\n": '';
+            $MaterialRPS = (count($d['RPS'])>0 && $rps->Material!='' && $rps->Material!=null) ? 'Learning Center : ' .$rps->Material ."\n"."\n": '';
 
             $dataLec = $d['Lecturer'];
             $Tanggal = ''; $In = ''; $Out = '';
@@ -3460,7 +3465,7 @@ class C_save_to_pdf3 extends CI_Controller {
 
             $fpdf->Row_bapOnline($lineHight,array(
                 ($i+1),$Tanggal,
-                $Subject,$Material,$Description,
+                $SubjecRPS."".$Subject,$MaterialRPS."".$Material,$Description,
                 $Present, $In, $Out,
                 $InsertName."\n".$InsertBy."\n".$InsertAt,
                 $viewStdName."\n".$StdNPM."\n".$StdAt,
