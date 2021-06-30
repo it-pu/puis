@@ -3432,8 +3432,8 @@ class C_save_to_pdf3 extends CI_Controller {
             $Present = (count($d['BAP'])>0 && $d['Present']!='' && $d['Present']!=null) ? $d['Present'] : '';
 
             
-            $SubjecRPS = (count($d['RPS'])>0 && $rps->Subject!='' && $rps->Subject!=null) ? 'Learning Center : ' .$rps->Subject ."\n"."\n": '';
-            $MaterialRPS = (count($d['RPS'])>0 && $rps->Material!='' && $rps->Material!=null) ? 'Learning Center : ' .$rps->Material ."\n"."\n": '';
+            $SubjecRPS = (count($d['RPS'])>0 && $rps->Subject!='' && $rps->Subject!=null) ? 'Learning Center : ' .$rps->Subject ."\n\n": '';
+            $MaterialRPS = (count($d['RPS'])>0 && $rps->Material!='' && $rps->Material!=null) ? 'Learning Center : ' .$rps->Material ."\n\n": '';
 
             $dataLec = $d['Lecturer'];
             $Tanggal = ''; $In = ''; $Out = '';
@@ -3465,7 +3465,7 @@ class C_save_to_pdf3 extends CI_Controller {
 
             $fpdf->Row_bapOnline($lineHight,array(
                 ($i+1),$Tanggal,
-                $SubjecRPS."".$Subject,$MaterialRPS."".$Material,$Description,
+                $SubjecRPS.$Subject,$MaterialRPS.$Material,$Description,
                 $Present, $In, $Out,
                 $InsertName."\n".$InsertBy."\n".$InsertAt,
                 $viewStdName."\n".$StdNPM."\n".$StdAt,
