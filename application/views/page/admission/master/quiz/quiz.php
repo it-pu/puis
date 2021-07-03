@@ -523,7 +523,8 @@
         $('#filterTA').empty();
         $('#filterTA').append('<option disabled value = "0" selected>'+'Choose TA'+'</option>');
         for (var i = 0; i < response.length; i++) {
-            $('#filterTA').append('<option value = "'+response[i]+'">'+response[i]+'</option>');
+            let ii = response[i] + 1;
+            $('#filterTA').append('<option value = "'+response[i]+'">'+response[i]+'/'+ii+'</option>');
         }
     }
 
@@ -1360,4 +1361,35 @@
     $(document).ready(function(e){
         load_default();
     })
+
+    $(document).on('click', '#btnStudentAnswer', function() {
+
+        var filterTA = $('#filterTA option:selected').val();
+        var filterTAText = $('#filterTA option:selected').text();
+        var filterQuizCategory = $('#filterQuizCategory option:selected').text();
+        var filterQuizPublishOn = $('#filterQuizPublishOn option:selected').text();
+
+        var dataLoadQuiz = $('#dataLoadQuiz').val();
+
+        var d = (dataLoadQuiz != '' && dataLoadQuiz != null) ? JSON.parse(dataLoadQuiz) : [];
+        console.log(d);
+
+        if (parseInt(d.TotalAnswer) > 0) {
+
+            var Quiz = d.Quiz[0];
+
+            var data = {
+                TA : filterTA,
+                TAText : filterTAText,
+                Course: filterQuizCategory,
+                Session: filterQuizPublishOn,
+                QuizID: Quiz.ID,
+                dataQuiz : d,
+            };
+
+            var token = jwt_encode(data,"UAP)(*");
+            window.open(module_url + 'student_answers/' + token);
+        }
+
+    });
 </script>

@@ -4663,5 +4663,11 @@ a.`delete`,c.`read` as readMenu,c.`update` as updateMenu,c.`write` as writeMenu,
         $this->db->insert('db_employees.knowledge_base_log',$dataSave);
     }
 
+    public function decodeToken($token,$key=''){
+        $key = ($key == '') ? "UAP)(*" : $key ;
+        $decode = $this->jwt->decode($token,$key);
+        return $decode;
+    }
+
 
 }

@@ -271,6 +271,37 @@ class C_quiz extends Admission_Controler {
 
     }
 
+    public function student_answers($token){
+      $this->data['token'] =  $token;
+      $dataToken = $this->m_master->decodeToken($token);
+      $this->data['CorrectionButton'] = 1;
+      $content = $this->load->view('page/admission/master/quiz/student_answers', $this->data, true);
+      $this->temp($content);
+    }
+
+    public function loadDataAnswers(){
+      $data_arr = $this->getInputToken();
+      $QuizID = $data_arr['QuizID'];
+
+      $data = $this->db->query(
+          '
+            select crm.Name ,crm.Email,crm.Mobile,crm.SchoolID,crm.token_beasiswa,
+            sch.SchoolName,qqst.*
+            from db_admission.crm
+            JOIN db_admission.school AS sch ON sch.ID = crm.SchoolID
+            JOIN db_admission.q_quiz_schedule_crm AS qqsc ON qqsc.ID_crm = crm.ID
+            JOIN db_admission.q_quiz_schedule as qqsche ON qqsche.ID = qqsc.ID_q_quiz_schedule
+            JOIN db_admission.q_quiz AS qq ON qq.ID_q_quiz_schedule = qqsche.ID
+            JOIN db_admission.q_quiz_students AS qqst ON qqst.QuizID = qq.ID
+            where qq.ID = '.$QuizID.'  
+            GROUP BY qqst.ID  
+          '
+      )->result_array();
+
+      echo json_encode($data);
+
+    }
+
 
 
 }
