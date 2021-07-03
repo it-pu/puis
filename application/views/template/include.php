@@ -2249,25 +2249,25 @@
         var table = $(element).DataTable({
             'iDisplayLength': 5,
             'ordering': true,
-            "sDom": "<'row'<'dataTables_header clearfix'<'col-md-3'l><'col-md-9'Tf>r>>t<'row'<'dataTables_footer clearfix'<'col-md-6'i><'col-md-6'p>>>", // T is new
-            "oTableTools": {
-                "aButtons": [
-                    // "copy",
-                    // "print",
-                    // "csv",
-                    {
-                        "sExtends": "xls",
-                        "sButtonText": '<i class="fa fa-download" aria-hidden="true"></i> Excel',
-                    },
-                    {
-                        "sExtends": "pdf",
-                        "sButtonText": '<i class="fa fa-download" aria-hidden="true"></i> PDF',
-                        "sPdfOrientation": "landscape",
-                        // "sPdfMessage" : "Daftar Seluruh Mata Kuliah"
-                    }
-                ],
-                "sSwfPath": base_url_js + "assets/template/plugins/datatables/tabletools/swf/copy_csv_xls_pdf.swf"
-            },
+           // "sDom": "<'row'<'dataTables_header clearfix'<'col-md-3'l><'col-md-9'Tf>r>>t<'row'<'dataTables_footer clearfix'<'col-md-6'i><'col-md-6'p>>>", // T is new
+            // "oTableTools": {
+            //     "aButtons": [
+            //         // "copy",
+            //         // "print",
+            //         // "csv",
+            //         {
+            //             "sExtends": "xls",
+            //             "sButtonText": '<i class="fa fa-download" aria-hidden="true"></i> Excel',
+            //         },
+            //         {
+            //             "sExtends": "pdf",
+            //             "sButtonText": '<i class="fa fa-download" aria-hidden="true"></i> PDF',
+            //             "sPdfOrientation": "landscape",
+            //             // "sPdfMessage" : "Daftar Seluruh Mata Kuliah"
+            //         }
+            //     ],
+            //     "sSwfPath": base_url_js + "assets/template/plugins/datatables/tabletools/swf/copy_csv_xls_pdf.swf"
+            // },
             "columnDefs": [{
                 "targets": 0,
                 "orderable": false

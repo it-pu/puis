@@ -286,13 +286,13 @@ class C_quiz extends Admission_Controler {
       $data = $this->db->query(
           '
             select crm.Name ,crm.Email,crm.Mobile,crm.SchoolID,crm.token_beasiswa,
-            sch.SchoolName,qqst.*
+            sch.SchoolName,qqst.*,crm.ID as ID_crm
             from db_admission.crm
             JOIN db_admission.school AS sch ON sch.ID = crm.SchoolID
             JOIN db_admission.q_quiz_schedule_crm AS qqsc ON qqsc.ID_crm = crm.ID
             JOIN db_admission.q_quiz_schedule as qqsche ON qqsche.ID = qqsc.ID_q_quiz_schedule
             JOIN db_admission.q_quiz AS qq ON qq.ID_q_quiz_schedule = qqsche.ID
-            JOIN db_admission.q_quiz_students AS qqst ON qqst.QuizID = qq.ID
+            JOIN db_admission.q_quiz_students AS qqst ON qqst.QuizID = qq.ID and qqsc.ID = qqst.ID_q_quiz_schedule_crm
             where qq.ID = '.$QuizID.'  
             GROUP BY qqst.ID  
           '
