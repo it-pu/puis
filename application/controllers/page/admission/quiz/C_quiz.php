@@ -286,7 +286,7 @@ class C_quiz extends Admission_Controler {
       $data = $this->db->query(
           '
             select crm.Name ,crm.Email,crm.Mobile,crm.SchoolID,crm.token_beasiswa,
-            sch.SchoolName,qqst.*,crm.ID as ID_crm,qqst.ID as QuizStudentID
+            sch.SchoolName,qqst.*,crm.ID as ID_crm,qqst.ID as QuizStudentID,crm.File as FileRapor
             from db_admission.crm
             JOIN db_admission.school AS sch ON sch.ID = crm.SchoolID
             JOIN db_admission.q_quiz_schedule_crm AS qqsc ON qqsc.ID_crm = crm.ID

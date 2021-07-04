@@ -107,10 +107,14 @@ console.log(dataToken);
 					showKaprodi = '<textarea class = "form-control" disabled>'+v.KaprodiNote+'</textarea>';
 				}
 
+				var urlAdmission = "<?php echo url_registration.'document/' ?>";
+
+				var fileRapor =  '<a href = "'+urlAdmission+v.Email+'/'+v.FileRapor+'" class = "btn btn-sm btn-default" target="_blank">File Rapor</a>';
+
 
 				tr = tr+'<tr>' +
 				    '<td>'+(i+1)+'</td>' +
-				    '<td style="text-align: left;"><b>'+v.Name+'</b><br/>'+v.Email+'<br/><span style ="color:blue;">Token('+v.token_beasiswa+')</span>'+'<br/>'+v.SchoolName+'<br/>'+v.Mobile+'</b>'+'</td>' +
+				    '<td style="text-align: left;"><b>'+v.Name+'</b><br/>'+v.Email+'<br/><span style ="color:blue;">Token('+v.token_beasiswa+')</span>'+'<br/>'+v.SchoolName+'<br/>'+v.Mobile+'<br/>'+fileRapor+'</b>'+'</td>' +
 				    '<td>'+StartSession+'</td>' +
 				    '<td '+trSubmittedAt+'>'+SubmittedAt+'</td>' +
 				    '<td>'+WorkDuration+'</td>' +
