@@ -5031,4 +5031,31 @@ class M_admission extends CI_Model {
       return $arr_Tbl_WhereSearch;
     }
 
+    public function detail_beasiswa_crm($ID_crm){
+      $dataCRM = $this->db->where('ID',$ID_crm)->get('db_admission.crm')->row();
+
+      // get schedule
+      $dataSchedule = $this->db->query(
+          '
+            select qqscrm.ID as ID_q_quiz_schedule_crm,qqscrm.ID_q_quiz_schedule,qqs.TA,qqs.DateStart,qqs.DateEnd
+            from db_admission.q_quiz_schedule_crm as qqscrm
+            join db_admission.q_quiz_schedule as qqs
+            where qqscrm.ID_Crm = '.$ID_crm.'
+          '
+      )->result_array();
+
+      for ($i=0; $i < count($dataSchedule); $i++) { 
+        // get jadwal quiz first
+        $quizTime = $this->db->select('a.*,b.Type as nameCategoryQuiz')
+                ->join('db_admission.q_quiz_category b', 'a.ID_q_quiz_category = b.ID', 'join')
+                ->where('a.ID_q_quiz_schedule',$dataSchedule[$i]['ID_q_quiz_schedule'])
+                ->get('db_admission.q_quiz as a')
+                ->row();
+        
+
+
+      }
+
+    }
+
 }

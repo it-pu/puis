@@ -317,13 +317,15 @@ class C_crm extends Admission_Controler {
               OR rms.SchoolMajor LIKE "%'.$search.'%" ) ';
         }
 
+        // FlagSales = 0 adalah jalur beasiswa
+
         $queryDefault = 'SELECT c.*, s.SchoolName, r.RegionName, rms.SchoolMajor, cp.Year AS PeriodYear, em.Name AS PICName FROM db_admission.crm c 
                                   LEFT JOIN db_admission.school s ON (s.ID = c.SchoolID)
                                   LEFT JOIN db_admission.region r ON (r.RegionID = s.CityID)
                                   LEFT JOIN db_admission.register_major_school rms ON (rms.ID = c.PathwayID)
                                   LEFT JOIN db_admission.crm_period cp ON (cp.ID = c.PeriodID)
                                   LEFT JOIN db_employees.employees em ON (em.NIP = c.NIP)
-                                  WHERE c.Status = 6 AND c.PeriodID = "'.$PeriodID.'" '.$dataSearch.' '.$orderBy.' ';
+                                  WHERE (c.Status = 6 or FlagSales = 0) AND c.PeriodID = "'.$PeriodID.'" '.$dataSearch.' '.$orderBy.' ';
 
         $sql = $queryDefault.' LIMIT '.$requestData['start'].','.$requestData['length'].' ';
 
@@ -336,17 +338,23 @@ class C_crm extends Admission_Controler {
             $nestedData=array();
             $row = $query[$i];
 
+            $showBeasiswa = '';
+            if ($row['FlagSales'] == 0) {
+                $$showBeasiswa = '<br/><i class="fa fa-circle" style="color:#bdc80e;"></i> <span style =  "color:blue;">Jalur Beasiswa</span>';
+
+            }
 
             $dataDetail = '<textarea class="hide" id="det_'.$no.'">'.json_encode($row).'</textarea>';
             $nestedData[] = '<div style="text-align:center;">'.$no.'</div>';
-            $nestedData[] = '<div>'.$row['Name'].'<br/>'.$row['Phone'].' | '.$row['Email'].'</div>';
+            $nestedData[] = '<div>'.$row['Name'].'<br/>'.$row['Phone'].' | '.$row['Email'].'<br/>'.$showBeasiswa.'</div>';
             $nestedData[] = '<div>'.$row['SchoolName'].'<br/>'.$row['RegionName'].'</div>';
             $nestedData[] = '<div style="text-align:center;">'.$row['SchoolMajor'].'</div>';
             $nestedData[] = '<div style="text-align:center;">'.$row['Gender'].'</div>';
             $nestedData[] = '<div style="text-align:center;">'.$row['PeriodYear'].'</div>';
             $nestedData[] = '<div>Ayah : '.$row['FatherName'].'<br/>Ibu : '.$row['MotherName'].'</div>';
             $nestedData[] = '<div style="text-align: center;"><button class="btn btn-default btnShowDet" data-no="'.$no.'">Choose</button>'.$dataDetail.'</div>';
-
+            $nestedData[] = ['dataAll' => $row];
+            
             $data[] = $nestedData;
             $no++;
         }
