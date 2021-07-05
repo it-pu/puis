@@ -111,18 +111,37 @@ console.log(dataToken);
 
 				var fileRapor =  '<a href = "'+urlAdmission+v.Email+'/'+v.FileRapor+'" class = "btn btn-sm btn-default" target="_blank">File Rapor</a>';
 
+				if (dataToken["ID_crm"] !== undefined ) {
+					if (dataToken["ID_crm"] == v.ID_crm) {
+						tr = tr+'<tr>' +
+						    '<td>'+(i+1)+'</td>' +
+						    '<td style="text-align: left;"><b>'+v.Name+'</b><br/>'+v.Email+'<br/><span style ="color:blue;">Token('+v.token_beasiswa+')</span>'+'<br/>'+v.SchoolName+'<br/>'+v.Mobile+'<br/>'+fileRapor+'</b>'+'</td>' +
+						    '<td>'+StartSession+'</td>' +
+						    '<td '+trSubmittedAt+'>'+SubmittedAt+'</td>' +
+						    '<td>'+WorkDuration+'</td>' +
+						    '<td id="showScode_'+v.QuizStudentID+'">'+ShowScore+'</td>' +
+						    '<td>'+showStatus+'</td>'+
+						    '<td>'+showKaprodi+'</td>'+
+						    '<td>'+btnCorrection+'</td>' +
+						    '</tr>';
+					}
+				}
+				else
+				{
+					tr = tr+'<tr>' +
+					    '<td>'+(i+1)+'</td>' +
+					    '<td style="text-align: left;"><b>'+v.Name+'</b><br/>'+v.Email+'<br/><span style ="color:blue;">Token('+v.token_beasiswa+')</span>'+'<br/>'+v.SchoolName+'<br/>'+v.Mobile+'<br/>'+fileRapor+'</b>'+'</td>' +
+					    '<td>'+StartSession+'</td>' +
+					    '<td '+trSubmittedAt+'>'+SubmittedAt+'</td>' +
+					    '<td>'+WorkDuration+'</td>' +
+					    '<td id="showScode_'+v.QuizStudentID+'">'+ShowScore+'</td>' +
+					    '<td>'+showStatus+'</td>'+
+					    '<td>'+showKaprodi+'</td>'+
+					    '<td>'+btnCorrection+'</td>' +
+					    '</tr>';
+				}
 
-				tr = tr+'<tr>' +
-				    '<td>'+(i+1)+'</td>' +
-				    '<td style="text-align: left;"><b>'+v.Name+'</b><br/>'+v.Email+'<br/><span style ="color:blue;">Token('+v.token_beasiswa+')</span>'+'<br/>'+v.SchoolName+'<br/>'+v.Mobile+'<br/>'+fileRapor+'</b>'+'</td>' +
-				    '<td>'+StartSession+'</td>' +
-				    '<td '+trSubmittedAt+'>'+SubmittedAt+'</td>' +
-				    '<td>'+WorkDuration+'</td>' +
-				    '<td id="showScode_'+v.QuizStudentID+'">'+ShowScore+'</td>' +
-				    '<td>'+showStatus+'</td>'+
-				    '<td>'+showKaprodi+'</td>'+
-				    '<td>'+btnCorrection+'</td>' +
-				    '</tr>';
+				
 			});
 
 			$('#loadDataTable').html('<div class="table-responsive">' +

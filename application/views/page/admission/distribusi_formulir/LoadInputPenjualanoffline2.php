@@ -623,6 +623,9 @@
                 var CDID = $(this).attr('kode-unique');
                 var url = base_url_js+'admission/distribusi-formulir/formulir-offline/save';
                 var PIC = $("#selectPIC").val();
+                if (PIC == '' || PIC === undefined) {
+                    PIC = "<?php echo $this->session->userdata('NIP') ?>";
+                }
                 var priceFormulir = $("#priceFormulir").val();
                 var tanggal = $("#tanggal").val();
                 var No_Ref = $("#No_Ref").val();

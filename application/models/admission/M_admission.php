@@ -1873,7 +1873,7 @@ class M_admission extends CI_Model {
               n.ProvinceName as SchoolProvince,n.CityName as SchoolRegion,n.SchoolAddress,a.YearGraduate,a.UploadFoto,
               if((select count(*) as total from db_admission.register_nilai where Status = "Verified" and ID_register_formulir = a.ID limit 1) > 0,"Rapor","Ujian")
               as status1,b.FormulirCode,
-              if(d.StatusReg = 1, (select No_Ref from db_admission.formulir_number_offline_m where FormulirCode = b.FormulirCode limit 1) ,""  ) as No_Ref
+              if(d.StatusReg = 1, (select No_Ref from db_admission.formulir_number_offline_m where FormulirCode = b.FormulirCode limit 1) ,""  ) as No_Ref,d.StatusReg as StatusOfflineOnline
               from db_admission.register_formulir as a
               left JOIN db_admission.register_verified as b
               ON a.ID_register_verified = b.ID
@@ -2016,6 +2016,20 @@ class M_admission extends CI_Model {
             );
         }
 
+        // get data beasiswa unggulan (quiz)
+        $dataBeasiswaUnggulan = [];
+        if ($query[$i]['StatusOfflineOnline'] == 1) { // offline
+          $FormulirCode = $query[$i]['FormulirCode'];
+          $d_sale_formulir =  $this->db->where('FormulirCodeOffline',$FormulirCode)->get('db_admission.sale_formulir_offline')->row();
+          if (!empty($d_sale_formulir)) {
+            $ID_Crm = $d_sale_formulir->ID_Crm;
+            $d_beasiswa = $this->detail_beasiswa_crm($ID_Crm);
+            if (!empty($d_beasiswa['CRMdata'])) {
+              $dataBeasiswaUnggulan[] = $d_beasiswa;
+            }
+          }
+        }
+        $arr_temp[$i] = $arr_temp[$i] + ['dataBeasiswaUnggulan' => $dataBeasiswaUnggulan];
         $arr_temp[$i] = $arr_temp[$i] + $arr_temp2;
       }
       return $arr_temp;
@@ -5032,29 +5046,65 @@ class M_admission extends CI_Model {
     }
 
     public function detail_beasiswa_crm($ID_crm){
-      $dataCRM = $this->db->where('ID',$ID_crm)->get('db_admission.crm')->row();
+      $dataCRM = $this->db->where('ID',$ID_crm)
+                          ->where('FlagSales',0)
+                          ->get('db_admission.crm')->row();
 
       // get schedule
-      $dataSchedule = $this->db->query(
+      $QuizData = $this->db->query(
           '
             select qqscrm.ID as ID_q_quiz_schedule_crm,qqscrm.ID_q_quiz_schedule,qqs.TA,qqs.DateStart,qqs.DateEnd
             from db_admission.q_quiz_schedule_crm as qqscrm
-            join db_admission.q_quiz_schedule as qqs
+            join db_admission.q_quiz_schedule as qqs on qqs.ID = qqscrm.ID_q_quiz_schedule
             where qqscrm.ID_Crm = '.$ID_crm.'
           '
       )->result_array();
 
-      for ($i=0; $i < count($dataSchedule); $i++) { 
+      $result = null;
+      $resultID = null;
+
+      for ($i=0; $i < count($QuizData); $i++) { 
         // get jadwal quiz first
-        $quizTime = $this->db->select('a.*,b.Type as nameCategoryQuiz')
+        $quizData_Time = $this->db->select('a.*,b.Type as nameCategoryQuiz')
                 ->join('db_admission.q_quiz_category b', 'a.ID_q_quiz_category = b.ID', 'join')
-                ->where('a.ID_q_quiz_schedule',$dataSchedule[$i]['ID_q_quiz_schedule'])
+                ->where('a.ID_q_quiz_schedule',$QuizData[$i]['ID_q_quiz_schedule'])
                 ->get('db_admission.q_quiz as a')
                 ->row();
-        
+        if (!empty($quizData_Time)) {
+          $QuizID = $quizData_Time->ID;
+          $quizResult = $this->db->where('QuizID',$QuizID)
+                                 ->where('ID_q_quiz_schedule_crm',$QuizData[$i]['ID_q_quiz_schedule_crm'])
+                                 ->get('db_admission.q_quiz_students')
+                                 ->row();
+          $QuizData[$i]['quizData_Time'] = $quizData_Time;                       
+          $QuizData[$i]['quizResult'] = $quizResult;
 
+          if (!empty($quizResult)) {
+            if ($quizResult->Pass == 0) {
+              $result = 'Not Set';
+            }
+            elseif ($quizResult->Pass == 1) {
+              $result = 'Pass';
+            }
+            else
+            {
+              $result = 'Not Pass';
+            }
 
+            $resultID = $quizResult->Pass;
+          }
+        }
       }
+
+      $QuizData = json_decode(json_encode($QuizData),true);
+
+      return [
+        'ID_crm' => $ID_crm,
+        'CRMdata' => $dataCRM,
+        'Quizdata' => $QuizData,
+        'result' => $result,
+        'resultID' => $resultID
+      ];
 
     }
 

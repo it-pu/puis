@@ -66,9 +66,7 @@ class C_quiz extends Admission_Controler {
       echo json_encode($rs);
     }
 
-    public function load_quiz(){
-      $dataArr = $this->getInputToken();
-
+    private function _load_quiz($dataArr){
       $ID_q_quiz_schedule = $dataArr['ID_q_quiz_schedule'];
       $ID_q_quiz_category = $dataArr['ID_q_quiz_category'];
 
@@ -100,9 +98,13 @@ class C_quiz extends Admission_Controler {
           'TotalAnswer' => $dataStd[0]['TotalAnswer']
       );
 
+      return $result;
+    }
+
+    public function load_quiz(){
+      $dataArr = $this->getInputToken();
+      $result =  $this->_load_quiz($dataArr);
       echo json_encode($result);
-
-
     }
 
     private function validation_quiz($data_arr){
@@ -397,6 +399,50 @@ class C_quiz extends Admission_Controler {
       $this->db->reset_query();
 
       echo json_encode(array('NewScore' => $NewScore));
+    }
+
+    public function getQuizData($tokenData){
+      $dataToken = $this->m_master->decodeToken($tokenData);
+      $dataToken = json_decode(json_encode($dataToken),true);
+      // samakan parameter data dengan student_answers
+      $newDataToken = [
+        'TA' => 'Data',
+        'TAText' =>   ' is ',
+        'Course' =>  ' Empty ',
+        'Session' =>  '',
+        'QuizID' => '',
+        'dataQuiz' => [
+            'Quiz' => [],
+            'Details' => [],
+            'TotalAnswer' => 0,
+        ],
+      ];
+
+
+
+      $Quizdata = $dataToken['Quizdata'];
+      if (count($Quizdata) > 0) {
+          // get last quizData
+          $QuizdataLast = $Quizdata[count($Quizdata) - 1];
+          $ID_crm = $dataToken['ID_crm'];
+
+          // samakan parameter data dengan student_answers
+          $newDataToken = [
+            'TA' => $QuizdataLast['TA'],
+            'TAText' =>  $QuizdataLast['TA'].'/'.($QuizdataLast['TA'] + 1) ,
+            'Course' => $QuizdataLast['quizData_Time']['nameCategoryQuiz'],
+            'Session' => date('d M Y', strtotime($QuizdataLast['DateStart'])).' - '.date('d M Y', strtotime($QuizdataLast['DateEnd'])) ,
+            'QuizID' => $QuizdataLast['quizData_Time']['ID'],
+            'dataQuiz' => $this->_load_quiz(['ID_q_quiz_schedule' =>$QuizdataLast['quizData_Time']['ID_q_quiz_schedule'] ,'ID_q_quiz_category' => $QuizdataLast['quizData_Time']['ID_q_quiz_category'] ]),
+            'ID_crm' => $ID_crm,
+          ];
+      }
+
+      $this->data['token'] = $this->jwt->encode($newDataToken, 'UAP)(*');
+      $this->data['CorrectionButton'] = 1;
+
+      $content = $this->load->view('page/admission/master/quiz/student_answers', $this->data, true);
+      $this->temp($content);
     }
 
 

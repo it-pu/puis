@@ -154,10 +154,36 @@
 
 				selectOptionBintang += '</select>';
 
+				// quiz beasiswa unggulan
+				var showBeasiswaUnggulan = ''; // quiz
+				var dataBeasiswaUnggulan = getDataCalonMhs[i]['dataBeasiswaUnggulan'];
+				if (dataBeasiswaUnggulan.length > 0) {
+					var tokenUnggulan = jwt_encode(dataBeasiswaUnggulan[0],"UAP)(*");
+					var urlHref= base_url_js + 'page/admission/quiz/c_quiz/getQuizData/'+tokenUnggulan;
+						var dRow = dataBeasiswaUnggulan[0];
+					var cb = '';
+					if (dRow['resultID'] == 0) {
+						cb = '( '+dRow['result']+' <i class="fa fa-question-circle" aria-hidden="true"></i> )';
+					}
+					else if (dRow['resultID'] == 1) {
+						cb = '( '+dRow['result']+' <i class="fa fa-check-circle" style="color: green;"></i> )';
+					}
+					else if (dRow['resultID'] == -1) {
+					    cb = '( '+dRow['result']+' <i class="fa fa-minus-circle" style="color: red;"></i> )';
+					}
+					else
+					{
+					    cb = '( Haven\'t participated yet in quiz )';
+					}
+
+					showBeasiswaUnggulan = '<br/><a href = "'+urlHref+'" class = "btn btn-sm btn-default" target="_blank"><b><span style="color:blue;">Jalur Beasiswa '+cb+'</span></b></a>';
+				}
+
+
 			$(".tableData tbody").append(
 					'<tr id = "id_formulir'+getDataCalonMhs[i]['ID_register_formulir']+'">'+
 						'<td align= "center">'+no+'&nbsp<input type="checkbox" nama ="'+getDataCalonMhs[i]['Name']+'" class="uniform" value ="'+getDataCalonMhs[i]['ID_register_formulir']+'" email ="'+getDataCalonMhs[i]['Email']+'">'+'</td>'+
-						'<td>'+getDataCalonMhs[i]['Name']+'<br>'+getDataCalonMhs[i]['NamePrody']+'<br>'+getDataCalonMhs[i]['SchoolName']+'</td>'+
+						'<td>'+getDataCalonMhs[i]['Name']+'<br>'+getDataCalonMhs[i]['NamePrody']+'<br>'+getDataCalonMhs[i]['SchoolName']+showBeasiswaUnggulan+'</td>'+
 						'<td>'+Code+'</td>'+
 						'<td>'+selecTOption+'<br><br>'+selecTOption2+'<br><br>'+selectOptionBintang+'<br><br>'+Rangking+'<br><br>'+showFile+'</td>'+
 						//'<td>'+getDataCalonMhs[i]['NamePrody']+'</td>'+

@@ -340,13 +340,32 @@ class C_crm extends Admission_Controler {
 
             $showBeasiswa = '';
             if ($row['FlagSales'] == 0) {
-                $$showBeasiswa = '<br/><i class="fa fa-circle" style="color:#bdc80e;"></i> <span style =  "color:blue;">Jalur Beasiswa</span>';
+                // get data beasiswa
+                $dataBeasiswa = $this->m_admission->detail_beasiswa_crm($row['ID']);
+               // print_r($dataBeasiswa);
+                $cb = '';
+                if ($dataBeasiswa['resultID'] == 0 && $dataBeasiswa['resultID'] != NULL) {
+                    $cb = '( '.$dataBeasiswa['result'].' <i class="fa fa-question-circle" aria-hidden="true"></i> )';
+                }
+                elseif ($dataBeasiswa['resultID'] == 1) {
+                    $cb = '( '.$dataBeasiswa['result'].' <i class="fa fa-check-circle" style="color: green;"></i> )';
+                }
+                elseif ($dataBeasiswa['resultID'] == -1) {
+                    $cb = '( '.$dataBeasiswa['result'].' <i class="fa fa-minus-circle" style="color: red;"></i> )';
+                }
+                else
+                {
+                    $cb = '( Haven\'t participated yet in quiz )';
+                }
+
+
+                $showBeasiswa = '<br/><i class="fa fa-circle" style="color:#bdc80e;"></i> <span style =  "color:blue;">Jalur Beasiswa'.$cb.'</span>';
 
             }
 
             $dataDetail = '<textarea class="hide" id="det_'.$no.'">'.json_encode($row).'</textarea>';
             $nestedData[] = '<div style="text-align:center;">'.$no.'</div>';
-            $nestedData[] = '<div>'.$row['Name'].'<br/>'.$row['Phone'].' | '.$row['Email'].'<br/>'.$showBeasiswa.'</div>';
+            $nestedData[] = '<div>'.$row['Name'].'<br/>'.$row['Phone'].' | '.$row['Email'].$showBeasiswa.'</div>';
             $nestedData[] = '<div>'.$row['SchoolName'].'<br/>'.$row['RegionName'].'</div>';
             $nestedData[] = '<div style="text-align:center;">'.$row['SchoolMajor'].'</div>';
             $nestedData[] = '<div style="text-align:center;">'.$row['Gender'].'</div>';
