@@ -2412,7 +2412,7 @@ class M_admission extends CI_Model {
              n.ProvinceName as SchoolProvince,n.CityName as SchoolRegion,n.SchoolAddress,a.YearGraduate,a.UploadFoto,
              if((select count(*) as total from db_admission.register_nilai where Status = "Verified" and ID_register_formulir = a.ID limit 1) > 0,"Rapor","Ujian")
              as status1,p.CreateAT,p.CreateBY,b.FormulirCode,p.TypeBeasiswa,p.FileBeasiswa,p.Desc,p.Pay_Cond,
-             if(d.StatusReg = 1, (select No_Ref from db_admission.formulir_number_offline_m where FormulirCode = b.FormulirCode limit 1) ,""  ) as No_Ref,p.RevID
+             if(d.StatusReg = 1, (select No_Ref from db_admission.formulir_number_offline_m where FormulirCode = b.FormulirCode limit 1) ,""  ) as No_Ref,p.RevID,d.StatusReg as StatusOfflineOnline
              from db_admission.register_formulir as a
              left JOIN db_admission.register_verified as b
              ON a.ID_register_verified = b.ID
@@ -2530,6 +2530,21 @@ class M_admission extends CI_Model {
              'Pay_Cond' => $query[$i]['Pay_Cond'],
            );
        }
+
+       // get data beasiswa unggulan (quiz)
+       $dataBeasiswaUnggulan = [];
+       if ($query[$i]['StatusOfflineOnline'] == 1) { // offline
+         $FormulirCode = $query[$i]['FormulirCode'];
+         $d_sale_formulir =  $this->db->where('FormulirCodeOffline',$FormulirCode)->get('db_admission.sale_formulir_offline')->row();
+         if (!empty($d_sale_formulir)) {
+           $ID_Crm = $d_sale_formulir->ID_Crm;
+           $d_beasiswa = $this->detail_beasiswa_crm($ID_Crm);
+           if (!empty($d_beasiswa['CRMdata'])) {
+             $dataBeasiswaUnggulan[] = $d_beasiswa;
+           }
+         }
+       }
+       $arr_temp[$i] = $arr_temp[$i] + ['dataBeasiswaUnggulan' => $dataBeasiswaUnggulan];
 
        $arr_temp[$i] = $arr_temp[$i] + $arr_temp2;
      }

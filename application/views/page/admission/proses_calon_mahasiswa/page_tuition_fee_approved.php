@@ -105,11 +105,38 @@
 			var Code2 = (getDataCalonMhs[i]['No_Ref'] != '') ? getDataCalonMhs[i]['No_Ref'] : getDataCalonMhs[i]['FormulirCode'];
 			var Rangking = (getDataCalonMhs[i]['RangkingRapor'] != 0) ? 'Rangking : '+getDataCalonMhs[i]['RangkingRapor'] : "";
 			var btn_print = '<span data-smt="'+Code2+'" class="btn btn-xs btn-print btn-read" id-register-formulir="'+getDataCalonMhs[i]['ID_register_formulir']+'"><i class="fa fa-print"></i> Print</span>';
-			var RevID = (getDataCalonMhs[i]['Rev'] == 0) ? '' : '<br><a href="javascript:void(0)" class="showModal" id-register-formulir="'+getDataCalonMhs[i]['ID_register_formulir']+'">Revision '+getDataCalonMhs[i]['Rev']+'x</a>'
+			var RevID = (getDataCalonMhs[i]['Rev'] == 0) ? '' : '<br><a href="javascript:void(0)" class="showModal" id-register-formulir="'+getDataCalonMhs[i]['ID_register_formulir']+'">Revision '+getDataCalonMhs[i]['Rev']+'x</a>';
+
+			// quiz beasiswa unggulan
+			var showBeasiswaUnggulan = ''; // quiz
+			var dataBeasiswaUnggulan = getDataCalonMhs[i]['dataBeasiswaUnggulan'];
+			if (dataBeasiswaUnggulan.length > 0) {
+				var tokenUnggulan = jwt_encode(dataBeasiswaUnggulan[0],"UAP)(*");
+				var urlHref= base_url_js + 'page/admission/quiz/c_quiz/getQuizData/'+tokenUnggulan;
+					var dRow = dataBeasiswaUnggulan[0];
+				var cb = '';
+				if (dRow['resultID'] == 0) {
+					cb = '( '+dRow['result']+' <i class="fa fa-question-circle" aria-hidden="true"></i> )';
+				}
+				else if (dRow['resultID'] == 1) {
+					cb = '( '+dRow['result']+' <i class="fa fa-check-circle" style="color: green;"></i> )';
+				}
+				else if (dRow['resultID'] == -1) {
+				    cb = '( '+dRow['result']+' <i class="fa fa-minus-circle" style="color: red;"></i> )';
+				}
+				else
+				{
+				    cb = '( Haven\'t participated yet in quiz )';
+				}
+
+				showBeasiswaUnggulan = '<br/><a href = "'+urlHref+'" class = "btn btn-sm btn-default" target="_blank"><b><span style="color:blue;">Jalur Beasiswa '+cb+'</span></b></a>';
+			}
+
+
 			$(".tableData tbody").append(
 					'<tr>'+
 						'<td align= "center">'+no+'&nbsp<input type="checkbox" class="uniform" nama ="'+getDataCalonMhs[i]['Name']+'" value ="'+getDataCalonMhs[i]['ID_register_formulir']+'" </td>'+
-						'<td>'+setBintangFinance(getDataCalonMhs[i]['Pay_Cond'])+'<br/>'+'<span style="color: #c77905;">'+getDataCalonMhs[i]['Name']+'</span>'+'<br>'+'<span style="color: #c77905;">'+getDataCalonMhs[i]['NamePrody']+'</span>'+'<br>'+getDataCalonMhs[i]['SchoolName']+'<br>'+'<span style="color: #20525a;">'+getDataCalonMhs[i]['CreateAT']+'</span>'+'</td>'+
+						'<td>'+setBintangFinance(getDataCalonMhs[i]['Pay_Cond'])+'<br/>'+'<span style="color: #c77905;">'+getDataCalonMhs[i]['Name']+'</span>'+'<br>'+'<span style="color: #c77905;">'+getDataCalonMhs[i]['NamePrody']+'</span>'+'<br>'+getDataCalonMhs[i]['SchoolName']+showBeasiswaUnggulan+'<br>'+'<span style="color: #20525a;">'+getDataCalonMhs[i]['CreateAT']+'</span>'+'</td>'+
 						'<td>'+Code+'</td>'+
 						'<td>'+getDataCalonMhs[i]['getBeasiswa']+'<br><br>'+Rangking+'<br><br>'+showFile+'</td>'+
 						isi_payment+

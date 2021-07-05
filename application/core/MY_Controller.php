@@ -247,7 +247,7 @@ abstract class Globalclass extends MyAbstract{
                 ) as CekIntake,
                 if(
                   (select count(*) as total from db_finance.register_refund where ID_register_formulir = e.ID ) > 0,"Refund",""
-                ) as CekRefund,
+                ) as CekRefund,a.StatusReg as StatusOfflineOnline,
                 ra.Pay_Cond,ra.PaymentShow,ra.PaymentShowTextMSG
                 from db_admission.register as a
                 LEFT join db_admission.school as b
@@ -323,11 +323,43 @@ abstract class Globalclass extends MyAbstract{
             if ($row['StatusReg'] == 1) {
               $stFormulirAct = '<i class="fa fa-circle" style="color:#db4273;"></i>'; // offline
             }
+
+            // for showBeasiswa
+            $showBeasiswaUnggulan = '';
+            if ($row['StatusOfflineOnline'] == 1) { // offline
+              $FormulirCode = $row['FormulirCode'];
+              $d_sale_formulir =  $this->db->where('FormulirCodeOffline',$FormulirCode)->get('db_admission.sale_formulir_offline')->row();
+              if (!empty($d_sale_formulir)) {
+                $ID_Crm = $d_sale_formulir->ID_Crm;
+                $dataBeasiswa = $this->m_admission->detail_beasiswa_crm($ID_Crm);
+                if (!empty($dataBeasiswa['CRMdata'])) {
+                  $tokenUnggulan = $this->jwt->encode($dataBeasiswa, 'UAP)(*');
+                  $urlHref= base_url().'page/admission/quiz/c_quiz/getQuizData/'.$tokenUnggulan;
+                  $cb = '';
+                  if ($dataBeasiswa['resultID'] == 0 && $dataBeasiswa['resultID'] != NULL) {
+                      $cb = '( '.$dataBeasiswa['result'].' <i class="fa fa-question-circle" aria-hidden="true"></i> )';
+                  }
+                  elseif ($dataBeasiswa['resultID'] == 1) {
+                      $cb = '( '.$dataBeasiswa['result'].' <i class="fa fa-check-circle" style="color: green;"></i> )';
+                  }
+                  elseif ($dataBeasiswa['resultID'] == -1) {
+                      $cb = '( '.$dataBeasiswa['result'].' <i class="fa fa-minus-circle" style="color: red;"></i> )';
+                  }
+                  else
+                  {
+                      $cb = '( Haven\'t participated yet in quiz )';
+                  }
+
+                  $showBeasiswaUnggulan = '<br/><a href = "'.$urlHref.'" class = "btn btn-sm btn-default" target="_blank"><b><span style="color:blue;">Jalur Beasiswa '.$cb.'</span></b></a>';
+
+                }
+              }
+            }
             
             $Code = ($row['No_Ref'] != "") ? $row['FormulirCode'].' / '.$row['No_Ref'] : $row['FormulirCode'];
             $nestedData[] = $No;
 
-            $nestedData[] = $this->m_master->setBintang_HTML($row['Pay_Cond']).'<br/>'.$row['Name'].'<br>'.$row['Email'].'<br>'.$row['Phone'].'<br>'.$row['SchoolName'].'<br/>'.$stFormulirAct;
+            $nestedData[] = $this->m_master->setBintang_HTML($row['Pay_Cond']).'<br/>'.$row['Name'].'<br>'.$row['Email'].'<br>'.$row['Phone'].'<br>'.$row['SchoolName'].'<br/>'.$stFormulirAct.$showBeasiswaUnggulan;
             $nestedData[] = $row['NamePrody'].'<br>'.$Code.'<br>'.$row['VA_number'];
             $nestedData[] = $row['NameSales'];
             $nestedData[] = $row['Rangking'];

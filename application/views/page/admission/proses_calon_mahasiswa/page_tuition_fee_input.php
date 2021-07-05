@@ -160,7 +160,7 @@
 				if (dataBeasiswaUnggulan.length > 0) {
 					var tokenUnggulan = jwt_encode(dataBeasiswaUnggulan[0],"UAP)(*");
 					var urlHref= base_url_js + 'page/admission/quiz/c_quiz/getQuizData/'+tokenUnggulan;
-						var dRow = dataBeasiswaUnggulan[0];
+					var dRow = dataBeasiswaUnggulan[0];
 					var cb = '';
 					if (dRow['resultID'] == 0) {
 						cb = '( '+dRow['result']+' <i class="fa fa-question-circle" aria-hidden="true"></i> )';
