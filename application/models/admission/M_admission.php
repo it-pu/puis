@@ -3921,76 +3921,89 @@ class M_admission extends CI_Model {
             8 = 1 Surat Pernyataan Bebas Narkoba
             6 = 1 Lembar Essay Mengenai
           */
-            for ($j=0; $j < count($get3); $j++) {
-              switch ($get3[$j]['ID_reg_doc_checklist']) {
-                case 7:
-                  if ($get3[$j]['Status'] == "Done") {
-                    $arr_temp = $arr_temp + array('ads_sta' => 'v');
+
+            if (count($get3) > 0) {
+                for ($j=0; $j < count($get3); $j++) {
+                  switch ($get3[$j]['ID_reg_doc_checklist']) {
+                    case 7:
+                      if ($get3[$j]['Status'] == "Done") {
+                        $arr_temp = $arr_temp + array('ads_sta' => 'v');
+                      }
+                      else
+                      {
+                        $arr_temp = $arr_temp + array('ads_sta' => '');
+                      }
+                      break;
+                    case 2:
+                      if ($get3[$j]['Status'] == "Done") {
+                        $arr_temp = $arr_temp + array('raport' => 'v');
+                      }
+                      else
+                      {
+                        $arr_temp = $arr_temp + array('raport' => '');
+                      }
+                      break;
+                    case 3:
+                      if ($get3[$j]['Status'] == "Done") {
+                        $arr_temp = $arr_temp + array('Ijazah' => 'v');
+                      }
+                      else
+                      {
+                        $arr_temp = $arr_temp + array('Ijazah' => '');
+                      }
+                      break;
+                    case 5:
+                      if ($get3[$j]['Status'] == "Done") {
+                        $arr_temp = $arr_temp + array('Foto' => 'v');
+                      }
+                      else
+                      {
+                        $arr_temp = $arr_temp + array('Foto' => '');
+                      }
+                      break;
+                    case 9:
+                      if ($get3[$j]['Status'] == "Done") {
+                        $arr_temp = $arr_temp + array('Refletter' => 'v');
+                      }
+                      else
+                      {
+                        $arr_temp = $arr_temp + array('Refletter' =>'');
+                      }
+                      break;
+                    case 8:
+                      if ($get3[$j]['Status'] == "Done") {
+                        $arr_temp = $arr_temp + array('SuratNarkoba' => 'v');
+                      }
+                      else
+                      {
+                        $arr_temp = $arr_temp + array('SuratNarkoba' => '');
+                      }
+                      break;
+                  case 6:
+                    if ($get3[$j]['Status'] == "Done") {
+                      $arr_temp = $arr_temp + array('Essay' => 'v');
+                    }
+                    else
+                    {
+                      $arr_temp = $arr_temp + array('Essay' => '');
+                    }
+                    break;
+                    default:
+                      # code...
+                      break;
                   }
-                  else
-                  {
-                    $arr_temp = $arr_temp + array('ads_sta' => '');
-                  }
-                  break;
-                case 2:
-                  if ($get3[$j]['Status'] == "Done") {
-                    $arr_temp = $arr_temp + array('raport' => 'v');
-                  }
-                  else
-                  {
-                    $arr_temp = $arr_temp + array('raport' => '');
-                  }
-                  break;
-                case 3:
-                  if ($get3[$j]['Status'] == "Done") {
-                    $arr_temp = $arr_temp + array('Ijazah' => 'v');
-                  }
-                  else
-                  {
-                    $arr_temp = $arr_temp + array('Ijazah' => '');
-                  }
-                  break;
-                case 5:
-                  if ($get3[$j]['Status'] == "Done") {
-                    $arr_temp = $arr_temp + array('Foto' => 'v');
-                  }
-                  else
-                  {
-                    $arr_temp = $arr_temp + array('Foto' => '');
-                  }
-                  break;
-                case 9:
-                  if ($get3[$j]['Status'] == "Done") {
-                    $arr_temp = $arr_temp + array('Refletter' => 'v');
-                  }
-                  else
-                  {
-                    $arr_temp = $arr_temp + array('Refletter' =>'');
-                  }
-                  break;
-                case 8:
-                  if ($get3[$j]['Status'] == "Done") {
-                    $arr_temp = $arr_temp + array('SuratNarkoba' => 'v');
-                  }
-                  else
-                  {
-                    $arr_temp = $arr_temp + array('SuratNarkoba' => '');
-                  }
-                  break;
-              case 6:
-                if ($get3[$j]['Status'] == "Done") {
-                  $arr_temp = $arr_temp + array('Essay' => 'v');
                 }
-                else
-                {
-                  $arr_temp = $arr_temp + array('Essay' => '');
-                }
-                break;
-                default:
-                  # code...
-                  break;
-              }
             }
+            else
+            {
+                $arr_temp = $arr_temp + array('ads_sta' => '');
+                $arr_temp = $arr_temp + array('raport' => '');
+                $arr_temp = $arr_temp + array('Ijazah' => '');
+                $arr_temp = $arr_temp + array('Foto' => '');
+                $arr_temp = $arr_temp + array('Refletter' =>'');
+                $arr_temp = $arr_temp + array('SuratNarkoba' => '');
+                $arr_temp = $arr_temp + array('Essay' => '');
+            }  
 
             $query[$i] = $query[$i] + $arr_temp;
 
