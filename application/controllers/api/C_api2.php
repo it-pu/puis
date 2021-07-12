@@ -3097,7 +3097,7 @@ class C_api2 extends CI_Controller
 
             $NPM = $data_arr['NPM'];
 
-            $dataStd = $this->db->query('SELECT ss.NPM, ss.Mentor, sa.Name, ss.ID AS IDSAStudent, sa.*, p1.Status AS StatusBPP, p2.Status AS StatusCredit
+            $dataStd = $this->db->query('SELECT ss.NPM, ss.Mentor, sa.Name, ss.ID AS IDSAStudent, sa.*, p1.Status AS StatusBPP, p2.Status AS StatusCredit, ss.SASemesterID
                                                     FROM db_academic.sa_student ss
                                                     LEFT JOIN db_academic.semester_antara sa ON (sa.ID = ss.SASemesterID)
                                                     LEFT JOIN db_finance.payment p1 ON (p1.NPM = ss.NPM AND p1.PTID = "5" AND p1.SemesterID = sa.ID)
@@ -3125,7 +3125,7 @@ class C_api2 extends CI_Controller
                                                                         LEFT JOIN db_academic.days d ON (d.ID = ss.DayID)
                                                                         LEFT JOIN db_academic.classroom cl ON (cl.ID = ss.ClassroomID)
                                                                         LEFT JOIN db_employees.employees em ON (em.NIP = ss.Coordinator)
-                                                                        WHERE ssc.CDID = "' . $ds['CDID'] . '" ')
+                                                                        WHERE ssc.CDID = "' . $ds['CDID'] . '" AND ss.SASemesterID = "' . $d['SASemesterID'] . '"')
                                 ->result_array();
 
                             if (count($dataSchedule) > 0) {
