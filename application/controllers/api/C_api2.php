@@ -3909,8 +3909,8 @@ class C_api2 extends CI_Controller
                                                               LEFT JOIN  db_academic.sa_student ss ON (ss.ID = ssd.IDSAStudent)
                                                               LEFT JOIN db_academic.semester_antara sa ON (ss.SASemesterID = sa.ID)
                                                               LEFT JOIN db_academic.auth_students ats ON (ats.NPM = ssd.NPM)
-                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5"  AND p1.SemesterID = sa.SemesterID)
-                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6"  AND p2.SemesterID = sa.SemesterID)
+                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5"  AND p1.SemesterID = sa.ID)
+                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6"  AND p2.SemesterID = sa.ID)
                                                               WHERE ss.SASemesterID = "' . $SASemesterID . '" AND ssd.CDID = "' . $item['CDID'] . '" AND ssd.Status = "3"
                                                               ORDER BY ssd.NPM ASC')->result_array();
 
