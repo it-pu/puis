@@ -72,8 +72,8 @@ class M_semester_antara extends CI_Model
                                                               LEFT JOIN  db_academic.sa_student ss ON (ss.ID = ssd.IDSAStudent)
                                                               LEFT JOIN db_academic.sa_schedule sc ON (sc.SASemesterID = ss.SASemesterID)
                                                               LEFT JOIN db_academic.semester_antara sa ON (sa.ID = ss.SASemesterID)
-                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5" AND p1.SemesterID = sa.SemesterID)
-                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6" AND p2.SemesterID = sa.SemesterID)
+                                                              LEFT JOIN db_finance.payment p1 ON (p1.NPM = ssd.NPM AND p1.PTID = "5" AND p1.SemesterID = sa.ID)
+                                                              LEFT JOIN db_finance.payment p2 ON (p2.NPM = ssd.NPM AND p2.PTID = "6" AND p2.SemesterID = sa.ID)
                                                               WHERE  sc.ID = "' . $ScheduleIDSA . '" AND ssd.CDID = "' . $item['CDID'] . '" AND ssd.Status = "3" AND p1.Status = "1" AND p2.Status = "1"
                                                               ORDER BY ssd.NPM ASC')->result_array();
                 if (count($dataStd) > 0) {
