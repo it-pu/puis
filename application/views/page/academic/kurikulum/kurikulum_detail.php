@@ -160,7 +160,8 @@
     function loadSemesterAdd() {
 
         $('#addSmt').empty();
-        for(var i2=1;i2<=8;i2++){
+        for(var i2=1;i2<=14;i2++){
+            // console.log('asds');
             if($.inArray(i2,allSmt)==-1){
                 $('#addSmt').append('<li><a href="javascript:void(0)" data-smt="'+i2+'" data-action="add-semester" class="btn-control">Semester '+i2+'</a></li>');
             }
